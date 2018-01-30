@@ -105,6 +105,7 @@ class ExtendHandle extends BaseHandle
     }
 
     /**
+     *
      * ok-2ok
      * 安装插件
      * @param $name
