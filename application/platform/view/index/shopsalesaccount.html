@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script src="__STATIC__/admin/js/highcharts.js"></script>
+    <script src="__STATIC__/admin/js/exporting.js"></script>
+    <style type="text/css">
+        .w210 {
+            width: 210px;
+        }
+
+        .h30 {
+            height: 30px !important;
+        }
+
+        .top-alert {
+            border: 1px solid #FBEED5;
+        }
+
+        .w450 {
+            width: 450px !important;
+        }
+
+        .mr50 {
+            margin-right: 50px !important;
+        }
+
+        .count-box li {
+            font-size: 12px;
+        }
+    </style>
+
+</head>
+<body>
+{include file="index/head"/}
+<article class="ns-base-article">
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+        <nav>
+            <ul>
+                <li class="selected" onclick="location.href='{:url('shopsalesaccount')}';" title="销售概况">销售概况</li>
+                <li onclick="location.href='{:url('shopgoodssaleslist')}';" title="商品分析">商品分析</li>
+                <li onclick="location.href='{:url('shopreport')}';" title="运营报告">运营报告</li>
+                <li onclick="location.href='{:url('shopgoodssalesrank')}';" title="销售排行">销售排行</li>
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section" id="vue-main" v-cloak>
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    用户列表
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">销售概况</li>
+                </ul>
+            </nav>
+
+        </div>
+        <div class="ns-main">
+
+            <div class="count-box">
+
+                <div class="main-content" id="mainContent">
+                    <div class="alert mt10 top-alert">
+                        <ul class="mt5">
+                            <li>1、符合以下任何一种条件的订单即为有效订单：1）采用在线支付方式支付并且已付款；2）采用货到付款方式支付并且交易已完成</li>
+                            <li>2、以下关于订单和订单商品近30天统计数据的依据为：从昨天开始最近30天的有效订单</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-info mt10" style="clear:both;">
+                        <ul class="mt5">
+                            <li>
+					<span class="w210 fl h30" style="display:block;">
+						<i title="店铺从昨天开始最近30天有效订单的总金额" class="tip icon-question-sign"></i>
+						近30天下单金额：<strong>{{salesInfo.order_money}}元</strong>
+					</span>
+                                <span class="w210 fl h30" style="display:block;">
+						<i title="店铺从昨天开始最近30天有效订单的会员总数" class="tip icon-question-sign"></i>
+						近30天下单会员数：<strong>{{salesInfo.order_user_num}}</strong>
+					</span>
+                                <span class="w210 fl h30" style="display:block;">
+						<i title="店铺从昨天开始最近30天有效订单的总订单数" class="tip icon-question-sign"></i>
+						近30天下单量：<strong>{{salesInfo.order_num}}</strong>
+					</span>
+                                <span class="w210 fl h30" style="display:block;">
+						<i title="店铺从昨天开始最近30天有效订单的总商品数量" class="tip icon-question-sign"></i>
+						近30天下单商品数：<strong>{{salesInfo.order_goods_num}}</strong>
+					</span>
+                            </li>
+                            <li>
+					<span class="w210 fl h30" style="display:block;">
+						<i title="店铺从昨天开始最近30天有效订单的平均每个订单的交易金额" class="tip icon-question-sign"></i>
+						平均客单价：<strong>{{salesInfo.user_money_average}}元</strong>
+					</span>
+                                <span class="w210 fl h30" style="display:block;">
+						<i title="店铺从昨天开始最近30天有效订单商品的平均每个商品的成交价格" class="tip icon-question-sign"></i>
+						平均价格：<strong>{{salesInfo.goods_money_average}}元</strong>
+					</span>
+                            </li>
+                        </ul>
+                        <div style="clear:both;"></div>
+                    </div>
+
+                    <div id="container" data-highcharts-chart="0">
+                        <div class="highcharts-container" id="highcharts-0"
+                             style="position: relative; overflow: hidden; width: 959px; height: 400px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: &amp; quot; Lucida Grande&amp;quot; , &amp; quot; Lucida Sans Unicode&amp;quot; , Verdana , Arial, Helvetica, sans-serif; font-size: 12px;"></div>
+                    </div>
+
+                    <div class="w450 fl mr50" style="display: none;">
+                        <div class="alert alert-info" style="margin-bottom:0px;"><strong>建议推广商品</strong>
+                            &nbsp;<i title="统计店铺从昨天开始7日内热销商品前30名，建议推广以下商品，提升推广回报率" class="tip icon-question-sign"></i>
+                        </div>
+                        <table class="ncsc-default-table">
+                            <thead>
+                            <tr class="sortbar-array">
+                                <th class="align-center">序号</th>
+                                <th class="align-center">商品名称</th>
+                                <th class="align-center">销量</th>
+                            </tr>
+                            </thead>
+                            <tbody id="datatable">
+                            <tr>
+                                <td colspan="20" class="norecord">
+                                    <div class="warning-option"><i
+                                            class="icon-warning-sign"></i><span>暂无符合条件的数据记录</span></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="w450 fl" style="display: none;">
+                        <div class="alert alert-info" style="margin-bottom:0px;"><strong>同行热卖</strong>
+                            &nbsp;<i title="拥有相同经营类目同行店铺热销商品推荐，了解行业热卖便于调整商品结构" class="tip icon-question-sign"></i>
+                        </div>
+                        <table class="ncsc-default-table">
+                            <thead>
+                            <tr class="sortbar-array">
+                                <th class="align-center">序号</th>
+                                <th class="align-center">商品名称</th>
+                                <th class="align-center">销量</th>
+                            </tr>
+                            </thead>
+                            <tbody id="datatable">
+                            <tr>
+                                <td colspan="20" class="norecord">
+                                    <div class="warning-option"><i
+                                            class="icon-warning-sign"></i><span>暂无符合条件的数据记录</span></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="h30 cb">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</article>
+
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script>
+    var time = [1 + "日", 2 + "日", 3 + "日", 4 + "日", 5 + "日", 6 + "日", 7 + "日", 8 + "日", 9 + "日", 10 + "日", 11 + "日", 12 + "日", 13 + "日", 14 + "日", 15 + "日", 16 + "日", 17 + "日", 18 + "日", 19 + "日", 20 + "日", 21 + "日", 22 + "日", 23 + "日", 24 + "日", 25 + "日", 26 + "日", 27 + "日", 28 + "日", 29 + "日", 30 + "日"];
+    var data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                salesInfo:{}
+            },
+            mounted:function () {
+                this.$http.post("{:url('platform/DataAnalysis/salesAccount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.salesInfo=res.data.data;
+                    }
+                });
+            }
+        });
+
+
+        Chart = new Highcharts.Chart("container", {
+            "xAxis": {
+                "categories": time
+            },
+            "legend": {
+                "enabled": false
+            },
+            "series": [{
+                "name": "下单量",
+                "data": data
+            }],
+            "title": {
+                "text": "<b>下单量<\/b>",
+                "x": -20
+            },
+            "chart": {
+                "type": "line"
+            },
+            "colors": ["#058DC7", "#ED561B", "#8bbc21",
+                "#0d233a"],
+            "credits": {
+                "enabled": false
+            },
+            "exporting": {
+                "enabled": false
+            },
+            "yAxis": {
+                "title": {
+                    "text": "下单量"
+                }
+            }
+        });
+        $.ajax({
+            type: "post",
+            url: "{:url('platform/DataAnalysis/getSaleNumCount')}",
+            success: function (res) {
+                if(res.code==0){
+                    data=res.data;
+                    Chart.update({
+                        xAxis: {
+                            categories: data[0]
+                        },
+                        series: [{
+                            name: "下单量",
+                            data: data[1]
+                        }]
+                    });
+                }
+            }
+        })
+    });
+</script>
+</body>
+</html>

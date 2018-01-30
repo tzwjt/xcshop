@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>{$siteInfo.web_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <!--<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">-->
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link href="__STATIC__/web/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_v0629.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_header.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/goodslist.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/common.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+    <style>
+        .goods-desc{
+            white-space: nowrap;text-overflow:ellipsis; overflow:hidden;
+        }
+        .thumbnail{
+            border: none;
+            cursor: pointer;
+        }
+        .thumbnail h3{
+            padding-top: 0.5em;
+        }
+        .a-list:hover{
+            text-decoration: none;
+        }
+        #format{
+            background-image: url("__STATIC__/wap/images/format.jpg");
+            background-size: 1.5em 1.5em;
+            background-position: 0 50%;
+            background-repeat: no-repeat;
+            border:1px solid #ddd;
+            border-radius: 5em;
+            height:2em;
+        }
+        #format p{
+            text-indent: 2em;
+            color:#888;
+            word-spacing: 0.8em;
+        }
+        .recommand-goods img{
+            border:1px solid #efefef;
+            border-radius: 1em;
+        }
+        .thumbnail{
+            margin-bottom: 0;
+            position: relative;
+        }
+        .thumbnail .niu-btn-info{
+            position: absolute;
+            bottom: 10%;
+            left: 8%;
+            color:#fff;
+            font-size:1.2em;
+            letter-spacing: 0.1em;
+            background-color:transparent;
+            border:1px solid #fff;
+            padding: 0.5em 0.8em;
+            border-radius: 1.5em;
+        }
+        .thumbnail .niu-btn-info:hover{
+            background-color: #fff;
+            color:#000;
+        }
+        .introduce h1 {
+            font-size: 36px;
+            padding: 42px 0 26px;
+            font-weight: 500;
+            text-align: center;
+        }
+        .introduce p {
+            line-height: 32px;
+            font-size: 14px;
+            color: #8d8d8d;
+            text-indent: 2em;
+        }
+        .InfoList li{
+            height:40px;
+            font-size:16px;
+            color:#666;
+            border-bottom: 1px solid #ccc;
+            padding: 8px;
+        }
+        /*#content p{*/
+            /*text-align: center;*/
+        /*}*/
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body style="padding-top: 0;">
+{include file='index/nav_bar'}
+<div class="container" id="vue-main" v-cloak style="margin-top: 120px;">
+    <div class="row">
+        <div class="col-xs-6">
+            <img :src="shopImg"/>
+        </div>
+        <div class="col-xs-6">
+            <ul class="InfoList" style="margin-top: 30px;">
+                <li class="title">
+                    <p class="shopname"><span>体验店名称：{{tydInfo.shop_name}}</span></p>
+                </li>
+                <li>
+                    <p class="iconfont icon-dingwei" style="float: left; width: 90%;"><span onclick="showtodaohang();">地址：{{tydInfo.shop_address}}</span><span
+                            onclick="showtodaohang();"
+                            style="color: crimson;float: right; font-family: &#39;黑体&#39;; padding-left: 0.2rem; border-left-color: #ebebeb; border-left-style: solid; border-left-width: 1px;"><img
+                            src="__STATIC__/tyd/daohang.png"
+                            style="width: 0.25rem; height: 0.25rem; padding-right: 0.1rem; margin-bottom: -0.05rem;">去导航</span>
+                    </p>
+                </li>
+                <li>
+                    <p class="iconfont icon-dianhua" style="width: 90%; float: left;"><a :href="'tel://'+tydInfo.shop_phone">联系方式：{{tydInfo.shop_phone}}</a><a
+                            :href="'tel://'+tydInfo.shop_phone"><span
+                            style="color: crimson; float: right; font-family: &#39;黑体&#39;; padding-left: 0.2rem; border-left-color: #ebebeb; border-left-style: solid; border-left-width: 1px;"><img
+                            src="__STATIC__/tyd/dadianhua.png"
+                            style="width: 0.25rem; height: 0.25rem; padding-right: 0.1rem; margin-bottom: -0.05rem;">打电话</span></a>
+                    </p>
+                </li>
+                <li>
+                    <p class="iconfont icon-shijian">营业时间：{{tydInfo.business_begin}}-{{tydInfo.business_end}}</p>
+                </li>
+
+                <!--<li class="text"><p>体验店介绍</p></li>-->
+                <!--<li class="textContetn">-->
+                    <!--<p>{{tydInfo.shop_introduce}}</p>-->
+                <!--</li>-->
+                <!--<li class="text"><p>体验须知</p></li>-->
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <!--<h1 style="padding: 10px;text-align: center;font-size:25px;">体验店介绍</h1>-->
+            <div id="content" v-html="tydInfo.shop_content"></div>
+        </div>
+    </div>
+</div>
+{include file='index/footer'}
+<span id="cnzz_stat_icon_1254175023"></span>
+<script src="__STATIC__/web/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript">
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                tydInfo:{},
+                shopImg:''
+            },
+            mounted:function () {
+                this.$http.post("{:url('shop/Member/memberAgentShop')}", {},{
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    },
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.tydInfo=res.data.data;
+                        this.shopImg=this.tydInfo.shop_banner.split(';')[0];
+                    }
+                });
+            }
+
+
+        });
+    });
+
+
+
+    function showtodaohang(to_address, to_lat, to_lng) {
+
+
+        //var map_url = 'http://apis.map.qq.com/uri/v1/routeplan?type=drive&from=&fromcoord='+curr_latitude+','+curr_longitude+'&to='+to_address+'&tocoord='+to_lat+','+to_lng+'&policy=1&referer=myapp';
+        var map_url = "http://api.map.baidu.com/marker?location=32.463273,119.963614&title=美肤日制SKINDAY--江苏泰州体验店&name=美肤日制SKINDAY--江苏泰州体验店&output=html&src=we7";
+        window.location.href = map_url;
+
+        // console.log(map_url);
+    }
+</script>
+
+</body>
+</html>

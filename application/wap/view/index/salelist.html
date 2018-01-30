@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html style="font-size: 37.037px;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <meta name="baidu-site-verification" content="qYMZZ5kMNb">
+    <meta name="sogou_site_verification" content="G7nmLR75yc">
+    <meta name="baidu-tc-cerfication" content="0a8c6d28b570b218f78510c29be4529b">
+    <meta name="360-site-verification" content="8b6121969d78afda8caeb69053fa29d9">
+    <link href="__STATIC__/wap/css/mui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="__STATIC__/wap/css/style.css">
+    <link rel="stylesheet" href="__STATIC__/wap/css/base.css">
+    <link rel="stylesheet" href="__STATIC__/wap/css/vendors.6cc56fe8.css">
+    <link rel="stylesheet" href="__STATIC__/wap/css/classify-list.7722ca74.css">
+    <script type="text/javascript" async="" src="__STATIC__/wap/js/login-deal.min.js"></script>
+    <link rel="stylesheet" href="__STATIC__/wap/css/login.css">
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/base.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/style.css">
+
+    <script async="" src="__STATIC__/wap/js/vtm_m.js"></script>
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+    <style>
+        .backtop {
+            display: none !important;
+        }
+
+        .wrap-filter .wrap-filter-bar .filter-bar {
+            /*color:#e92076;*/
+            color: #666;
+        }
+
+        .wrap-filter .wrap-filter-bar .filter-bar .color-orange {
+            color: #e92076;
+
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="main" v-cloak>
+    <div id="J-classify-filter" style="position: fixed;top:0;left: 0;z-index:5555;width:100%;;">
+        <div class="wrap-filter J-wrap-filter">
+            <div class="wrap-filter-bar" id="J-wrap-filter-bar"
+                 style="z-index: auto; position: absolute; top: 0px;background-color: #fff;color:#fff;">
+                <ul class="filter-bar clearfix" id="J-filter-bar">
+                    <li id="J-filter-multi">
+                        <!--<i class="icon-filter-brand"></i>-->
+                        <a href="{:url('salelist')}">
+                            <span :class="{'color-orange':listIndex==1}" @click="listIndex=1;">全部</span></a>
+                    </li>
+                    <li id="J-filter-price" mars_sead="brand-price-rank_btn">
+                        <!--<i class="icon-filter-brand"></i>-->
+                        <a href="{:url('salelist',array('type'=>88))}">
+                            <span :class="{'color-orange':listIndex==2}" @click="listIndex=2;">内调</span></a>
+                    </li>
+                    <li id="J-filter-discount" mars_sead="brand-sale-rank_btn">
+                        <!--<i class="icon-filter-brand"></i>-->
+                        <a href="{:url('salelist',array('type'=>68))}">
+
+                            <span :class="{'color-orange':listIndex==3}" @click="listIndex=3;">外养</span></a>
+                    </li>
+                    <li id="J-filter-brand" class="brand-filter" mars_sead="classify-brand_btn"
+                        style="display: table-cell;">
+                        <!--<i class="icon-filter-brand"></i>-->
+                        <a href="{:url('salelist',array('type'=>85))}">
+
+                            <span :class="{'color-orange':listIndex==4}" @click="listIndex=4;">器材</span></a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="J-classify-product-list" style="margin-top: 45px;" v-cloak><!-- 分类筛选商品列表&品牌筛选商品列表 -->
+        <div id="J-list-view" class="u-product-list" style="min-height: 1px;">
+            <div class="J-list-page list-view-page" data-page="1">
+                <dl class="u-product" v-for="item in goodsList">
+                    <a :href="'{$url}&list='+item.id">
+                        <dt class="u-product-pic" style="padding-bottom:0px;height: auto;">
+                            <img :src="item.pic_cover_mid" style="display: block;width:100%;">
+                            <!--<img src="__STATIC__/wap/images/product-1.jpg" style="transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">-->
+                        </dt>
+                    </a>
+                    <dd class="product-name" style="height: 1.1rem;">
+                        {{item.title}}
+                    </dd>
+                    <dd class="product-price-wrap" style="text-align: right;">
+                        <span class="grally-price vip-red">¥{{item.price}}</span>
+                        <span class="mark-price">¥{{item.market_price}}</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div style="font-size:10px;height:50px;"></div>
+</div>
+{include file="index/footernew"/}
+
+
+
+<!--<script type="text/javascript" src="__STATIC__/wap/js/vendors.6cc56fe8.js"></script>-->
+<!--<script type="text/javascript" src="__STATIC__/wap/js/classify-list.7722ca74.js"></script>-->
+<!--<script type="text/javascript" src="__STATIC__/wap/js/mars_wap.js" defer=""></script>-->
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script>
+    $(function () {
+        $("#foot-goods p").css("color", "#e92076");
+        $("#foot-goods img").attr("src", "__STATIC__/wap/images/goods-3.png");
+        var main = new Vue({
+            el: "#main",
+            data: {
+                goodsList: [],
+                listIndex: 1
+            },
+            created: function () {
+                this.$http.post("{:url('shop/goods/goodsList')}", {
+                            category_id: "{$type}"
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.goodsList = res.data.data.data;
+                    }
+                });
+                switch ("{$type}") {
+                    case "":
+                        this.listIndex = 1;
+                        break;
+                    case "88":
+                        this.listIndex = 2;
+                        break;
+                    case "68":
+                        this.listIndex = 3;
+                        break;
+                    case "85":
+                        this.listIndex = 4;
+                        break;
+
+                }
+            },
+        });
+
+    });
+</script>
+</body>
+</html>

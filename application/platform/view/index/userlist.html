@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <style>
+        .required {
+            font-size: 20px;
+            position: relative;
+            top: 5px;
+            left: 5px;
+            /*padding-top: 10px;*/
+        }
+
+        #user-table th, #user-table td {
+            text-align: center;
+        }
+        .modal.fade.in{
+            top:3%;
+        }
+    </style>
+    <script>
+        var UPLOADAGENT = 'UPLOAD_AVATOR';
+    </script>
+</head>
+<body>
+{include file="index/head"/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+        <nav>
+            <ul>
+                {foreach item="vo" name="module_second"}
+
+                <li {if condition="$vo['selected'] eq true"}
+                    class='selected'
+                    {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                {/foreach}
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    用户列表
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">用户列表</li>
+                </ul>
+            </nav>
+            <div class="right-side-operation">
+                <ul>
+                    <li><a @click="addUser()"><i class="fa fa-plus-circle"></i>&nbsp;添加用户</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main">
+            <table class="mytable">
+                <tr>
+                    <th>
+                        <input type="text" id='search_text' placeholder="请输入用户名" class="input-common"/>
+                        <input type="button" class="btn-common" @click="searchData()" value="搜索"/>
+                    </th>
+                </tr>
+            </table>
+            <table class="table-class" id="user-table">
+                <thead>
+                <tr align="center">
+                    <th style="width:10%;">用户头像</th>
+                    <th style="width:10%;">用户名</th>
+                    <th style="width:10%;">昵称</th>
+                    <th style="width:15%;">邮箱</th>
+                    <th style="width:10%;">所属用户组</th>
+                    <th style="width:10%;">真实姓名</th>
+                    <th style="width:10%;">状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in userInfo.list">
+                    <td><img :src="item.user_headimg==''?'__STATIC__/images/default_user_portrait.gif':item.user_headimg" style="width:60px;height:60px;border-radius: 50%;"/></td>
+                    <td>{{item.user_name}}</td>
+                    <td>{{item.nick_name}}</td>
+                    <td>{{item.user_email}}</td>
+                    <td>{{item.user_group_name}}</td>
+                    <td>{{item.real_name}}</td>
+                    <td>{{item.user_status_name}}</td>
+                    <td>
+                        <a @click="editUser(item)" style="color:#6b91c4;">修改</a>
+                        <a @click="changeStatus(item)" :style="{color:item.user_status==1?'#69AA46':'red'}">{{item.user_status==1?"禁用":"解禁"}}</a>
+                        <a @click="resetPwd(item)" style="color:#9C59B8;">密码重置</a>
+                        <a @click="showUserInfo(item)" style="color:#e98403;">详情</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <!--用户信息modal-->
+    <div class="modal fade hide" id="user-modal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>用户信息{{ajaxInfo.user_id>0?"更新":"添加"}}</h3>
+                </div>
+                <div class="modal-body" style="max-height:none;">
+                    <div class="modal-infp-style">
+                        <table class="table">
+                            <tr v-if="ajaxInfo.id>0">
+                                <td style="text-align: right;width:30%;vertical-align: middle;">头像:</td>
+                                <td>
+                                    <div style="width:33.33%;float: left;">
+                                        <div class="class-logo"><p style="height:100px;padding: 0;">
+                                            <img id="imglogo1"
+                                                 :src="ajaxInfo.user_headimg==''?'__STATIC__/images/default_user_portrait.gif':ajaxInfo.user_headimg"
+                                                                                              style="border-radius: 50%;width:100px;height:100px;max-height: none;"/>
+                                        </p></div>
+                                        <div class="upload-btn">
+                                                        <span>
+                                                            <input name="file_upload" id="uploadImg1" type="file"
+                                                                   onchange="imgUpload(this,'imglogo1')"
+                                                                   class="input-file" style="width:120px;">
+                                                        </span>
+                                            <p style="width:120px;cursor: pointer;"><i class="fa fa-cloud-upload"></i>上传营业执照
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;"><span class="required">*</span>用户名:</td>
+                                <td><input type="text" class="input-common" placeholder="请填写用户名"
+                                           v-model="ajaxInfo.user_name"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;"><span class="required">*</span>用户组:</td>
+                                <td><select class="select-common" v-model="ajaxInfo.user_group_id">
+
+                                    <option :value="item.id" v-for="item in groupList">{{item.group_name}}</option>
+
+
+
+                                    <!--<option value="1">管理员</option>-->
+                                    <!--<option value="2">操作员</option>-->
+                                    <!--<option value="3">财务</option>-->
+                                </select>
+                                </td>
+                            </tr>
+                            <tr v-if="!(ajaxInfo.id>0)">
+                                <td style="text-align: right;width:30%;"><span class="required">*</span>密码:</td>
+                                <td><input type="password" class="input-common" placeholder="请填写密码"
+                                           v-model="ajaxInfo.user_password"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">邮箱:</td>
+                                <td><input type="email" class="input-common" placeholder="请填写用户邮箱"
+                                           v-model="ajaxInfo.user_email"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">昵称:</td>
+                                <td><input type="text" class="input-common" placeholder="请填写用户昵称"
+                                           v-model="ajaxInfo.nick_name"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">真实姓名:</td>
+                                <td><input type="text" class="input-common" placeholder="请填写用户真实姓名"
+                                           v-model="ajaxInfo.real_name"></td>
+                            </tr>
+
+                            <tr v-if="ajaxInfo.id>0">
+                                <td style="text-align: right;width:30%;">状态:</td>
+                                <td>
+                                    <input type="radio" name="review" value="1" v-model="ajaxInfo.user_status"/>
+                                    有效&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="review" value="2" v-model="ajaxInfo.user_status"/>
+                                    禁用
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @click="ajaxUserInfo()">提交</button>
+                    <button class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--用户详情-->
+    <div class="modal fade hide" id="user-details-modal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true" style="width: 720px;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>用户详情</h3>
+                </div>
+                <div class="modal-body" style="max-height:none;">
+                    <div class="modal-infp-style">
+                        <table class="table">
+                            <tr>
+                                <td style="text-align: right;width:30%;vertical-align: middle;">头像:</td>
+                                <td colspan="3">
+                                    <div style="width:33.33%;float: left;">
+                                        <div class="class-logo"><p style="height:100px;padding: 0;">
+                                            <img id="imglogo2"
+                                                 :src="userDetails.user_headimg==''?'__STATIC__/images/default_user_portrait.gif':userDetails.user_headimg"
+                                                 style="border-radius: 50%;width:100px;height:100px;max-height: none;"/>
+                                        </p></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;"><span class="required">*</span>用户名:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.user_name" disabled="disabled"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">邮箱:</td>
+                                <td><input type="email" class="input-common" placeholder=""
+                                           v-model="userDetails.user_email"></td>
+
+                                <td style="text-align: right;width:30%;">昵称:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.nick_name"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">真实姓名:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.real_name"></td>
+
+                                <td style="text-align: right;width:30%;">用户组名:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.user_group_name"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">用户状态:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.user_status_name"></td>
+
+                                <td style="text-align: right;width:30%;">建立时间:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.create_time"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="text-align: center;font-size:1.5em;font-weight: bold;">登录信息</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">登录次数:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.login_count"></td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: right;width:30%;">上次登录IP:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.last_login_ip"></td>
+
+                                <td style="text-align: right;width:30%;">上次登录时间:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.last_login_time"></td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: right;width:30%;">当前登录ip:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.current_login_ip"></td>
+
+                                <td style="text-align: right;width:30%;">当前登录时间:</td>
+                                <td><input type="text" class="input-common" placeholder=""
+                                           v-model="userDetails.current_login_time"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script src="/xcshopN/public/static/js/ajax_file_upload.js" type="text/javascript"></script>
+<script src="/xcshopN/public/static/js/file_upload.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                userInfo: {
+                    list: [],
+                    user_ground_id: '',
+                    search_text: ''
+                },
+                ajaxInfo: {id: ''},
+                userDetails:{},
+                groupList:[]
+            },
+            mounted: function () {
+               this.getInfo();
+                this.$http.post("{:url('platform/User/getUserGroupList')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.groupList=[{id:0,group_name:'请选择用户组'}].concat(res.data.data.data);
+                    }
+                });
+            },
+            methods: {
+                getInfo:function () {
+                    this.$http.post("{:url('platform/User/userList')}", {
+                            user_ground_id: this.userInfo.user_ground_id,
+                            search_text: this.userInfo.search_text
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.userInfo.list = res.data.data;
+                        }
+                    });
+                },
+                addUser: function () {
+                    this.ajaxInfo = {
+                        user_name: '',
+                        user_password: '',
+                        user_email: '',
+                        nick_name: '',
+                        real_name: '',
+                        user_group_id: 0
+                    };
+                    $("#user-modal").modal("show");
+                },
+                editUser: function (item) {
+                    this.ajaxInfo = item;
+                    $("#user-modal").modal("show");
+                },
+                ajaxUserInfo: function () {
+                    if (this.ajaxInfo.user_name == '') {
+                        layer.msg("请填写用户名", {shade: [0.2, "#333"]});
+                        return;
+                    }
+                    if(this.ajaxInfo.user_group_id==0){
+                        layer.msg("请选择用户组", {shade: [0.2, "#333"]});
+                        return;
+                    }
+                    if (this.ajaxInfo.id > 0) {
+                        this.$http.post("{:url('platform/User/updateUser')}", {
+                                user_id: this.ajaxInfo.id,
+                                user_name: this.ajaxInfo.user_name,
+                                user_email: this.ajaxInfo.user_email,
+                                nick_name: this.ajaxInfo.nick_name,
+                                real_name: this.ajaxInfo.real_name,
+                                user_group_id: this.ajaxInfo.user_group_id,
+                                user_status: this.ajaxInfo.user_status,
+                                user_headimg: this.ajaxInfo.user_headimg
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6}, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(res.data.msg, {shade: [0.2, "#333"]});
+                            }
+                        });
+                    } else {
+                        if (this.ajaxInfo.user_password == '') {
+                            layer.msg("请输入用户的密码", {shade: [0.2, "#333"]});
+                            return;
+                        }
+                        if (!CheckPassWord(this.ajaxInfo.user_password)) {
+                            layer.msg("密码必须为字母和数字组成，且长度在6-20之间", {shade: [0.2, "#333"]});
+                            return;
+                        }
+                        this.$http.post("{:url('platform/User/addUser')}", {
+                                user_name: this.ajaxInfo.user_name,
+                            user_password:this.ajaxInfo.user_password,
+                                user_email: this.ajaxInfo.user_email,
+                                nick_name: this.ajaxInfo.nick_name,
+                                real_name: this.ajaxInfo.real_name,
+                                user_group_id: this.ajaxInfo.user_group_id,
+
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6}, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(res.data.msg, {shade: [0.2, "#333"]});
+                            }
+                        });
+                    }
+                },
+                changeStatus:function (item) {
+                    layer.confirm('你确定要'+(item.user_status==1?"禁用":"解禁")+'该用户吗？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(){
+                        if(item.user_status==1){
+                            vueMain.$http.post("{:url('platform/User/setInvalidUser')}", {user_id:item.id},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg, {icon: 6}, function () {
+                                        location.reload();
+                                    });
+                                } else {
+                                    layer.msg(res.data.msg, {shade: [0.2, "#333"]});
+                                }
+                            });
+                        }
+                        if(item.user_status==2){
+                            vueMain.$http.post("{:url('platform/User/setValidUser')}", {user_id:item.id},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg, {icon: 6}, function () {
+                                        location.reload();
+                                    });
+                                } else {
+                                    layer.msg(res.data.msg, {shade: [0.2, "#333"]});
+                                }
+                            });
+                        }
+                    });
+                },
+                resetPwd:function (item) {
+                    layer.prompt({title: '请输入用户的新密码', formType: 1}, function(pass, index){
+                        if (pass == '') {
+                            layer.msg("请输入新密码后再按\"确定\"按钮", {shade: [0.2, "#333"]});
+                            return;
+                        }
+                        if (!CheckPassWord(pass)) {
+                            layer.msg("密码必须为字母和数字组成，且长度在6-20之间", {shade: [0.2, "#333"]});
+                            return;
+                        }
+                        vueMain.$http.post("{:url('platform/User/setUserPassword')}", {user_id:item.id,user_password:pass},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert("密码修改成功",{icon:6},function () {
+                                    layer.closeAll();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    });
+                },
+                showUserInfo:function (item) {
+                    this.$http.post("{:url('platform/User/userDetails')}", {user_id:item.id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                           this.userDetails=res.data.data;
+                           $("#user-details-modal").modal("show");
+                        }
+                    });
+
+                },
+                searchData:function () {
+                    var search_text=$("#search_text").val();
+                    this.userInfo.search_text=search_text;
+                    this.getInfo();
+                }
+            }
+        });
+    });
+
+    function CheckPassWord(password) {
+        var str = password;
+        if (str.length < 6 || str.length > 20) {
+            return false;
+        }
+        if (!str.match(/\d/) || !str.match(/[a-zA-Z]/)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    //图片上传
+    function imgUpload(event, str) {
+        var fileid = $(event).attr("id");
+        var data = {'file_path': UPLOADAGENT};
+        uploadFile(fileid, data, function (res) {
+            if (res.code == 0) {
+
+                vueMain.ajaxInfo.user_headimg=res.data;
+                layer.alert(res.msg, {icon: 6, title: '提示'});
+            } else {
+
+                vueMain.ajaxInfo.user_headimg='';
+                layer.alert("图片上传失败", {icon: 6, title: '提示'});
+            }
+        }, "{:url('util/img_upload/uploadFile')}");
+    }
+
+</script>
+</body>
+</html>

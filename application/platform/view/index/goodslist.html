@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script>
+        var PLATFORM_NAME = "{$platformInfo.platform_site_name}";
+        var ADMINIMG = "__STATIC__/admin/images";//后台图片请求路径
+        var PAGESIZE = "20";//分页显示页数
+        var _STATIC = "__STATIC__";
+        //上传文件路径
+        var UPLOADGOODS = 'upload/goods/';//存放商品图片
+        var UPLOADGOODSSKU = 'upload/goods_sku/';//存放商品SKU
+        var UPLOADGOODSBRAND = 'upload/goods_brand/';//存放商品品牌图
+        var UPLOADGOODSGROUP = 'upload/goods_group/';////存放商品分组图片
+        var UPLOADGOODSCATEGORY = 'upload/goods_category/';////存放商品分类图片
+        var UPLOADCOMMON = 'upload/common/';//存放公共图片、网站logo、独立图片、没有任何关联的图片
+        var UPLOADAVATOR = 'upload/avator/';//存放用户头像
+        var UPLOADPAY = 'upload/pay/';//存放支付生成的二维码图片
+        var UPLOADADV = 'upload/advertising/';//存放广告位图片
+        var UPLOADEXPRESS = 'upload/express/';//存放物流图片
+        var UPLOADCMS = 'upload/cms/';//存放文章图片
+        var platform_shopname = '{$platformInfo.platform_site_name}';
+    </script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/product.css">
+    <script type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/mycss/goodslist.css">
+    <style>
+        .goodsCategory{
+            display: block;
+        }
+        .selectGoodsCategory{
+            display: block;
+            /*right:200px;*/
+        }
+        /*.goodsCategory{*/
+            /*right:300px;*/
+        /*}*/
+        .selectGoodsCategory2{
+            width:437px;
+            right:361px;
+        }
+        .selectGoodsCategory3{
+            width:636px;
+            right:162px;
+        }
+        a{
+            color:#0072D2
+        }
+    </style>
+</head>
+<body>
+{include file="index/head" /}
+<article class="ns-base-article" id="main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+        <nav id="nav-list">
+            <ul>
+                {foreach item="vo" name="module_second"}
+                <li {if condition="$vo['selected'] eq true" }
+                    class='selected'
+                    {/if}
+                ><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                {/foreach}
+
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt">
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    商品列表
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">商品列表</li>
+                </ul>
+            </nav>
+            <div class="right-side-operation">
+                <ul>
+                    <li><a href="{:url('addgoods')}"><i
+                            class="fa fa-plus-circle"></i>&nbsp;发布商品</a></li>
+                    <li style="display:none;"><a class="js-open-warmp-prompt"><i class="fa fa-bell"></i>提示</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main" style="min-height:600px;">
+            <!--<div class="js-mask-category"-->
+                 <!--style="display:none;background: rgba(0,0,0,0);position:fixed;width:100%;height:100%;top:0;left:0;right:0;bottom:0;z-index:90;"></div>-->
+            <table class="mytable">
+                <tr>
+                    <th style="line-height:33px;position: relative;">
+                        商品分类：
+                        <input type="text" placeholder="请选择商品分类" v-model="categoryInfo.str" id="goodsCategoryOne" @click.stop="categoryInfo.is_show=true;"
+                               class="input-common">
+                        <div class="goodsCategory one" v-show="categoryInfo.is_show_1 && categoryInfo.is_show">
+                            <ul>
+                                <li class="js-category-one" :class="{selected:categoryInfo.index1==item.id}" v-for="item in categoryList" @click.stop="selectCategory(1,item)">
+                                    <span>{{item.category_name}}</span>
+                                    <i class="fa fa-angle-right fa-lg"></i>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="goodsCategory two" style="border-left:0;" v-show="categoryInfo.is_show_2 && categoryInfo.is_show">
+                            <ul id="goodsCategoryTwo">
+                                <li class="js-category-two" :class="{selected:categoryInfo.index2==item.id}" @click.stop="selectCategory(2,item)" v-for="item in categoryInfo.info2">{{item.category_name}}<i class="fa fa-angle-right fa-lg"></i></li>
+                            </ul>
+                        </div>
+                        <div class="goodsCategory three" v-show="categoryInfo.is_show_3 && categoryInfo.is_show">
+                            <ul id="goodsCategoryThree">
+                                <li class="js-category-three" :class="{selected:categoryInfo.index3==item.id}" @click.stop="selectCategory(3,item)" v-for="item in categoryInfo.info3">{{item.category_name}}<i class="fa fa-angle-right fa-lg"></i></li>
+                            </ul>
+                        </div>
+                        <div class="selectGoodsCategory" :class="{selectGoodsCategory2:categoryInfo.is_show_2,selectGoodsCategory3:categoryInfo.is_show_3}" v-show="categoryInfo.is_show">
+                            <a href="javascript:;" id="confirmSelect" style="float:right;" @click="hideCategory()">确认选择</a>
+                        </div>
+
+                        商品名称：<input id="goods_name" class="input-medium input-common" type="text" value=""
+                                    placeholder="要搜索的商品名称">
+                        上下架
+                        <select id="state" class="select-common">
+                            <option value="1" {if condition="$status eq 1"}selected{/if}>出售中</option>
+                            <option value="0" {if condition="$status eq 0"}selected{/if}>仓库中</option>
+                            <option value="-1" {if condition="$status eq -1"}selected{/if}>回收站</option>
+                        </select>
+                        <input type="button" @click="searchData()" value="搜索" class="btn-common"/>
+                    </th>
+                </tr>
+            </table>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane active">
+                    <table class="table table-striped table-main" border="0" v-if="is_show">
+                        <colgroup>
+                            <col width="3%">
+                            <col width="35%">
+                            <col width="12%">
+                            <col width="6%">
+                            <col width="6%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="15%">
+                        </colgroup>
+                        <tbody>
+                        <tr class="table-title">
+                            <th></th>
+                            <th>商品名称</th>
+                            <th>价格（元）</th>
+                            <th>总库存</th>
+                            <th>销量</th>
+                            <th>上下架</th>
+                            <th>排序</th>
+                            <th style="text-align:center;">操作</th>
+                        </tr>
+                        <tr class="trcss">
+                            <td colspan="5">
+                                <input @change="checkAll()" type="checkbox" id="check_all">
+                                <span style="display: inline-block; margin-left: 0px; margin-right: 10px;font-weight: 400;">全选</span>
+                                <a class="btn btn-small" @click="batchDelete()">批量删除</a>
+                                <a class="btn btn-small upstore" href="javascript:void(0)"
+                                   @click="goodsIdCount('online')">上架</a>
+                                <a class="btn btn-small downstore" href="javascript:void(0)"
+                                   @click="goodsIdCount('offline')">下架</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tbody id="productTbody" style="border: 0px;">
+                        <template v-for="item in goodsList">
+                            <tr class="tr-title" style=" width: 1502px;">
+                                <td><label><input type="checkbox" name="sub_use" v-model="item.check"></label></td>
+                                <td colspan="9" style="width: 97%;">
+                                    <div style="display: inline-block; width: 100%;" class="pro-code">
+                                        <span class="pro-code"
+                                              style="margin-left:10px;">创建时间：{{item.create_time}}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background: white;">
+                                    <div>
+                                        <a class="a-pro-view-img" href=""
+                                           style="width:70px;height:70px;line-height:70px;text-align:center;">
+                                            <img class="thumbnail-img" :src="item.pic_cover_small">
+                                        </a>
+                                        <div class="div-pro-view-name">
+                                            <a :href="'{:url('web/index/detail')}&list='+item.id" target="_blank" style="word-break:break-all;" v-text="item.title"></a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="background: white;">
+                                    <div class="priceaddactive">
+                                        <span class="price-lable">原&nbsp;&nbsp;&nbsp;价：</span><span class="price-numble"
+                                                                                                    style="color: #666;"
+                                                                                                    v-text="item.market_price"></span>
+                                    </div>
+                                    <div>
+                                        <span class="price-lable">销售价：</span><span class="price-numble"
+                                                                                   style="color:red;"
+                                                                                   v-text="item.price"></span>
+                                    </div>
+                                </td>
+                                <td style="background: white;">
+                                    <div class="cell"><span class="pro-stock" style="color: #666;"
+                                                            v-text="item.total"></span></div>
+                                </td>
+                                <td style="background: white;">
+                                    <div class="cell">
+                                        <span class="pro-stock" style="color: #666;" v-text="item.sales"></span>
+                                    </div>
+                                </td>
+                                <td style="background: white;">
+                                    <span v-if="item.status==1">已上架</span>
+                                    <span v-if="item.status==0">已下架</span>
+                                    <span v-if="item.status==2">赠品上架</span>
+                                </td>
+                                <td>
+                                    <span class="cell" v-text="item.sort"></span>
+                                </td>
+                                <td style="background: white;">
+                                    <div>
+                                        <div class="bs-docs-example tooltip-demo" style="text-align: center;">
+                                            <a href="javascript:;" @click="getUpdateUrl(item.id)">
+                                            <span class="edit" style="display: inline-block; width: 19%;">
+                                                <i class="icon-edit" style="width: initial;"></i>编辑
+                                            </span>
+                                            </a>
+                                            <a href="javascript:void(0)" v-if="item.status!=-1">
+                                            <span class="del" style="display: inline-block; width: 19%;" @click="delGood(item.id)">
+                                                <i class="icon-trash" style="width: initial;"></i>删除
+                                            </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="8" id="pagelist" style="text-align: center;"></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<!--<script type="text/javascript" src="__STATIC__/json/nav-bar.js"></script>-->
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<!--<script src="__STATIC__/admin/js/ns_common_base.js"></script>-->
+<!--<script src="__STATIC__/blue/js/ns_common_blue.js"></script>-->
+<div id="dialog"></div>
+<script type="text/javascript">
+    $(function () {
+        var goodsList = new Vue({
+            el: "#main",
+            data: {
+                goodsList: [],
+                page_index: 1,
+                start_date: '',
+                status: "{$status}",
+                end_date: '',
+                goods_name: '',
+                category_id_1: '',
+                category_id_2: '',
+                category_id_3: '',
+                categoryList:[],
+                categoryInfo:{
+                    is_show:false,
+                    is_show_1:true,
+                    is_show_2:false,
+                    is_show_3:false,
+                    info2:[],
+                    info3:[],
+                    index1:'',
+                    index2:'',
+                    index3:'',
+                    str:'',
+                    str1:'',
+                    str2:'',
+                    str3:''
+                },
+                is_show:true
+            },
+            created: function () {
+                // 商品分类
+                this.$http.post("{:url('platform/Goods/getGoodsCategoryList')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if(res.data.code==0){
+                        this.categoryList=res.data.data;
+                    }
+                }, function (res) {
+                    layer.alert('操作失败，请稍后重试', {icon: 6, title: '提示'});
+                });
+
+                this.getInfo();
+            },
+            methods: {
+                getInfo: function () {
+                    this.$http.post("{:url('goods/goodsList')}", {
+                            status: this.status,
+                            page_index: this.page_index,
+                            page_size: 10,
+                            start_date: this.start_date,
+                            end_date: this.end_date,
+                            goods_name: this.goods_name,
+                            category_id_1: this.category_id_1,
+                            category_id_2: this.category_id_2,
+                            category_id_3: this.category_id_3,
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.goodsList = res.data.data.data;
+                            // for(i=0;i<this.goodsList.length;i++){
+                            //     this.goodsList[i].check=true;
+                            // }
+                            // console.log(this.goodsList);
+                            // console.log(this.goodsList.data[0].city);
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage
+                                    , layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: res.data.data.total_count,
+                                    limit: goodsList.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: goodsList.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            goodsList.page_index = obj.curr;
+                                            goodsList.getInfo();
+
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                getUpdateUrl: function (index) {
+                    this.$http.post("{:url('index/getUrl')}", {type: 'updateGood', id: index},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.result == "OK") {
+                            location.href = res.data.url;
+                        }
+                    });
+                },
+                selectCategory:function (level,info) {
+                    if(level==1){
+                        if(info.child_list.length!=0){
+                            this.categoryInfo.index1=info.id;
+                            this.categoryInfo.index2='';
+                            this.categoryInfo.index3='';
+                            this.categoryInfo.info2=info.child_list;
+                            this.categoryInfo.is_show_2=true;
+                            this.categoryInfo.is_show_3=false;
+                            this.categoryInfo.str1=info.category_name+">>";
+                            this.categoryInfo.str=this.categoryInfo.str1;
+                        }
+                    }
+                    if(level==2){
+                        if(info.child_list.length!=0){
+                            this.categoryInfo.info3=info.child_list;
+                            this.categoryInfo.is_show_3=true;
+                        }
+                        this.categoryInfo.index2=info.id;
+                        this.categoryInfo.index3='';
+                        this.categoryInfo.str2=info.category_name+">>";
+                        this.categoryInfo.str=this.categoryInfo.str1+this.categoryInfo.str2;
+
+                    }
+                    if(level==3){
+                        this.categoryInfo.index3=info.id;
+                        this.categoryInfo.str3=info.category_name;
+
+                        this.categoryInfo.str=this.categoryInfo.str1+ this.categoryInfo.str2+ this.categoryInfo.str3;
+                    }
+                },
+                hideCategory:function () {
+                    this.categoryInfo.is_show=false;
+                    // this.categoryInfo.is_show_2=false;
+                    // this.categoryInfo.is_show_3=false;
+                },
+                searchData:function () {
+                    this.goods_name=$("#goods_name").val();
+                    this.status=$("#state").val();
+                    // this.status=this.status==''?"{$status}":this.status;
+                    this.page_index=1;
+                    this.category_id_1=this.categoryInfo.index1;
+                    this.category_id_2=this.categoryInfo.index2;
+                    this.category_id_3=this.categoryInfo.index3;
+                    // state
+                    this.getInfo();
+
+                },
+                checkAll:function () {
+
+                    var val=$("#check_all").is(':checked');
+
+                    for(i=0;i<this.goodsList.length;i++){
+                        this.goodsList[i].check=val;
+                    }
+                    this.is_show=false;
+                    this.is_show=true;
+                },
+                delGood:function (goods_ids) {
+                    //询问框
+                    layer.confirm('你确定要删除商品吗？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(){
+                        goodsList.$http.post("{:url('platform/Goods/deleteGoods')}", {goods_ids:goods_ids},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6},function () {
+                                    goodsList.getInfo();
+                                    layer.closeAll();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+
+
+                    });
+                },
+                batchDelete:function () {
+                    var goods_ids='';
+                    for(i=0;i<this.goodsList.length;i++){
+                        if(this.goodsList[i].check){
+                            if(goods_ids==''){
+                                goods_ids=this.goodsList[i].id;
+                            }else{
+                                goods_ids+=","+this.goodsList[i].id;
+                            }
+                        }
+                    }
+                    if(goods_ids==''){
+                        layer.alert("至少选择一件商品",{icon:5});
+                    }else{
+                        this.delGood(goods_ids);
+
+                    }
+                },
+                goodsIdCount:function (type) {
+                    var goods_ids='';
+                    for(i=0;i<this.goodsList.length;i++){
+                        if(this.goodsList[i].check){
+                            if(goods_ids==''){
+                                goods_ids=this.goodsList[i].id;
+                            }else{
+                                goods_ids+=","+this.goodsList[i].id;
+                            }
+                        }
+                    }
+                    if(goods_ids==''){
+                        layer.alert("至少选择一件商品",{icon:5});
+                    }else{
+                        if(type=="online"){
+                            this.$http.post("{:url('platform/Goods/modifyGoodsOnline')}", {goods_ids:goods_ids},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg,{icon:6},function () {
+                                        goodsList.getInfo();
+                                        layer.closeAll();
+                                    });
+                                }else{
+                                    layer.alert(res.data.msg,{icon:5});
+                                }
+                            });
+                        }else{
+                            this.$http.post("{:url('platform/Goods/modifyGoodsOffline')}", {goods_ids:goods_ids},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg,{icon:6},function () {
+                                        goodsList.getInfo();
+                                        layer.closeAll();
+                                    });
+                                }else{
+                                    layer.alert(res.data.msg,{icon:5});
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+        $("#main").click(function () {
+            goodsList.categoryInfo.is_show=false;
+            // goodsList.categoryInfo.is_show_1=false;
+            // goodsList.categoryInfo.is_show_2=false;
+            // goodsList.categoryInfo.is_show_3=false;
+
+        });
+    });
+</script>
+</body>
+</html>

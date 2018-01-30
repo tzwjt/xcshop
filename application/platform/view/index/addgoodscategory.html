@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script>
+        var PLATFORM_NAME = "{$platformInfo.platform_site_name}";
+        var ADMINIMG = "__STATIC__/admin/images";//后台图片请求路径
+        var ADMINMAIN = "index.php";//后台请求路径
+        var PAGESIZE = "20";//分页显示页数
+        var ROOT = "/xcshop";//根目录
+        var _STATIC = "__STATIC__";
+        //上传文件路径
+        var UPLOADGOODS = 'upload/goods/';//存放商品图片
+        var UPLOADGOODSSKU = 'upload/goods_sku/';//存放商品SKU
+        var UPLOADGOODSBRAND = 'upload/goods_brand/';//存放商品品牌图
+        var UPLOADGOODSGROUP = 'upload/goods_group/';////存放商品分组图片
+        var UPLOADGOODSCATEGORY = 'UPLOAD_GOODS_CATEGORY';////存放商品分类图片
+        var UPLOADCOMMON = 'upload/common/';//存放公共图片、网站logo、独立图片、没有任何关联的图片
+        var UPLOADAVATOR = 'upload/avator/';//存放用户头像
+        var UPLOADPAY = 'upload/pay/';//存放支付生成的二维码图片
+        var UPLOADADV = 'upload/advertising/';//存放广告位图片
+        var UPLOADEXPRESS = 'upload/express/';//存放物流图片
+        var UPLOADCMS = 'upload/cms/';//存放文章图片
+    </script>
+    <style>
+        .error {
+            padding: 5px 0 0;
+        }
+        .is_btn {
+            display: inline-block;
+            height: 30px;
+            width: 44px;
+            text-align: center;
+            background-color: #ECF0F1;
+            border-color: #BEC3C7;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .is_btn_yes {
+            border-radius: 4px 0 0 4px;
+            border-width: 1px 0 1px 1px;
+        }
+
+        .is_btn_no {
+            border-radius: 0 4px 4px 0;
+            border-width: 1px 1px 1px 0;
+        }
+
+        .is_btn_yes.active {
+            background-color: #0072D2;
+            border-color: #0072D2;
+            color: #fff;
+        }
+
+        .is_btn_no.active {
+            color: #FFF;
+            background-color: #96A6A6;
+            border-color: #808B8D;
+        }
+    </style>
+
+</head>
+<body>
+{include file="index/head"/}
+<article class="ns-base-article">
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+        <nav id="nav-list">
+            <ul>
+                <li class=""><a href="{:url('goodslist?type=1')}">出售中</a></li>
+                <li class=""><a href="{:url('goodslist?type=2')}">已售罄</a></li>
+                <li class=""><a href="{:url('goodslist?type=3')}">仓库中</a></li>
+                <li class=""><a href="{:url('goodslist?type=4')}">回收站</a></li>
+                <li class=""><a href="{:url('goodscategorylist')}">商品分类</a></li>
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    {if condition="$id eq ''"}
+                    添加商品分类
+                    {else/}
+                    编辑商品分类
+                    {/if}
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">
+                        {if condition="$id eq ''"}
+                        添加商品分类
+                        {else/}
+                        编辑商品分类
+                        {/if}
+                    </li>
+                </ul>
+            </nav>
+            <div class="right-side-operation">
+                <ul>
+                    <li style="display:none;"><a class="js-open-warmp-prompt"><i class="fa fa-bell"></i>提示</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main">
+            <div class="set-style">
+                <dl>
+                    <dt><span class="color-red">*</span>商品分类名称:</dt>
+                    <dd>
+                        <p><input id="category_name" type="text" placeholder="请输入商品分类" class="input-common"
+                                  v-model="category_name"/></p>
+                        <p class="error">商品分类不能为空，且长度不能超过30个字</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>上级分类:</dt>
+                    <dd>
+                        <select name="search_type" id="type" v-model="pid" class="select-common">
+                            <option value="0">顶级分类</option>
+                            {foreach name="category" item="vo"}
+                            <option value="{$vo.id}">{$vo.category_name}</option>
+                            {foreach name='$vo.child_list' item="vo1"}
+                            <option value="{$vo1.id}">&nbsp;&nbsp;&nbsp;&nbsp;{$vo1.category_name}</option>
+                            {/foreach}
+                            {/foreach}
+                        </select>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>是否推荐:</dt>
+                    <dd>
+                        <span class="is_btn is_btn_yes" :class="{active:is_recommand}" @click="is_recommand=(!is_recommand)">是</span><span class="is_btn is_btn_no" :class="{active:!is_recommand}" @click="is_recommand=(!is_recommand)">否</span>
+
+                        <!--<input id="isRecommand" type="checkbox" class="checkbox" checked="checked"-->
+                               <!--v-model="is_recommand"/>-->
+                        <!--<span class="help-inline" id="isRecommand_1" style="display: none;"></span>-->
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>是否可见:</dt>
+                    <dd>
+                        <span class="is_btn is_btn_yes" :class="{active:status}" @click="status=(!status)">是</span><span class="is_btn is_btn_no" :class="{active:!status}" @click="status=(!status)">否</span>
+
+                        <!--<input id="is_visible" type="checkbox" class="checkbox" checked="checked" v-model="status"/>-->
+                        <!--<span class="help-inline" id="is_menuPrompt" style="display: none;"></span>-->
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>排序:</dt>
+                    <dd>
+                        <p><input id="sort" type="text" placeholder="请输入序号" class="input-common" v-model="sort"/></p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>图片:</dt>
+                    <dd>
+                        <div class="class-logo"><p><img id="imglogo" :src="thumb"></p></div>
+                        <div class="upload-btn">
+				<span>
+					<input class="input-file" name="file_upload" id="uploadImg" type="file"
+                           onchange="imgUpload(this,'logo')">
+					<input type="hidden" id="logo"/>
+				</span>
+                            <p><i class="fa fa-cloud-upload"></i>上传图片</p>
+                        </div>
+                        <p class="hint"><br><span
+                                style="color:orange;">建议使用宽100像素*高50像素内的GIF或PNG透明图片；点击下方"提交"按钮后生效。</span></p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>描述:</dt>
+                    <dd>
+                        <p><textarea id="description" placeholder="请输入描述" class="input-common"
+                                     v-model="description"></textarea></p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd>
+                        <button class="btn-common btn-big" @click="addGoodsCategoryAjax();">提交</button>
+                    </dd>
+                </dl>
+            </div>
+
+        </div>
+    </section>
+</article>
+
+<!-- 公共的操作提示弹出框 common-success：成功，common-warning：警告，common-error：错误，-->
+<div class="common-tip-message js-common-tip">
+    <div class="inner"></div>
+</div>
+
+
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script src="__STATIC__/js/ajax_file_upload.js" type="text/javascript"></script>
+<script src="__STATIC__/js/file_upload.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/json/nav-bar.js"></script>
+<!--<script src="__STATIC__/admin/js/ns_common_base.js"></script>-->
+<script src="__STATIC__/blue/js/ns_common_blue.js"></script>
+<script src="__STATIC__/layer/layer.js"></script>
+<div id="dialog"></div>
+<script type="text/javascript">
+    var main='';
+    $(function () {
+        var vm = new Vue({
+            el: "#nav-list",
+            data: {
+                list: navBar[1],
+                type: -1
+            },
+            methods: {
+                changeUrl: function (url) {
+                    location.href = "../" + url;
+                }
+            }
+        });
+        main = new Vue({
+            el: ".ns-main",
+            data: {
+                id: '',
+                category_name: '',
+                thumb: '',
+                pid: 0,
+                is_recommand: true,
+                description: '',
+                sort: '',
+                status: true,
+                is_home:"",
+                adv_img:"",
+                adv_url:"",
+                list: []
+            },
+            methods: {
+                addGoodsCategoryAjax: function () {
+                    var url='';
+                    var json='';
+                    if("{$id}"==0){
+                        url="{:url('platform/Goods/addGoodsCategory')}";
+                        json={
+                            category_name: this.category_name,
+                            thumb: this.thumb,
+                            pid: this.pid,
+                            status: this.status ? 1 : 0,
+                            is_recommand: this.is_recommand ? 1 : 0,
+                            description: this.description,
+                            sort: this.sort
+                        };
+                    }else{
+                        url="{:url('platform/Goods/updateGoodsCategory')}";
+                        json={
+                            category_id:"{$id}",
+                            category_name: this.category_name,
+                            thumb: this.thumb,
+                            pid: this.pid,
+                            status: this.status ? 1 : 0,
+                            is_recommand: this.is_recommand ? 1 : 0,
+                            description: this.description,
+                            sort: this.sort,
+                            is_home:this.is_home,
+                            adv_img:this.adv_img,
+                            adv_url:this.adv_url
+                        };
+                    }
+                    this.$http.post(url,json,
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg, {icon: 6, title: '提示'},function () {
+                                location.href="{:url('goodscategorylist')}";
+                            });
+                        } else if (res.data.code == 1) {
+                            layer.alert(res.data.msg, {icon: 5, title: '提示'});
+                        } else {
+                            layer.alert(res.data.msg, {icon: 5, title: '提示'});
+                        }
+                    }, function (res) {
+                        layer.alert('操作失败，请稍后重试', {icon: 5, title: '提示'});
+                    });
+                }
+            },
+            created: function () {
+                this.$http.post("{:url('platform/Goods/getGoodsCategoryList')}",
+                        {},
+                        {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.list = res.data.data;
+                    }
+                }, function (res) {
+                });
+                if ("{$id}" != 0) {
+                    this.$http.post("{:url('platform/Goods/getGoodsCategoryDetail')}",
+                            {category_id: '{$id}'},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.category_name = res.data.data.category_name;
+                            this.thumb = res.data.data.thumb;
+                            this.pid = res.data.data.pid;
+                            this.status = res.data.data.status;
+                            this.is_recommand = res.data.data.is_recommand;
+                            this.description = res.data.data.description;
+                            this.sort = res.data.data.sort;
+                            this.is_home=res.data.data.is_home;
+                            this.adv_img=res.data.data.adv_img;
+                            this.adv_url=res.data.data.adv_url;
+
+                        } else {
+                            layer.alert("获取分类信息失败，请稍后重试", {icon: 6, title: '提示'});
+                        }
+                    }, function (res) {
+                        layer.alert("获取分类信息失败，请稍后重试", {icon: 6, title: '提示'});
+                    });
+
+
+                }
+            }
+        });
+        //顶部导航管理显示隐藏
+        $(".ns-navigation-title>span").click(function () {
+            $(".ns-navigation-management").slideUp(400);
+        });
+
+        $(".js-nav").toggle(function () {
+            $(".ns-navigation-management").slideDown(400);
+        }, function () {
+            $(".ns-navigation-management").slideUp(400);
+        });
+    });
+    //图片上传
+    function imgUpload(event) {
+        var fileid = $(event).attr("id");
+        var str = $(event).next().attr("id");
+        var data = {'file_path': UPLOADGOODSCATEGORY};
+        uploadFile(fileid, data, function (res) {
+            if (res.code==0) {
+                $("#img" + str).attr("src", res.data);
+                $("#" + str).val(res.data);
+                main.thumb=res.data;
+                layer.alert(res.msg, {icon: 6, title: '提示'});
+            } else {
+                main.thumb='';
+                layer.alert("图片上传失败", {icon: 6, title: '提示'});
+            }
+        }, "{:url('util/img_upload/uploadFile')}");
+    }
+</script>
+
+</body>
+</html>

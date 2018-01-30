@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+    <script type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <link href="__STATIC__/blue/css/order/ns_orderlist.css" rel="stylesheet" type="text/css"/>
+    <style>
+        .mytable.select td {
+            padding-bottom: 0;
+        }
+
+        .mytable.select div {
+            display: inline-block;
+            margin: 0 10px 10px 0;
+        }
+
+        .table-class tbody td a {
+            margin-left: 0;
+        }
+
+        .modal-body {
+            max-height: none;
+        }
+
+        .editprice-input {
+            width: 100px;
+        }
+
+        .pick_title {
+            float: left;
+            line-height: 32px;
+            width: 140px;
+            text-align: right;
+        }
+
+        .pick_title .required {
+            color: red;
+            margin-right: 10px;
+        }
+
+        textarea {
+            width: 350px;
+        }
+
+        #pickup_name, #pickup_mobile {
+            width: 350px;
+        }
+
+        .address_choice select {
+            width: 118px
+        }
+
+        .modal-backdrop {
+            background-color: #000000;
+        }
+        #order-count{
+            margin: 20px;
+            background: #0D84D4;
+            color:#fff;
+            padding: 5px 0;
+        }
+        #order-count span{
+            display: inline-block;
+            padding: 5px 20px;
+            width:160px;
+        }
+        [v-cloak]{
+            display: none;
+        }
+        a{
+            color:#0072D2;
+        }
+
+    </style>
+
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+            <nav>
+                <ul>
+                    {foreach item="vo" name="module_second"}
+
+                    <li {if condition="$vo['selected'] eq true"}
+                        class='selected'
+                        {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                    {/foreach}
+                    <!--<li class="selected" onclick="location.href='{:url('orderlist')}'">-->
+                        <!--订单列表-->
+                    <!--</li>-->
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        订单列表
+                    </div>
+                </div>
+            </div>
+            <div id="order-count">
+                <span>全部的订单数: {{orderCountInfo.all}}</span>
+                <span>待付款的订单数: {{orderCountInfo.daifukuan}}</span>
+                <span>待发货的订单数: {{orderCountInfo.daifahuo}}</span>
+                <span>已发货的订单数: {{orderCountInfo.yifahuo}}</span>
+                <span>已收货的订单数: {{orderCountInfo.yishouhuo}}</span>
+                <span>已完成的订单数: {{orderCountInfo.yiwancheng}}</span>
+                <span>已关闭的订单数: {{orderCountInfo.yiguanbi}}</span>
+                <span>退款中的订单数: {{orderCountInfo.tuikuanzhong}}</span>
+                <span>平台订单数: {{orderCountInfo.platform_order_count}}</span>
+                <span>代理商订单数: {{orderCountInfo.agent_order_count}}</span>
+            </div>
+
+            <!--<div style="position:relative;margin:10px 0;">-->
+                <!--&lt;!&ndash; 三级导航菜单 &ndash;&gt;-->
+                <!--<div class="right-side-operation">-->
+                    <!--<ul>-->
+                        <!---->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="ns-main">
+                <div style="border:1px solid #e5e5e5;">
+                    <table class="mytable select">
+                        <tr>
+                            <td>
+                                <div>
+                                    <span>下单时间：</span>
+                                    <input type="text" id="startDate" class="input-common w100" placeholder="请选择开始日期"
+                                           onclick="WdatePicker()" v-model="search_info.start_date"/>
+                                    &nbsp;-&nbsp;
+                                    <input type="text" id="endDate" placeholder="请选择结束日期" class="input-common w100"
+                                           onclick="WdatePicker()" v-model="search_info.end_date"/>
+                                </div>
+                                <div>
+                                    <span>会员账号：</span>
+                                    <input  class="input-common w60" type="text"
+                                            v-model="search_info.login_phone"/>
+                                </div>
+                                <div>
+                                    <span>收货人姓名：</span>
+                                    <input id="userName" class="input-common w60" type="text"
+                                           v-model="search_info.receiver_name"/>
+                                </div>
+                                <div>
+                                    <span>订单编号：</span>
+                                    <input id="orderNo" class="input-common w100" type="text"
+                                           v-model="search_info.order_no"/>
+                                </div>
+                                <div>
+                                    <span>收货人手机号：</span>
+                                    <input id="receiverMobile" class="input-common w100" type="text"
+                                           v-model="search_info.receiver_mobile"/>
+                                </div>
+                                <div>
+                                    <span>支付方式：</span>
+                                    <select id="payment_type" class="select-common w100"
+                                            v-model="search_info.payment_type">
+                                        <option value="">全部</option>
+                                        <option value="1">微信</option>
+                                        <option value="2">支付宝</option>
+                                    </select>
+                                    <input class="btn-common" type="button" @click="searchData()" value="搜索"/>
+                                    <input class="btn-common" type="button" @click="orderDataExcel()" value="导出数据"/>
+
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="divider"></div>
+                    <nav class="order-nav">
+                        <ul>
+                            <li :class="{selected:search_info.order_status==''}" @click="searchStatus('')">
+                                全部
+                            </li>
+                            <li :class="{selected:search_info.order_status=='0'}" @click="searchStatus('0')">
+                                待付款
+                            </li>
+                            <li :class="{selected:search_info.order_status==1}" @click="searchStatus(1)">
+                                待发货
+                            </li>
+                            <li :class="{selected:search_info.order_status==2}" @click="searchStatus(2)">
+                                已发货
+                            </li>
+                            <li :class="{selected:search_info.order_status==3}" @click="searchStatus(3)">
+                                已收货
+                            </li>
+                            <li :class="{selected:search_info.order_status==4}" @click="searchStatus(4)">
+                                已完成
+                            </li>
+                            <li :class="{selected:search_info.order_status==5}" @click="searchStatus(5)">
+                                已关闭
+                            </li>
+                            <li :class="{selected:search_info.order_status==-1}" @click="searchStatus(-1)">
+                                退款中
+                            </li>
+                            <table class="mytable" style="float:right;width: inherit;" v-if="search_info.order_status==5">
+                                <tbody><tr>
+                                    <td>
+                                        <a class="btn btn-small fa-a" @click="batchDelete()" style="padding: 5px 10px!important;">
+                                            <i class="fa fa-trash"></i>
+                                            <span>批量删除</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody></table>
+                        </ul>
+                        <hr style="border-top:1px solid #e5e5e5;margin:0;"/>
+                        <div class="order-tool">
+                            <input type="checkbox" @change="checkAll()" id="checkAll">
+                            <label for="checkAll">全选</label>
+                        </div>
+                        <!--order_status-->
+                    </nav>
+
+                    <table class="table-class">
+                        <colgroup>
+                            <col width="25%">
+                            <col width="15%">
+                            <col width="10%">
+                            <col width="15%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="15%">
+                        </colgroup>
+                        <thead>
+                        <tr align="center">
+                            <th>商品信息</th>
+                            <th>商品清单</th>
+                            <th>买家</th>
+                            <th>收货信息</th>
+                            <th>订单金额</th>
+                            <th>交易状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table-list">
+                        <template v-for="(item,index) in orderList">
+                            <tr class="title-tr">
+                                <td colspan="7">
+                                    <input type="checkbox" :value="item.id" name="sub">
+                                    <span>订单编号：{{item.order_no}} 交易号：{{item.out_trade_no}}</span><span>下单时间：{{item.create_time}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-img"><img
+                                            :src="item.order_item_list[0].picture.pic_cover_small"></div>
+                                    <div class="product-infor"><a
+                                            target="_blank" :href="'{:url('web/index/detail')}&list='+item.order_item_list[0].goods_id">{{item.order_item_list[0].goods_name}}</a>
+                                    </div>
+                                </td>
+                                <td style="text-align:center;">
+                                    <div class="cell" style="display: inline-block;"><span>{{item.order_item_list[0].price}}元</span>
+                                    </div>
+                                    <div class="cell">{{item.order_item_list[0].num}}件</div>
+                                    <a v-if="item.order_item_list[0].refund_status!=0" :href="'{:url('order_refund_detail')}&order_goods_id='+item.order_item_list[0].id" style="margin:5px 0 10px 0;display:block;color:#0072D2;">{{item.order_item_list[0].status_name}}</a>
+                                </td>
+                                <td :rowspan="item.order_item_list.length" style="text-align:center">
+                                    <div class="cell">{{item.user_name}}</div>
+                                </td>
+                                <td :rowspan="item.order_item_list.length" style="text-align:center">
+                                    <div style="text-align:left;"><span class="expressfee">{{item.receiver_name}}</span><br><span
+                                            class="expressfee">{{item.receiver_mobile}}</span><br><span
+                                            class="expressfee">{{item.receiver_province_name}}{{item.receiver_city_name}}{{item.receiver_district_name}}{{item.receiver_address}}</span>
+                                    </div>
+                                </td>
+                                <td :rowspan="item.order_item_list.length" style="text-align:center">
+                                    <div class="cell"><b class="netprice"
+                                                         style="color:#666;">¥{{item.pay_money}}</b><br><span
+                                            class="expressfee">(含快递:¥{{item.shipping_money}})</span><br><span
+                                            class="expressfee">{{item.pay_type_name==''?'':item.pay_type_name}}</span>
+                                    </div>
+                                </td>
+                                <td :rowspan="item.order_item_list.length">
+                                    <div class="business-status" style="text-align:center">{{item.status_name}}<br>
+                                    </div>
+                                </td>
+                                <td :rowspan="item.order_item_list.length" style="text-align:center;">
+                                    <a style="display:block;margin-bottom:10px;color:#0072D2"
+                                       :href="'{:url('orderdetail')}'+'&order_id='+item.id">订单详情</a>
+                                    <a style="display:block;margin-bottom:10px;" :style="{color:item1.color}"
+                                       v-for="(item1,index1) in item.operation" @click="operation(item1.no,item.id)">{{item1.name}}</a>
+                                    <a style="display:block;margin-bottom:10px;color:#5bb75b"
+                                       @click="operation('confirm_receipt',item.id)" v-if="item.order_status==3">订单完成</a>
+                            </tr>
+                            <tr v-for="(item1,index1) in item.order_item_list" v-if="index1!=0">
+                                <td>
+                                    <div class="product-img"><img :src="item1.picture.pic_cover_small"></div>
+                                    <div class="product-infor"><a target="_blank" :href="'{:url('web/index/detail')}&list='+item1.goods_id">{{item1.goods_name}}</a>
+                                    </div>
+                                </td>
+                                <td style="text-align:center;">
+                                    <div class="cell" style="display: inline-block;"><span>{{item1.price}}元</span></div>
+                                    <div class="cell">{{item1.num}}件</div>
+                                    <a v-if="item1.refund_status!=0" :href="'{:url('order_refund_detail')}&order_goods_id='+item1.id" style="margin:5px 0 10px 0;display:block;color:#0072D2;">{{item1.status_name}}</a>
+
+                                </td>
+                            </tr>
+                        </template>
+                        <tr>
+                            <td colspan="7" style="text-align: center" id="pagelist"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </article>
+    <!--发货模板-->
+    <div class="modal hide fade" id="Delivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true" style="left:32%">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3>商品发货</h3>
+                </div>
+                <div class="modal-body">
+                    <!-- 主要内容 -->
+                    <div>待发货(<span id="no_shipping_num">{{deliverAllLength}}</span>)，已选<span id="checkedbox">{{deliverLength}}</span></div>
+                    <table class="table table-hover" style="margin-bottom:10px;">
+                        <thead>
+                        <tr>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td>商品</td>
+                            <td>数量</td>
+                            <td>物流 | 单号</td>
+                            <td>状态</td>
+                        </tr>
+                        </thead>
+                        <colgroup>
+                            <col style="width: 5%;">
+                            <col style="width: 40%;">
+                            <col style="width: 10%;">
+                            <col style="width: 30%;">
+                            <col style="width: 15%;">
+                        <colgroup>
+                        <tbody>
+                        <tr v-for="item in deliveryInfo.order_goods_list">
+                            <td><label class="checkbox-inline"><input type="checkbox" v-model="item.check" @click="deliver_select_length()"></label></td>
+                            <td><a>{{item.goods_name}}</a></td>
+                            <td>{{item.num}}</td>
+                            <td>{{item.express_info.express_company}}&nbsp;{{item.express_info.express_no}}</td>
+                            <td>{{item.shipping_status_name}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <div style="margin-bottom:5px;">发货方式：</div>
+                        <label class="checkbox-inline" style="float:left;margin-right:30px;">
+                            <input type="radio" name="shipping_type" value="0" v-model="deliveryAjaxInfo.shipping_type">无需物流</label>
+                        <label class="checkbox-inline" style="float:left;">
+                            <input type="radio" name=shipping_type value="1" v-model="deliveryAjaxInfo.shipping_type"> 需要物流</label>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <div class="form-group" id="express_input">
+                        <select class="form-control input-lg" id="divlogistics_express_company"
+                                style="margin-bottom:5px;margin-right:15px;float:left;" v-model="deliveryAjaxInfo.express_index">
+                            <option value="-1">请选择快递公司</option>
+                            <option v-for="(item,index) in deliveryInfo.express_company_list" :value="index">{{item.company_name}}</option>
+                        </select>
+                        <div class="col-lg-2"><input type="text" id="divlogistics_express_no" class="form-control"
+                                                     placeholder="请填写快递单号" style="height:19px;" v-model="deliveryAjaxInfo.express_no"></div>
+                    </div>
+                    <div id="receiver_info">收货信息：<span v-html="deliveryInfo.order_info.address"></span>&nbsp;&nbsp;{{deliveryInfo.order_info.receiver_name}}&nbsp;&nbsp;{{deliveryInfo.order_info.receiver_mobile}}</div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="delivery_order_id"/>
+                    <button class="btn btn-primary" @click="orderDeliverySubmit()">提交更改</button>
+                    <button class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 修改收货地址模态 -->
+    <div class="modal hide fade" id="update_address" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-left:-365px; width: 700px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3>修改收货地址</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="pick_title"><span class="required">*</span>收货人：</div>
+                        <div class="col-lg-4"><input type="text" id="receiver_name" v-model="updateAddressInfo.receiver_name" class="form-control" style="width:350px"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="pick_title"><span class="required">*</span>收货人手机号：</div>
+                        <div class="col-lg-4"><input type="text" id="receiver_mobile" v-model="updateAddressInfo.receiver_mobile" class="form-control" style="width:350px"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="pick_title">收货人邮编：</div>
+                        <div class="col-lg-4"><input type="text" id="receiver_zip" v-model="updateAddressInfo.receiver_zip" class="form-control" style="width:350px"></div>
+                    </div>
+                    <div class="form-group" style="width:100%;overflow:hidden;margin-bottom: 15px;">
+                        <div class="pick_title"><span class="required">*</span>收货地址：</div>
+                        <div class="address_choice">
+                            <select name="province" id="seleAreaNext" v-model="updateAddressInfo.receiver_province" @change="getCity()">
+                                <option value="0">请选择省</option>
+                                <option :value="item.id" v-for="item in updateAddress.province">{{item.province_name}}</option>
+                            </select>
+                            <select name="city" id="seleAreaThird" v-model="updateAddressInfo.receiver_city" @change="getDistrict()">
+                                <option value="0">请选择市</option>
+                                <option :value="item.id" v-for="item in updateAddress.city">{{item.city_name}}</option>
+                            </select>
+                            <select name="district" id="seleAreaFouth" v-model="updateAddressInfo.receiver_district">
+                                <option value="0">请选择区/县</option>
+                                <option :value="item.id" v-for="item in updateAddress.district">{{item.district_name}}</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="pick_title"><span class="required">*</span>详细地址：</div>
+                        <div class="col-lg-4"><input type="text" v-model="updateAddressInfo.receiver_address" id="address_detail" class="form-control" style="width:350px"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="hidden" id="update_address_id" />
+                    <button type="button" class="btn btn-primary" @click="updateAddressSubmit()">修改</button>
+                    <button type="button" class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 提货模态 -->
+    <div class="modal hide fade" id="pickup-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-left:-365px;width:500px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3>提货信息填写</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="pick_title"><span class="required">*</span>提货人：</div>
+                        <div class="col-lg-4"><input type="text" v-model="pickupInfo.buyer_name" class="form-control" style="width:250px"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="pick_title"><span class="required">*</span>手机号：</div>
+                        <div class="col-lg-4"><input type="text" v-model="pickupInfo.buyer_phone" class="form-control" style="width:250px"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="pick_title">备注：</div>
+                        <div class="col-lg-4"><textarea v-model="pickupInfo.remark" class="form-control" style="width:260px;height:80px;"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="setPickup()">确定</button>
+                    <button type="button" class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dialog"></div>
+<!-- 备注模态框（Modal） -->
+<div class="modal fade hide" id="Memobox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     style="width:700px;left:45%;top:30%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>备注信息</h3>
+            </div>
+            <div class="set-style">
+                <dl>
+                    <dt><span class="required">*</span>备注:</dt>
+                    <dd>
+                        <p>
+                            <textarea rows="3" cols="20" id="memo"></textarea>
+                        </p>
+                        <p class="error">请输入备注</p>
+                    </dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addMemoAjax()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 修改价格模态框（Modal） -->
+<div id="edit-price" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="width: 650px;overflow: overlay;">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-right: 10px;">×
+        </button>
+        <h3 id="H1">修改价格</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-striped table-main table-order-header">
+            <colgroup>
+                <col style="width: 40%;">
+                <col style="width: 20%;">
+                <col style="width: 25%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>商品信息</td>
+                <td>商品清单</td>
+                <td>
+                    <div class="editprice-tiptxt">涨价或减价<i class="icon-tip"></i>
+                        <p class="text-tip">-表示减价<i class="icon-down-pic"></i></p>
+                    </div>
+                </td>
+                <td>邮费</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-order-list">
+            <colgroup>
+                <col style="width: 40%;">
+                <col style="width: 20%;">
+                <col style="width: 25%;">
+                <col style="width: 15%;">
+            </colgroup>
+
+            <tbody id="OrderCommodity"></tbody>
+        </table>
+        <ul class="edit-price-amountpay">
+            <li>
+                <span class="amountpay-label">商品总价：</span>
+                <span class="amountpay-price" id="goodsmoney"></span>元&nbsp;&nbsp;&nbsp;
+                <span class="amountpay-label">商品优惠：</span>
+                <span class="amountpay-price" id="discountmoney"></span>元&nbsp;&nbsp;&nbsp;
+                <span class="amountpay-label">运费：</span>
+                <span class="amountpay-price" id="modifiedFreight"></span>元
+            </li>
+            <li>
+                <div>
+                    实收款： <span class="amountpay-price reality-price" id="changeTotal"></span>元
+                    <input type="hidden" id="hiedchangeTotal"/>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" onclick="updPrice()" id="butSubmit" data-dismiss="modal" aria-hidden="true">保存
+        </button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                orderList: {},
+                pageData: {
+                    page_index: 1,
+                    page_size: 10,
+                    start_date: '',
+                    end_date: '',
+                    login_phone: '',
+                    receiver_name: '',
+                    receiver_mobile: '',
+                    order_no: '',
+                    order_status: '',
+                    payment_type: '',
+                },
+                totalPage: '',
+                totalCount: '',
+                page_size: 10,
+                search_info: {
+                    start_date: '',
+                    end_date: '',
+                    login_phone: '',
+                    receiver_name: '',
+                    receiver_mobile: '',
+                    order_no: '',
+                    order_status: '',
+                    payment_type: ''
+                },
+                now_order_id: '',
+                deliveryInfo: {order_info:{
+                    address:'',
+                    receiver_name:'',
+                    receiver_mobile:''
+                }},
+                deliveryAjaxInfo:{},
+                deliverLength:0,
+                deliverAllLength:0,
+                updateAddress:{
+                    province:[],
+                    city:[],
+                    district:[]
+                },
+                updateAddressInfo:{},
+                pickupInfo:{},
+                orderCountInfo:{}//订单统计信息
+            },
+            mounted: function () {
+                this.getOrderInfo(1);
+                this.$http.post("{:url('platform/Order/getOrderCount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.orderCountInfo=res.data.data;
+                    }
+                });
+
+            },
+            methods: {
+                setPickup:function () {
+                    if(this.pickupInfo.buyer_name==''){
+                        layer.alert("请填写提货人姓名",{icon:5});
+                        return;
+                    }
+                    if(this.pickupInfo.buyer_phone==''){
+                        layer.alert("请填写提货人手机号",{icon:5});
+                        return;
+                    }
+                    this.$http.post("{:url('platform/Order/pickupOrder')}", this.pickupInfo,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6});
+                            $("#pickup-modal").modal("hide");
+                            this.getOrderInfo(1);
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+
+                        }
+                    });
+
+
+                },
+                checkAll:function () {
+                    var val=$("#checkAll").is(":checked");
+                    $("#table-list input:checkbox").attr("checked",val);
+                },
+                getOrderInfo: function (type) {
+                    $("#table-list input:checkbox").attr("checked",false);
+                    $("#checkAll").attr("checked",false);
+                    if (type != 1)
+                        layer.load();
+                    this.$http.post("{:url('platform/Order/orderList')}", this.pageData,
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.orderList = res.data.data.data;
+                            this.totalPage = res.data.data.page_count;
+                            this.totalCount = res.data.data.total_count;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage
+                                        , layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: vueMain.totalCount,
+                                    limit: vueMain.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: vueMain.pageData.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.pageData.page_index = obj.curr;
+                                            vueMain.getOrderInfo();
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                        layer.closeAll('loading');
+                    });
+                },
+                searchData: function () {
+                    this.search_info.start_date = $("#startDate").val();
+                    this.search_info.end_date = $("#endDate").val();
+                    this.pageData = {
+                        page_index: 1,
+                        page_size: 10,
+                        start_date: this.search_info.start_date == "" ? "" : this.search_info.start_date + " 00:00:00",
+                        end_date: this.search_info.end_date == "" ? "" : this.search_info.end_date + " 23:59:59",
+                        login_phone: this.search_info.login_phone,
+                        receiver_name: this.search_info.receiver_name,
+                        receiver_mobile: this.search_info.receiver_mobile,
+                        order_no: this.search_info.order_no,
+                        order_status: this.search_info.order_status,
+                        payment_type: this.search_info.payment_type,
+                    };
+                    this.getOrderInfo();
+                },
+                searchStatus: function (status) {
+                    this.search_info = {
+                        start_date: '',
+                        end_date: '',
+                        login_phone: '',
+                        receiver_name: '',
+                        receiver_mobile: '',
+                        order_no: '',
+                        order_status: status,
+                        payment_type: ''
+                    }
+
+                    this.pageData={
+                        page_index: 1,
+                            page_size: 10,
+                            start_date: '',
+                            end_date: '',
+                            login_phone: '',
+                            receiver_name: '',
+                            receiver_mobile: '',
+                            order_no: '',
+                            order_status: status,
+                            payment_type: '',
+                    };
+                    this.getOrderInfo();
+                },
+                operation: function (type, order_id) {
+                    // alert(type);
+                    switch (type) {
+                        case "pay":
+                            orderOffLinePay(order_id);
+                            break;
+                        case "close":
+                            orderClose(order_id);
+                            break;
+                        case "seller_memo":
+                            orderSellerMemo(order_id);//备注
+                            break;
+                        case "adjust_price":
+                            modifyPrice(order_id);//修改价格
+                            break;
+                        case "delivery":
+                            this.orderDelivery(order_id);//发货
+                            break;
+                        case "update_address":
+                            this.show_addresss_modal(order_id);//修改地址
+                            break;
+                        case "getdelivery":
+                            this.getDelivery(order_id);//确认收货
+                            break;
+                        case "confirm_receipt":
+                            this.confirmReceipt(order_id);
+                            break;
+                        case "delete_order":
+                            this.delete_order(order_id);
+                            break;
+                        case "pickup":
+                            this.pickupInfo={
+                                order_id:order_id,
+                                buyer_name:'',
+                                buyer_phone:'',
+                                remark:''
+                            };
+                            $("#pickup-modal").modal("show");
+                            break;
+
+                    }
+                },
+                delete_order:function (order_id) {
+                    layer.confirm('你确定删除订单吗？', {
+                        btn: ['确定','关闭'] //按钮
+                    }, function(){
+                        vueMain.$http.post("{:url('platform/Order/deleteOrder')}", {'order_id': order_id},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6});
+                                this.getOrderInfo(1);
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    });
+                },
+                batchDelete:function () {
+                    var order_id='';
+                    $("#table-list input:checkbox[checked]").each(function () {
+                        if(order_id==''){
+                            order_id=$(this).val();
+                        }else{
+                            order_id+=","+$(this).val();
+                        }
+                    });
+                    // alert(order_id);
+                    this.delete_order(order_id);
+                },
+                confirmReceipt:function (order_id) {
+
+                    layer.confirm('你确定该订单已完成吗？', {
+                        btn: ['确定','关闭'] //按钮
+                    }, function(){
+                        vueMain.$http.post("{:url('platform/order/orderComplete')}", {'order_id': order_id},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6});
+                                this.getOrderInfo(1);
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+
+                            }
+                        });
+                    });
+                },
+                getDelivery:function (order_id) {
+                    layer.confirm('你确定要确认收货吗？', {
+                        btn: ['确定','关闭'] //按钮
+                    }, function(){
+                            vueMain.$http.post("{:url('platform/order/orderTakeDelivery')}", {'order_id': order_id},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg,{icon:6});
+                                    this.getOrderInfo(1);
+                                }else{
+                                    layer.alert(res.data.msg,{icon:5});
+
+                                }
+                            });
+                    });
+                },
+                orderDelivery: function (order_id) {
+                    this.$http.post("{:url('platform/order/orderDeliveryData')}", {'order_id': order_id},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.deliveryInfo=res.data.data;
+                            this.deliverAllLength=this.deliveryInfo.order_goods_list.length;
+                            this.deliveryAjaxInfo={
+                                order_id:this.deliveryInfo.order_info.id,
+                                order_goods_id_array:'',
+                                express_index:-1,
+                                express_company_id:'',
+                                express_name:'',
+                                express_no:'',
+                                shipping_type:0
+                            };
+                            $("#Delivery").modal('show');
+                        }
+                    });
+                },
+                deliver_select_length:function(){
+                    var length=0;
+                    for(i=0;i<this.deliveryInfo.order_goods_list.length;i++){
+                        if(this.deliveryInfo.order_goods_list[i].check){
+                            length++;
+                        }
+                    }
+                    this.deliverLength=length;
+                },
+                orderDeliverySubmit:function(){
+                    this.deliveryAjaxInfo.order_goods_id_array='';
+                    for(i=0;i<this.deliveryInfo.order_goods_list.length;i++){
+                        if(this.deliveryInfo.order_goods_list[i].check){
+                            if(this.deliveryAjaxInfo.order_goods_id_array==''){
+                                this.deliveryAjaxInfo.order_goods_id_array=this.deliveryInfo.order_goods_list[i].id;
+                            }else{
+                                this.deliveryAjaxInfo.order_goods_id_array+=","+this.deliveryInfo.order_goods_list[i].id;
+                            }
+                        }
+                    }
+                    if(this.deliveryAjaxInfo.order_goods_id_array==''){
+                        layer.msg("至少选择一件商品...");
+                        return;
+                    }
+                    if(this.deliveryAjaxInfo.shipping_type==1){
+                        if(this.deliveryAjaxInfo.express_index==-1){
+                            layer.msg("请选择快递公司...");
+                            return;
+                        }else{
+                            this.deliveryAjaxInfo.express_company_id=this.deliveryInfo.express_company_list[this.deliveryAjaxInfo.express_index].id;
+                            this.deliveryAjaxInfo.express_name=this.deliveryInfo.express_company_list[this.deliveryAjaxInfo.express_index].company_name;
+                        }
+                        if(this.deliveryAjaxInfo.express_no==""){
+                            layer.msg("请填写快递单号...");
+                            return;
+                        }
+                    }
+                    this.$http.post("{:url('platform/order/orderDelivery')}", this.deliveryAjaxInfo,
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.getOrderInfo(1);
+                            layer.alert(res.data.msg,{icon:6},function(){
+                                $("#Delivery").modal("hide");
+                                layer.closeAll();
+                            });
+                        }
+                    });
+                },
+                show_addresss_modal:function(order_id){
+                    this.$http.post("{:url('platform/order/getOrderUpdateAddress')}", {order_id:order_id},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            info=res.data.data;
+                            this.$http.post("{:url('platform/order/getProvince')}", {},
+                                    {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    this.updateAddress.province=res.data.data;
+                                    this.$http.post("{:url('platform/order/getCity')}", {province_id:info.receiver_province},
+                                            {emulateJSON: true}).then(function (res) {
+                                        if (res.data.code == 0) {
+                                            this.updateAddress.city=res.data.data;
+                                            this.$http.post("{:url('platform/order/getDistrict')}", {city_id:info.receiver_city},
+                                                    {emulateJSON: true}).then(function (res) {
+                                                if (res.data.code == 0) {
+                                                    this.updateAddress.district=res.data.data;
+                                                    this.updateAddressInfo=info;
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    $("#update_address").modal("show");
+                },
+                getCity:function(){
+                    if(this.updateAddressInfo.receiver_province==0){
+                        return;
+                    }
+                    this.$http.post("{:url('platform/order/getCity')}", {province_id:this.updateAddressInfo.receiver_province},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.updateAddress.city = res.data.data;
+                            this.updateAddressInfo.receiver_city=0;
+                            this.updateAddressInfo.receiver_district=0;
+                            this.updateAddress.district=[];
+                        }
+                    });
+                },
+                getDistrict:function(){
+                    if(this.updateAddressInfo.receiver_city==0){
+                        return;
+                    }
+                    this.$http.post("{:url('platform/order/getDistrict')}", {city_id:this.updateAddressInfo.receiver_city},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.updateAddress.district=res.data.data;
+                            this.updateAddressInfo.receiver_district=0;
+                        }
+                    });
+                },
+                updateAddressSubmit:function(){
+                    if(this.updateAddressInfo.receiver_name==''){
+                        layer.msg("请填写收货人姓名",{shade: [0.8, '#393D49']});
+                        return;
+                    }
+                    if(this.updateAddressInfo.receiver_mobile==''){
+                        layer.msg("请填写收货人手机号",{shade: [0.8, '#393D49']});
+                        return;
+                    }
+                    var myreg=/^[1][0-9]{10}$/;
+                    if (!myreg.test(this.updateAddressInfo.receiver_mobile)) {
+                        layer.msg("手机号码格式不正确",{shade: [0.8, '#393D49']});
+                        return;
+                    }
+                    if(this.updateAddressInfo.receiver_province<=0 || this.updateAddressInfo.receiver_city<=0 || this.updateAddressInfo.receiver_district<=0 || this.updateAddressInfo.receiver_address==''){
+                        layer.msg("请填写完整的地址信息",{shade: [0.8, '#393D49']});
+                        return;
+                    }
+                    this.$http.post("{:url('platform/order/updateOrderAddress')}", this.updateAddressInfo,
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6,shade: [0.8, '#393D49']},function(){
+                                $("#update_address").modal("hide");
+                                layer.closeAll();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:6,shade: [0.8, '#393D49']});
+                        }
+                    });
+                },
+                orderDataExcel:function () {
+                    var urlStr='';
+                    if(this.pageData.start_date!=''){
+                        urlStr+="&start_data="+this.pageData.start_date;
+                    }
+                    if(this.pageData.end_date!=''){
+                        urlStr+="&end_date="+this.pageData.end_date;
+                    }
+                    if(this.pageData.login_phone!=''){
+                        urlStr+="&login_phone="+this.pageData.login_phone;
+                    }
+                    if(this.pageData.receiver_name!=''){
+                        urlStr+="&receiver_name="+this.pageData.receiver_name;
+                    }
+                    if(this.pageData.receiver_mobile!=''){
+                        urlStr+="&receiver_mobile="+this.pageData.receiver_mobile;
+                    }
+                    if(this.pageData.order_no!=''){
+                        urlStr+="&order_no="+this.pageData.order_no;
+                    }
+                    if(this.pageData.order_status!=''){
+                        urlStr+="&order_status="+this.pageData.order_status;
+                    }
+                    if(this.pageData.payment_type!=''){
+                        urlStr+="&payment_type="+this.pageData.payment_type;
+                    }
+                    location.href="{:url('platform/Order/orderDataExcel')}"+ urlStr;
+                }
+            }
+        });
+    });
+    //显示对话框
+    function showMessage(type, message, url, time) {
+        if (url == undefined) {
+            url = '';
+        }
+        if (time == undefined) {
+            time = 2;
+        }
+        //成功之后的跳转
+        if (type == 'success') {
+            $("#dialog").dialog({
+                buttons: {
+                    "确定,#51A351": function () {
+                        this.getOrderInfo();
+                        $(this).dialog('close');
+                    }
+                },
+                contentText: message,
+                time: time,
+                timeHref: url,
+            });
+        }
+        //失败之后的跳转
+        if (type == 'error') {
+            $("#dialog").dialog({
+                buttons: {
+                    "确定,#e57373": function () {
+                        this.getOrderInfo();
+                        $(this).dialog('close');
+                    }
+                },
+                time: time,
+                contentText: message,
+                timeHref: url,
+            });
+        }
+    }
+    //线下交易
+    function orderOffLinePay(order_id) {
+        $("#dialog").dialog({
+            buttons: {
+                "确定": function () {
+                    $.ajax({
+                        type: "post",
+                        url: "{:url('platform/Order/orderOffLinePay')}",
+                        data: {order_id: order_id},
+                        success: function (data) {
+                            if (data["code"] == 0) {
+                                showMessage('success', data["msg"]);
+                                vueMain.getOrderInfo(1);
+                            } else {
+                                showMessage('error', data["msg"]);
+                            }
+                        }
+                    });
+                    $(this).dialog('close');
+                },
+                "取消,#e57373": function () {
+                    $(this).dialog('close');
+                },
+            },
+            contentText: "确定线下支付吗？",
+        });
+    }
+
+    //交易关闭
+    function orderClose(order_id) {
+        $("#dialog").dialog({
+            buttons: {
+                "确定": function () {
+                    $.ajax({
+                        type: "post",
+                        url: "{:url('platform/Order/orderClose')}",
+                        data: {order_id: order_id},
+                        success: function (data) {
+                            if (data["code"] == 0) {
+//                                LoadingInfo(1);
+                                showMessage('success', data["msg"]);
+                                vueMain.getOrderInfo(1);
+                            } else {
+                                showMessage('error', data["msg"]);
+
+                            }
+                        }
+                    })
+                    $(this).dialog('close');
+                },
+                "取消,#e57373": function () {
+                    $(this).dialog('close');
+                },
+            },
+            contentText: "确定关闭订单吗？",
+        });
+    }
+    //获取订单备注
+    function orderSellerMemo(order_id) {
+        $.ajax({
+            type: 'post',
+            url: "{:url('platform/Order/getOrderSellerMemo')}",
+            data: {order_id: order_id},
+            success: function (res) {
+                vueMain.now_order_id = order_id;
+//                $("#order_id").val(order_id);
+                $("#memo").val(res.data);
+                $("#Memobox").modal("show");
+            }
+        });
+    }
+    //修改备注
+    function addMemoAjax() {
+        var order_id = vueMain.now_order_id;
+        var memo = $("#memo").val();
+        if (memo == '') {
+            $(".error").css("display", "block");
+            return false;
+        }
+        $("#Memobox").modal("hide");
+
+        $.ajax({
+            url: "{:url('platform/Order/addMemo')}",
+            data: {order_id: order_id, memo: memo},
+            type: "post",
+            success: function (data) {
+                if (data.code == 0) {
+                    showMessage('success', '保存成功');
+                    vueMain.getOrderInfo(1);
+                } else {
+                    showMessage('error', '保存失败');
+                }
+            }
+        });
+    }
+    //修改价格
+    function modifyPrice(order_id, orderFreight) {
+        vueMain.now_order_id = order_id;
+        if (orderFreight == null) {
+            orderFreight = 0;
+        }
+        orderInfo = {
+            express_fee: 0,
+            total: 0,
+            goodsArray: new Array()
+        };
+        $("#butSubmit").val(order_id);
+        var str = "";
+        var Total = 0.00;
+        var Count = 0;
+        $.ajax({
+            type: "post",
+            url: "{:url('platform/Order/getOrderGoods')}",
+            data: {"order_id": order_id},
+            dataType: "json",
+            async: false,
+            success: function (res) {
+                if (res.code == 0) {
+                    jsonData = res.data;
+                    var Subtotal = 0.0;
+                    var order_info = jsonData[1];
+                    jsonData = jsonData[0];
+                    for (var i = 0; i < jsonData.length; i++) {
+                        Price = (jsonData[i].price * 1);
+                        Count = (jsonData[i].num * 1);
+                        Subtotal = parseFloat(Price) * parseInt(Count);//单商品总价
+                        Total += parseFloat(Subtotal * 1);
+                        str += "<tr>";
+                        str += "<td style='width:40%;'>";
+                        str += "<div class='product-img'><img src='" + jsonData[i]['picture_info']['pic_cover_micro'] + "'></div>";
+                        str += "<div class='product-infor'>";
+                        //原总金额
+                        var item_now_money = parseFloat(jsonData[i].price * jsonData[i].num) + parseFloat(jsonData[i].adjust_money);
+                        str += "<input type='hidden' id='total" + jsonData[i].id + "' value='" + item_now_money * (item_now_money / parseFloat(jsonData[i].goods_money)) + "'>";
+                        str += "<a class='name'>" + jsonData[i].goods_name + "</a>";
+                        if (jsonData[i].sku_name != '')
+                            str += "<p class='specification'><span>规格:" + jsonData[i].sku_name + "</span></p>";
+                        str += "<div class='div-flag-style'>";
+                        str += "</div>";
+                        str += "</div>";
+                        str += "</td>";
+                        str += "<td>";
+                        str += "<div class='cell'><span name='Commoditymark' count='" + jsonData[i].num + "' id='" + jsonData[i].goods_id + "' dir='" + jsonData[i].price + "' value='" + jsonData[i].price + "'>￥" + jsonData[i].price + "</span></div>";
+                        str += "<div class='cell' id='Count" + jsonData[i].goods_id + "' value='" + jsonData[i].num + "'>" + jsonData[i].num + "件</div>";
+                        str += "</td>";
+                        str += "<td>";
+                        str += "<div class='editprice-discount'><input  type='hidden' id='productPrice" + jsonData[i].id + "' value='" + jsonData[i].price + "'><input type='hidden' id='count" + jsonData[i].goods_id + "' value='" + jsonData[i].num + "'>";
+                        str += "<div class='editprice-minus'><input name='caculatePrice'  onchange=\"caculatePrice()\" id='" + jsonData[i].id + "' value='" + jsonData[i].adjust_money + "'  class='editprice-input price' type='number'  placeholder='0'  /></div>";
+                        str += "</td>";
+                        if (i == 0) {
+                            str += "<td rowspan='" + jsonData.length + "'>";
+                            str += "<input onchange=\"caculatePrice()\" id='Freightnumber' type='number' placeholder='0'  class='editprice-input' value='" + order_info.shipping_money + "' ";
+                            if (orderFreight != 0 || orderFreight != '') {
+                                str += orderFreight;
+                            }
+                            str += "' min='0'/>";
+                            str += "<p class='muted'>直接输入邮费金额</p>";
+                            str += "<input type='hidden' id='hidorderNumber' value='" + jsonData[i].order_id + "'>";
+                            str += "<input type='hidden' id='freighthidden' value='" + orderFreight + "'>";
+                            str += "<input type='hidden' id='goodsmoneyhidden' value=''>";
+                            str += "<input type='hidden' id='favourable' value='0'>";
+                            str += "</td>";
+                            str += "</tr>";
+                        }
+                        $("#OrderCommodity").html(str);
+                        $("#changeTotal").html(Total.toFixed(2));
+                        $("#goodsmoney").html(order_info.goods_money);
+                        $("#goodsmoneyhidden").val(Total);
+                        var discount_money = order_info.point_money * 1.00 + order_info.coupon_money * 1.00 + order_info.user_money * 1.00 + order_info.promotion_money * 1.00;
+                        $("#discountmoney").html(discount_money);
+                        $("#changeTotal").html(order_info.pay_money);
+                        $("#hiedchangeTotal").html(Total);
+                    }
+                    $("#modifiedFreight").html(order_info.shipping_money);
+                    var freight = $("#Freightnumber").val() == 0 ? 0 : $("#Freightnumber").val();
+                    $('#edit-price').modal('show');
+                }
+
+            }
+        });
+    }
+    //重新计算
+    function caculatePrice() {
+        //设置邮费
+        if ($("#Freightnumber").val() < 0 || $("#Freightnumber").val() == '') {
+            showTip("邮费错误！", "warning");
+            return false;
+        }
+        var Freightnumber = $("#Freightnumber").val();//邮费input
+        $("#modifiedFreight").html(Freightnumber);
+        //调整金额
+        var price = 0.00;
+        $("input[name = 'caculatePrice']").each(function (i) {
+            if (0 == i) {
+                price = parseFloat($(this).val());
+            } else {
+                price = parseFloat($(this).val()) + parseFloat(price);
+            }
+        });
+        var goods_money = $("#goodsmoneyhidden").val();
+        new_goods_money = (parseFloat(price) + parseFloat(goods_money)).toFixed(2);
+        if (new_goods_money < 0) {
+            $(".price").val(-goods_money);
+            caculatePrice();
+        }
+        $("#goodsmoney").html(new_goods_money);
+        // 获取邮费
+        var modifiedFreight = $("#modifiedFreight").html();
+        // 获取优惠金额
+        var discountmoney = $("#discountmoney").html();
+        //计算实收款
+        new_hiedchangeTotal = (parseFloat(new_goods_money) + parseFloat(modifiedFreight) - parseFloat(discountmoney)).toFixed(2);
+        $("#changeTotal").html(new_hiedchangeTotal);
+    }
+
+    //更新订单价格
+    function updPrice() {
+        var order_id = vueMain.now_order_id;
+        var order_goods_id_adjust_array = '';
+        var shipping_fee = $("#Freightnumber").val();
+        $("input[name = 'caculatePrice']").each(function (i) {
+            if (0 == i) {
+                order_goods_id_adjust_array = $(this).attr('id') + ',' + $(this).val();
+            } else {
+                order_goods_id_adjust_array += ';' + $(this).attr('id') + ',' + $(this).val();
+            }
+        });
+        $.ajax({
+            type: "post",
+            url: "{:url('platform/Order/orderAdjustMoney')}",
+            data: {
+                "order_id": order_id,
+                "order_goods_id_adjust_array": order_goods_id_adjust_array,
+                "shipping_fee": shipping_fee
+            },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data["code"] == 0) {
+                    showMessage('success', data["msg"]);
+                    vueMain.getOrderInfo(1);
+
+                } else {
+                    showMessage('error', data["msg"]);
+                }
+            }
+        });
+    }
+    function orderDelivery(order_id) {
+        $("#Delivery").modal('show');
+        $("#divlogistics_express_company option").remove();
+        $("#Delivery .modal-body table tbody tr").remove();
+        $.ajax({
+            type: "post",
+            url: "{:url('platform/order/orderDeliveryData')}",
+            data: {'order_id': order_id},
+            success: function (info) {
+                if (info.code == 0) {
+                    var data = info.data;
+                    $("#delivery_order_id").val(order_id);
+                    var receiver_info = '收货信息：' + data['order_info']['address'] + '&nbsp;' + data['order_info']['receiver_address'] + '&nbsp;' + data['order_info']['receiver_name'] + '&nbsp;' + data['order_info']['receiver_mobile'];//收货信息
+                    $("#receiver_info").html(receiver_info);
+                    var co_html = '';
+                    co_html += '<option value="0">请选择物流公司</option>';
+                    for (var i = 0; i < data['express_company_list'].length; i++) {
+                        if (data['express_company_list'][i]['is_enabled'] == '1') {
+                            co_html += '<option value="' + data["express_company_list"][i]["co_id"] + '">' + data["express_company_list"][i]["company_name"] + '</option>';
+                        }
+                    }
+                    $("#divlogistics_express_company").append(co_html);
+                    $("#divlogistics_express_company").val(data['order_info']["shipping_company_id"]);
+
+                    var go_html = '';
+                    var no_shipping_num = 0;
+                    for (var i = 0; i < data['order_goods_list'].length; i++) {
+                        if (data['order_goods_list'][i]['shipping_status'] == 0) {
+                            no_shipping_num++;
+                        }
+                        go_html += '<tr>';
+                        if (data['order_goods_list'][i]['shipping_status'] > 0) {
+                            go_html += '<td><label class="checkbox-inline"><input type="checkbox" value="' + data['order_goods_list'][i]['shipping_status'] + '" disabled="true"></label></td>';
+                        } else {
+                            go_html += '<td><label class="checkbox-inline"><input type="checkbox" id="' + data['order_goods_list'][i]['order_goods_id'] + '" value="' + data['order_goods_list'][i]['shipping_status'] + '" onclick="deliveryCheck(this)"></label></td>';
+                        }
+                        go_html += '<td><a>' + data['order_goods_list'][i]['goods_name'] + '</a></td>';
+                        go_html += '<td>' + data['order_goods_list'][i]['num'] + '</td>';
+                        if (data['order_goods_list'][i]['shipping_status'] == 0 || data['order_goods_list'][i]['express_info']['express_company'] == undefined) {
+                            go_html += '<td></td>';
+                        } else {
+                            go_html += '<td>' + data['order_goods_list'][i]['express_info']['express_company'] + ' | ' + data['order_goods_list'][i]['express_info']['express_no'] + '</td>';
+                        }
+                        go_html += '<td>' + data['order_goods_list'][i]['shipping_status_name'] + '</td>';
+                        go_html += '</tr>';
+                    }
+                    $("#no_shipping_num").html(no_shipping_num);
+                    $("#Delivery .modal-body table tbody").append(go_html);
+                }
+
+            }
+        });
+    }
+    function deliveryCheckAll(event) {
+        var checked = event.checked;
+        $("#Delivery .modal-body table tbody input[type = 'checkbox'][value = 0]").prop("checked", checked);
+        var obj = $("#Delivery .modal-body table tbody input[type = 'checkbox'][value = 0][checked]");
+        $("#checkedbox").html(obj.length);
+    }
+
+    function deliveryCheck(event) {
+        var obj = $("#Delivery .modal-body table tbody input[type = 'checkbox'][value = 0][checked]");
+        $("#checkedbox").html(obj.length);
+    }
+    function orderDeliverySubmit() {
+        var order_id = $("#delivery_order_id").val();
+        var order_goods_id_array = '';
+        $("#Delivery .modal-body table tbody input[type = 'checkbox'][value = 0][checked]").each(function (i) {
+            if (0 == i) {
+                order_goods_id_array = $(this).attr('id');
+            } else {
+                order_goods_id_array += ("," + $(this).attr('id'));
+            }
+        });
+        alert(order_goods_id_array);
+        return;
+        if (order_goods_id_array == '') {
+            layer.alert("至少选择一个商品", {icon: 5});
+            return false;
+        }
+        var express_name = $("#divlogistics_express_company").find("option:selected").text();
+        var shipping_type = $('#Delivery input[name="shipping_type"]:checked ').val();
+        var express_company_id = $("#divlogistics_express_company").val();
+        var express_no = $("#divlogistics_express_no").val();
+        if (shipping_type == 1) {
+            if (express_company_id == "0") {
+                layer.alert("请选择物流公司", {icon: 5});
+                return false;
+            }
+            if (express_no == "") {
+                layer.alert("请填写快递单号", {icon: 5});
+                $("#divlogistics_express_no").focus();
+                return false;
+            }
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('platform/order/orderDelivery')}",
+            data: {
+                'order_id': order_id,
+                "order_goods_id_array": order_goods_id_array,
+                "express_name": express_name,
+                "shipping_type": shipping_type,
+                "express_company_id": express_company_id,
+                "express_no": express_no
+            },
+            success: function (data) {
+                if (data['code'] == 0) {
+                    layer.alert(data.msg, {icon: 6}, function () {
+                        $("#Delivery").modal('hide');
+                        layer.closeAll();
+                        vueMain.getOrderInfo(1);
+                    });
+                } else {
+                    layer.alert(data.msg, {icon: 5});
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

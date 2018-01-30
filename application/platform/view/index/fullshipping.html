@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link href="__STATIC__/admin/css/express/freight_edit.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+{include file='index/head'/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+
+            <nav>
+                <ul>
+                    <li onclick="location.href='{:url('coupontypelist')}';" title="优惠券">优惠券</li>
+                    <li onclick="location.href='{:url('pointconfig')}';" title="积分管理">积分管理</li>
+                    <li onclick="location.href='{:url('mansonglist')}';" title="满减送">满减送</li>
+                    <li onclick="location.href='{:url('getdiscountlist')}';" title="限时折扣">限时折扣</li>
+                    <li class="selected" onclick="location.href='{:url('fullshipping')}';" title="满额包邮">满额包邮</li>
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_desc"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_meta"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        满额包邮
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">满额包邮</li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main">
+                <div class="mod-table">
+                    <div class="table-div">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td colspan="2" class="back-f5f5f5">
+                                    <div class="table-title-font">
+                                        <span>信息填写</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-1td">满额包邮</td>
+                                <td>
+                                    <div class="controls">
+                                        <label class="radio inline"><input type="radio" name="fare" value="1"
+                                                                           v-model="full_mail_info.is_open"
+                                                                           id="manebaoyouResultYes">启用</label>
+                                        <label class="radio inline"><input type="radio" name="fare" value="0"
+                                                                           v-model="full_mail_info.is_open"
+                                                                           id="manebaoyouResultNo">禁用</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-1td">包邮所需订单金额</td>
+                                <td>
+                                    <div>
+                                        <input id="full_mail_money" class="input-mini input-common"
+                                               v-model="full_mail_info.full_mail_money" type="number" min="0.01"
+                                               step="0.01" value="0.00"/>
+                                    </div>
+                                    <span>请设定数字参数，全场包邮请填写0</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-1td">设置不包邮地区</td>
+                                <td>
+                                    <div>
+                                        <span class="js-region-info region-info">{{no_mail_province}}</span>
+                                        <a class="btn-gradient-blue js-select-city" data-flag="0"
+                                           @click="addressShow=true;" href="javascript:;">指定地区城市</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt60" style="text-align: center;width:50%;">
+                        <button class="btn-common btn-big" @click="SavepointConfig();">保存</button>
+                    </p>
+                </div>
+                <!-- 不包邮地区 -->
+                <div class="mask-layer" style="display: block;" v-show="addressShow"></div>
+                <div id="select-region" style="left: 40%; top: 130.5px; display: block;" v-show="addressShow">
+                    <div class="title">
+                        <h2>选择地区</h2>
+                        <span class="confirm js-confirm" @click="addressShow=false;" style="color:#4a8bf6">[确定]</span>
+                    </div>
+                    <div class="cont">
+                        <div class="selectSub dialog-areas">
+                            <ul class="js-regions">
+                                <li v-for="(item,index) in address">
+                                    <div class="dcity clearfix">
+                                        <!-- 大类 -->
+                                        <div class="ecity gcity">
+                                            <span class="group-label">
+                                                <input type="checkbox" v-model="item.check" @change="changeAre(item)">
+                                                <label>{{item.area_name}}</label>
+                                            </span>
+                                        </div>
+                                        <!-- 省 -->
+                                        <div class="province-list">
+                                            <div class="ecity" :class="{open:province.id==showProvince}"
+                                                 v-for="(province,index1) in item.province_list">
+                                                <span class="gareas">
+                                                    <input type="checkbox" v-model="province.check"
+                                                           @change="changeProvince(item,index1)">
+                                                    <label>{{province.province_name}}</label>
+                                                    <span class="check_num"></span>
+                                                    <img class="drop-down"
+                                                         @click="showProvince=(showProvince!=province.id?province.id:0);"
+                                                         src="__STATIC__/admin/images/freight_city_drop_down.gif">
+                                                </span>
+                                                <!-- 市 -->
+                                                <div class="citys" id="citys_10" style="display: block;"
+                                                     v-show="province.id==showProvince">
+                                                    <span class="areas" v-for="(city,index2) in province.city_list">
+                                                        <input type="checkbox" @change="changeCity(item,index1)"
+                                                               v-model="city.check">
+                                                        <label>{{city.city_name}}</label>
+                                                    </span>
+                                                    <p style="text-align:right;">
+                                                        <input class="close_button" type="button"
+                                                               @click="showProvince=0;" value="关闭"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </article>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                full_mail_info: {},
+                address: [],
+                addressShow: false,
+                showProvince: 0,
+                no_mail_province:'',
+                provinceArr:[],
+                cityArr:[]
+            },
+            mounted: function () {
+                this.$http.post("{:url('platform/promotion/fullShipping')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.full_mail_info = res.data.data.full_mail_info;
+                        this.no_mail_province=res.data.data.no_mail_province;
+                        this.provinceArr=res.data.data.full_mail_info.no_mail_province_id_array.split(",");
+                        this.cityArr=res.data.data.full_mail_info.no_mail_city_id_array.split(",");
+                        this.address = res.data.data.address_list;
+                        for (i = 0; i < this.address.length; i++) {
+                            this.address[i].check = false;
+                            for (j = 0; j < this.address[i].province_list.length; j++) {
+                                this.address[i].province_list[j].check = false;
+                                for (k = 0; k < this.address[i].province_list[j].city_list.length; k++) {
+                                    for(m=0;m<this.cityArr.length;m++){
+                                        if(this.cityArr[m]==this.address[i].province_list[j].city_list[k].id){
+                                            this.address[i].province_list[j].city_list[k].check = true;
+                                            this.address[i].province_list[j].check = true;
+                                            this.address[i].check = true;
+                                            break;
+                                        }else{
+                                            this.address[i].province_list[j].city_list[k].check = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                });
+            },
+            methods: {
+                showCity: function (province) {
+                    alert(11);
+                    if (province.show == true) {
+                        province.show = false;
+                    } else {
+                        province.show = true;
+                    }
+                },
+                changeAre: function (are) {
+//                    are=this.address[index];
+                    for (i = 0; i < are.province_list.length; i++) {
+                        for (j = 0; j < are.province_list[i].city_list.length; j++) {
+                            are.province_list[i].city_list[j].check = are.check;
+                        }
+                        are.province_list[i].check = are.check;
+                    }
+                    this.showProvince = are.province_list[0].id;
+                    setTimeout(function () {
+                        vueMain.showProvince = 0;
+                    }, 100);
+                },
+                changeProvince: function (are, index) {
+                    for (i = 0; i < are.province_list[index].city_list.length; i++) {
+                        are.province_list[index].city_list[i].check = are.province_list[index].check;
+                    }
+                    if (this.showProvince == are.province_list[index].id) {
+                        this.showProvince = 0;
+                        setTimeout(function () {
+                            vueMain.showProvince = are.province_list[index].id;
+                        }, 10);
+                    } else {
+                        this.showProvince = are.province_list[index].id;
+                        setTimeout(function () {
+                            vueMain.showProvince = 0;
+                        }, 10);
+                    }
+                    for (i = 0; i < are.province_list.length; i++) {
+                        if (are.province_list[i].check == true) {
+                            are.check = true;
+                            return;
+                        }
+                    }
+                    are.check = false;
+                },
+                changeCity: function (are, index, index2) {
+                    are.province_list[index].check = false;
+                    for (i = 0; i < are.province_list[index].city_list.length; i++) {
+                        if (are.province_list[index].city_list[i].check == true) {
+                            are.province_list[index].check = true;
+                            break;
+                        }
+                    }
+                    if (this.showProvince == are.province_list[index].id) {
+                        this.showProvince = 0;
+                        setTimeout(function () {
+                            vueMain.showProvince = are.province_list[index].id;
+                        }, 10);
+                    } else {
+                        this.showProvince = are.province_list[index].id;
+                        setTimeout(function () {
+                            vueMain.showProvince = 0;
+                        }, 10);
+                    }
+                    for (i = 0; i < are.province_list.length; i++) {
+                        if (are.province_list[i].check == true) {
+                            are.check = true;
+                            return;
+                        }
+                    }
+                    are.check = false;
+                },
+                SavepointConfig: function () {
+                    this.full_mail_info.no_mail_province_id_array = '';
+                    this.full_mail_info.no_mail_city_id_array = '';
+                    console.log(this.address);
+                    for (i = 0; i < this.address.length; i++) {
+                        if (this.address[i].check) {
+                            for (j = 0; j < this.address[i].province_list.length; j++) {
+                                if (this.address[i].province_list[j].check) {
+                                    if (this.full_mail_info.no_mail_province_id_array == '') {
+                                        this.full_mail_info.no_mail_province_id_array = this.address[i].province_list[j].id;
+                                    } else {
+                                        this.full_mail_info.no_mail_province_id_array += "," + this.address[i].province_list[j].id;
+                                    }
+                                    for (k = 0; k < this.address[i].province_list[j].city_list.length; k++) {
+                                        if(this.address[i].province_list[j].city_list[k].check){
+                                            if (this.full_mail_info.no_mail_city_id_array == '') {
+                                                this.full_mail_info.no_mail_city_id_array = this.address[i].province_list[j].city_list[k].id;
+                                            } else {
+                                                this.full_mail_info.no_mail_city_id_array += "," + this.address[i].province_list[j].city_list[k].id;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    this.$http.post("{:url('platform/promotion/setFullShipping')}", this.full_mail_info,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{title:"提示",icon:6});
+                            location.reload();
+                        }else{
+                            layer.alert(res.data.msg,{title:"提示",icon:5});
+
+                        }
+                    });
+
+
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

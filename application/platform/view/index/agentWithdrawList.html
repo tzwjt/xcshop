@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <script src="__STATIC__/admin/js/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/member_list.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+
+    <style>
+        .head-portrait {
+            margin-top: 15px;
+        }
+
+        .niu-a {
+            width: 70px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            text-align: center;
+            display: inline-block;
+            border-width: 1px;
+            border-style: solid;
+            margin-top: 0.5em;
+            font-size: 10px;
+            border-radius: 5px;
+        }
+
+        .modal-infp-style table tr td {
+            border: none;
+        }
+
+        /*.modal.fade.in {*/
+            /*top: 5px;*/
+        /*}*/
+
+        .modal-body {
+            padding: 0px;
+        }
+
+        .modal-infp-style table tr td {
+            padding: 4px;
+        }
+
+        #login-modal td, #rate-modal td, #adjust-modal td {
+            padding: 10px 15px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        #order-list-table td {
+            text-align: center !important;
+        }
+
+        #total-data .li-data {
+            color: #fff;
+            width: 19%;
+            margin: 5px 1%;
+            height: 100px;
+            float: left;
+            padding: 5px 2%;
+        }
+
+        #total-data .li-data p {
+            margin: 5px 0;
+        }
+        #balance-modal input,#balance-modal textarea,#balance-ajax-modal input,#balance-ajax-modal textarea{
+            background-color: #fff;
+            width:100%;
+        }
+        #balance-modal td,#balance-ajax-modal td{
+            text-align: right;
+        }
+    </style>
+
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+            <nav>
+                <ul>
+                    {foreach item="vo" name="module_second"}
+
+                    <li {if condition="$vo['selected'] eq true"}
+                        class='selected'
+                        {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                    {/foreach}
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        代理商提现
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <!--<nav class="ns-third-menu">-->
+                    <!--<ul>-->
+                        <!--<li class="selected">代理商提现</li>-->
+                    <!--</ul>-->
+                <!--</nav>-->
+                <div style="padding: 5px 20px;margin-bottom: 10px;">
+                <table class="mytable select">
+                    <tr>
+                        <td>
+                            <div style="float: right;">
+                                <input class="btn-common" type="button" @click="searchData()" value="搜索"/>
+                            </div>
+                            <div style="float: right;margin: 0 10px;">
+                                <span>代理商：</span>
+                                <input v-model="searchInfo.search_text"  class="input-common w60" type="text" style="width:160px;" placeholder="代理商名称|代理商识别码"/>
+                            </div>
+                            <div style="float: right;margin: 0 10px;">
+                                <span>帐户所有者手机号：</span>
+                                <input v-model="searchInfo.user_phone"  class="input-common w60" type="text" style="width:120px;"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                </div>
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li :class="{selected:'{$status}'=='all'}" onclick="location.href='{:url('agentWithdrawList',array('status'=>'all'))}'">全部</li>
+                        <li :class="{selected:'{$status}'=='0'}" onclick="location.href='{:url('agentWithdrawList',array('status'=>'0'))}'">待审核</li>
+                        <li :class="{selected:'{$status}'=='1'}" onclick="location.href='{:url('agentWithdrawList',array('status'=>'1'))}'">已通过</li>
+                        <li :class="{selected:'{$status}'=='2'}" onclick="location.href='{:url('agentWithdrawList',array('status'=>'2'))}'">已完成</li>
+                        <li :class="{selected:'{$status}'=='-1'}" onclick="location.href='{:url('agentWithdrawList',array('status'=>'-1'))}'">已拒绝</li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main">
+
+                <table class="table-class">
+                    <thead>
+                    <tr align="center">
+                        <th>提现号</th>
+                        <th>代理商</th>
+                        <!--<th>操作者</th>-->
+                        <th>帐户</th>
+                        <th>联系电话</th>
+                        <th>提现金额（元）</th>
+                        <th>状态</th>
+                        <th>申请时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productTbody">
+                    <tr align="center" v-for="(item,index) in balanceWithdraw.list">
+                        <td>{{item.withdraw_no}}</td>
+                        <td>名称：{{item.agent_name}}<br/>登录账号：{{item.agent_user_name}}<br/>识别码：{{item.agent_identify_code}}</td>
+                        <!--<td>{{item.agent_user_name}}</td>-->
+                        <td>开户行：{{item.bank_name}}<br/>账号：{{item.account_number}}<br/>所有者：{{item.realname}}</td>
+                        <td>{{item.mobile}}</td>
+                        <td>{{item.cash}}<br/>实际到账：{{item.real_cash}}</td>
+                        <td>{{item.status_name}}</td>
+                        <td>{{item.ask_for_date}}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" @click="getDetailInfo(item.id)">详情</button>
+                            <button type="button" v-if="item.status==0" class="btn btn-danger" @click="checkStatusModal(item)">审核</button>
+                            <button type="button" v-if="item.status==1" class="btn btn-info" @click="writeModal(item)">提现记入</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" id="pagelist" style="text-align: center;background-color: #fff;"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </article>
+    <div style="width:800px;" class="modal fade hide" id="balance-modal" tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h3>提现详情</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table class="modal-tab">
+                            <tr>
+                                <td>提现号</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.withdraw_no" disabled/></td>
+                                <td>操作者</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.agent_user_name" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td>代理商名称</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.agent_name" disabled/></td>
+                                <td>代理商识别码</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.agent_identify_code" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td>开户银行</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.bank_name" disabled/></td>
+                                <td>帐号</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.account_number" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td>帐号所有者</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.realname" disabled/></td>
+                                <td>所有者联系电话</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.mobile" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td>提现金额</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.cash" disabled/></td>
+                                <td>实际可到帐金额</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.real_cash" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td>状态</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.status_name" disabled/></td>
+                                <td>申请时间</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.ask_for_date" disabled/></td>
+                            </tr>
+                            <tr v-if="balanceWithdrawInfo.status!=0">
+                                <td>审核时间</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.audit_date" disabled/></td>
+                                <td>审核人</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.audit_name" disabled/></td>
+                            </tr>
+                            <tr v-if="balanceWithdrawInfo.status==2">
+                                <td>打款时间</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.payment_date" disabled/></td>
+                                <td>经办人</td>
+                                <td><input type="text" class="input-common" :value="balanceWithdrawInfo.operator" disabled/></td>
+                            </tr>
+
+
+                            <tr v-if="balanceWithdrawInfo.status==-1">
+                                <td>备注</td>
+
+                                <td colspan="3"><textarea style="float: left;width:90%;" rows="3" v-model="balanceWithdrawInfo.memo" placeholder="请填写拒绝原因" disabled></textarea></td>
+
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="width:800px;" class="modal fade hide" id="balance-ajax-modal" tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h3>提现审核</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table class="modal-tab">
+                            <tr>
+                                <td colspan="4" style="text-align: center;font-size:1.5em;padding: 10px 0;font-weight: bold;">代理商信息</td>
+                            </tr>
+                            <tr>
+                                <td>代理商名称</td>
+                                <td><input type="text" class="input-common" :value="balanceAjaxInfo.agent_name" disabled/></td>
+                                <td>代理商识别码</td>
+                                <td><input type="text" class="input-common" :value="balanceAjaxInfo.agent_identify_code" disabled/></td>
+                            </tr>
+
+                            <tr>
+                                <td>开户银行</td>
+                                <td><input type="text" class="input-common" :value="balanceAjaxInfo.bank_name" disabled/></td>
+                                <td>帐号</td>
+                                <td><input type="text" class="input-common" :value="balanceAjaxInfo.account_number" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td>可提现余额</td>
+                                <td><input type="text" class="input-common" :value="agentWithdrawData.proceeds_money_remain" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="text-align: center;font-size:1.5em;padding: 10px 0;font-weight: bold;">本次提现信息</td>
+                            </tr>
+                            <tr>
+                                <td>本次提现金额</td>
+                                <td><input type="text" class="input-common" :value="balanceAjaxInfo.cash" disabled/></td>
+                                <td>本次提现可到帐金额</td>
+                                <td><input type="text" class="input-common" :value="balanceAjaxInfo.real_cash" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="text-align: center;font-size:1.5em;padding: 10px 0;font-weight: bold;">系统信息</td>
+                            </tr>
+                            <tr>
+                                <td>最低可提现额</td>
+                                <td><input type="text" class="input-common" :value="agentWithdrawData.withdraw_min" disabled/></td>
+                                <td>提现额的倍数</td>
+                                <td><input type="text" class="input-common" :value="agentWithdrawData.withdraw_multiple" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td>提现手续费率</td>
+                                <td><input type="text" class="input-common" :value="agentWithdrawData.withdraw_poundage_rate" disabled/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+
+                                        <input type="radio" name="checkStatus" value="1" v-model="ajaxInfo.status" style="width: auto;"> 通过
+
+                                </td>
+                                <td>
+                                        <input type="radio" name="checkStatus" value="-1" v-model="ajaxInfo.status" style="width: auto;"> 拒绝
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>审核人</td>
+                                <td><input type="text" class="input-common" v-model="ajaxInfo.audit_name" placeholder="请输入审核人"/></td>
+                            </tr>
+                            <tr v-if="ajaxInfo.status==-1">
+                                <td>备注</td>
+                                <td colspan="3"><textarea style="float: left;width:90%;" rows="3" v-model="ajaxInfo.memo" placeholder="请填写拒绝原因"></textarea></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info" @click="ajaxSubmit()">审核</button>
+                    <button class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade hide" id="write-modal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h3>提现记入</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table class="table">
+                            <tr>
+                                <td style="text-align: right;width:30%;">代理商名称:</td>
+                                <td>{{balanceAjaxInfo.agent_name}}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">代理商识别码:</td>
+                                <td>{{balanceAjaxInfo.agent_identify_code}}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">经办人:</td>
+                                <td><input type="text" class="input-common" placeholder="请输入经办人姓名"
+                                           v-model="writeInfo.operator"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;width:30%;">打款时间:</td>
+                                <td><input type="text" class="input-common" id="payment_date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" placeholder="请选择打款时间"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @click="submitWrite()">提交</button>
+                    <button class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dialog"></div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script type="text/javascript">
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                balanceWithdraw:{
+                    page_index:1,
+                    page_size:10,
+                    user_phone:'',
+                    search_text:'',
+                    list:[]
+                },
+                balanceWithdrawInfo:{},
+                balanceAjaxInfo:{},
+                agentWithdrawData:{},
+                ajaxInfo:{},
+                writeInfo:{},
+                searchInfo:{
+                    user_phone:'',
+                    search_text:''
+                }
+            },
+            mounted: function () {
+                this.getInfo();
+
+            },
+            methods: {
+                getInfo: function () {
+                    this.balanceWithdraw.list=new Array();
+                    this.$http.post("{:url('platform/Finance/agentWithdrawList')}", {
+                            page_index:this.balanceWithdraw.page_index,
+                            page_size:this.balanceWithdraw.page_size,
+                        user_phone:this.balanceWithdraw.user_phone,
+                        search_text:this.balanceWithdraw.search_text,
+                        status:"{$status}"
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.balanceWithdraw.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage
+                                    , layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.balanceWithdraw.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: vueMain.balanceWithdraw.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.balanceWithdraw.page_index = obj.curr;
+                                            vueMain.getInfo();
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                getDetailInfo:function (id) {
+                    this.$http.post("{:url('platform/Finance/getAgentWithdrawInfo')}", {withdraw_id:id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.balanceWithdrawInfo=res.data.data;
+                            $("#balance-modal").modal("show");
+                        }
+                    });
+                },
+                checkStatusModal:function (item) {
+                    this.balanceAjaxInfo=item;
+                    this.$http.post("{:url('platform/Finance/getAgentWithdrawData')}", {agent_id:item.agent_id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.agentWithdrawData=res.data.data;
+                            this.ajaxInfo={
+                                withdraw_id:item.id,
+                                status:1,
+                                audit_name:'',
+                                memo:''
+                            };
+                            $("#balance-ajax-modal").modal("show");
+                        }
+                    });
+                },
+                ajaxSubmit:function () {
+                    if(this.ajaxInfo.audit_name==''){
+                        layer.alert("你填写审核人",{icon:5});
+                        return;
+                    }
+                    if(this.ajaxInfo.status==2&&this.ajaxInfo.memo==''){
+                        layer.alert("请先在备注中填写拒绝的原因",{icon:5});
+                        return;
+                    }
+                    this.$http.post("{:url('platform/Finance/agentWithdrawAudit')}", this.ajaxInfo,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert("审核成功",{icon:6});
+                            $("#balance-ajax-modal").modal("hide");
+                            this.getInfo();
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+
+                        }
+                    });
+                },
+                writeModal:function (item) {
+                    this.balanceAjaxInfo=item;
+                    this.writeInfo={
+                        withdraw_id:item.id,
+                        operator:'',
+                        payment_date:''
+                    };
+                    $("#write-modal").modal("show");
+                },
+                submitWrite:function () {
+                    if(this.writeInfo.operator==''){
+                        layer.msg("请输入经办人姓名",{shade:[0.2,"#333"]});
+                        return
+                    }
+                    this.writeInfo.payment_date=$("#payment_date").val();
+                    if(this.writeInfo.payment_date==''){
+                        layer.msg("请选择打款时间",{shade:[0.2,"#333"]});
+                        return
+                    }
+                    this.$http.post("{:url('platform/Finance/agentWithdrawWrite')}", this.writeInfo,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6});
+                            $("#write-modal").modal("hide");
+                            this.getInfo();
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                searchData:function () {
+                    this.balanceWithdraw.user_phone=this.searchInfo.user_phone;
+                    this.balanceWithdraw.search_text=this.searchInfo.search_text;
+                    this.balanceWithdraw.page_index=1;
+                    this.getInfo();
+
+                }
+            }
+        });
+    });
+
+
+
+</script>
+</body>
+</html>

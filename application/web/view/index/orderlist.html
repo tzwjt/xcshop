@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>{$siteInfo.web_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <!--<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">-->
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_v0629.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_header.css">
+    <link rel="stylesheet" href="__STATIC__/web/css/shopcart0922.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="__STATIC__/web/js/address.js" type="text/javascript"></script>
+
+    <style>
+        body{
+            background-color: #fff;
+        }
+        .tr-select {
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            background-size: 25px 25px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            /*border:1px solid #000000;*/
+        }
+
+        .goods-wrap {
+            width: 80px;
+            height: 80px;
+        }
+
+        .goods-descri-wrap {
+            padding-top: 15px;
+        }
+        .addressli{
+            cursor: pointer;
+        }
+        .float_r li{
+            margin-bottom: 3px;
+        }
+        .niu-li{
+            width:200px;
+            height:40px;
+            display: block;
+            border:2px solid #ccc;
+            font-size:15px;
+            text-align: center;
+            padding-top: 15px;
+            margin: 20px;
+            float: left;
+            border-radius: 10px;
+            color:#333;
+            cursor: pointer;
+
+        }
+        .niu-li a{
+            color:#333;
+        }
+        .niu-li.active{
+            border-color:#5bc0de;
+            background-image: url("__STATIC__/web/images/icon-zf-check.png");
+            background-repeat: no-repeat;
+            background-position: 100% 100%;
+            background-size: 30px 30px;
+        }
+        .niu-li.active a{
+            color:#5bc0de;
+        }
+        .coupon{
+            background-image: url("__STATIC__/images/bonusbg-2.jpg");
+            width:200px;
+            height:100px;
+            display: block;
+            font-size:15px;
+            text-align: center;
+            padding-top: 15px;
+            margin: 20px;
+            float: left;
+            border-radius: 10px;
+            color:#333;
+            cursor: pointer;
+        }
+        .coupon.active{
+            background-image: url("__STATIC__/images/bonusbg.jpg");
+        }
+        .coupon a{
+            color:#fff;
+        }
+    </style>
+    <script>
+        var nexturl="orderlist";
+    </script>
+
+    {include file="index/auto_login"}
+</head>
+<body>
+{include file='index/nav_bar'}
+
+<div class="m-body">
+    <p class="car-title-p">我的订单信息</p>
+    <form id="myOrderfrm">
+        <!-- 这里单件商品 -->
+        <table id="normal-table">
+            <tbody>
+            <tr class="tr-header">
+                <th style="width:850px;text-align: left;padding-left: 10px;">商品<span class="float_r">|</span></th>
+                <th style="width:86px;text-align: center;">单价<span class="float_r">|</span></th>
+                <th style="width:160px;text-align: center;">数量<span class="float_r">|</span></th>
+                <th style="width:76px;text-align: center;">小计<span class="float_r">|</span></th>
+
+            </tr>
+            <!-- 这里预约商品 Start -->
+            <!-- 这里预约商品 End -->
+            <tr type="1" goods_id="107" class="gooodstr" v-for="(item,index) in cartInfo">
+                <td>
+                    <div class="goods-wrap float_l">
+                        <img :src="item.picture_info.pic_cover_small" style="width:80px;height:80px;"/>
+                    </div>
+                    <div class="goods-descri-wrap">
+                        <p class="goods-descri-title">
+                            {{item.goods_name}} </p>
+                        <p class="goods-descri-brief" v-if="item.sku_id!=0">规格：{{item.sku_name}}</p>
+                    </div>
+                </td>
+                <td>
+                    <span data-price="1499.00" class="goods-price">{{item.price}}</span>
+                </td>
+                <td>
+                    <span data-price="1499.00" class="goods-price">{{item.num}}</span>
+
+                    <!--<div class="countNum-wrap">-->
+
+                        <!--&lt;!&ndash;<div class="minus float_l" @click="cutNum(index)">-</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="count float_l" type="1">{{item.num}}</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="plus float_r" @click="addNum(index)">+</div>&ndash;&gt;-->
+                    <!--</div>-->
+                </td>
+                <td>
+                    <span class="singlePrice">¥{{item.price*item.num}}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="float_r" style="margin-top:10px;">商品总计<span class="totalPrice-info">（不含运费）</span>:<span
+                id="goods_total_price" class="totalPrice">¥{{totalPrice}}</span></div>
+    </form>
+    <div class="address-wrap">
+        <p class="address-wrap-title" style="font-weight: bold;">收货地址选择</p>
+        <div class="address-wrap-ul cf">
+            <ul id="address_list">
+                <li class="addressli" :class="{active:item.is_default==1}" v-for="(item,index) in addressList" @click="checkDefault(index)">
+                    <div class="address-detail-wrap">
+                        <p class="consignee-item">{{item.consigner}}</p>
+                        <div class="address-detail">
+                            <p><span class="province-item" v-html="item.address_info"></span>&nbsp;<span class="province-city">{{item.address}}</span></p>
+                            <p class="address-item">{{item.zip_code}}</p>
+                        </div>
+                        <p class="mobile-item">{{item.mobile}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.phone}}</p>
+                        <div class="update">
+                            <span class="edit-address" @click.stop="editAddress(index)">修改</span>|<span class="remove-address" @click.stop="delAddress(index)">删除</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="addressli cf" id="addAddr" onclick="showAddressFrame(0)">
+                    <div class="add-wrap">
+                        <div style="font-size: 32px;font-weight: bold;">+</div>
+                        <p>使用新的地址</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="style-zhifu order-invoice">
+            <div class="cart-title">
+                <h3 style="font-size:20px;margin: 20px 0;">
+                    <span>配送方式</span>
+                </h3>
+            </div>
+            <div class="zhifu-box" id="shipping_method" style="border-top:1px solid #e2e2e2;">
+                <div class="item js-select">
+                    <div class="label">
+                        <ul class="zfb">
+                            <li class="niu-li" :class="{active:ajaxInfo.express_type==1}" @click="ajaxInfo.express_type=1;">
+                                <i class="icon-check-zf" style="display: inline;"></i>
+                                <a href="javascript:void(0);" class="selected">商家配送</a>
+                            </li>
+                            <li class="niu-li" :class="{active:ajaxInfo.express_type==2}" @click="ajaxInfo.express_type=2;">
+                                <i class="icon-check-zf" style="display: inline;"></i>
+                                <a href="javascript:void(0);" class="selected">到店自提</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--<div style="clear:both;"></div>-->
+                <div id="select_express_company" v-if="ajaxInfo.express_type==2" style="padding-top: 25px;">
+                    <div class="item">
+                        <span class="label">自提点选择</span>
+                        <select id="express_company" style="margin-left: 12px;padding: 0 10px;width: 250px;height: 25px;border: 1px solid #ddd;" v-model="ajaxInfo.pick_type">
+                            <option value="-1">请选择自提点</option>
+                            <option :value="index"  v-for="(item,index) in orderInfo.pickup_point_list.data">
+                                {{item.name}}&nbsp;&nbsp;地址:{{item.province_name}}{{item.city_name}}{{item.district_name}}{{item.address}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="style-zhifu order-invoice">
+            <div class="cart-title">
+                <h3 style="font-size:20px;margin: 20px 0;">
+                    <span>使用优惠券</span>
+                </h3>
+            </div>
+            <div class="zhifu-box" id="shipping_method-1" style="border-top:1px solid #e2e2e2;">
+                <div class="item js-select">
+                    <div class="label">
+                        <ul class="zfb">
+                            <li class="coupon" style="" :class="{active:ajaxInfo.user_coupon==item.id}" @click="changeCoupon(item.id,item.money)" v-for="(item,index) in orderInfo.coupon_list">
+                                <p style="color:#fff;font-size:18px;margin-bottom: 15px;">{{item.coupon_name}}<span style="font-size:0.8em;" v-if="ajaxInfo.user_coupon==item.id">（已选择）</span></p>
+                                <p style="padding-top: 5px;font-size:1em;color:#fff;padding-left: 10px;">满{{item.at_least}}元减{{item.money}}元</p>
+                            </li>
+                            <li class="coupon" style="" :class="{active:ajaxInfo.user_coupon==''}" @click="changeCoupon('',0)">
+                                <p style="color:#fff;font-size:18px;margin-bottom: 15px;">不使用优惠券<span style="font-size:0.8em;" v-if="ajaxInfo.user_coupon==''">（已选择）</span></p>
+                                <p style="padding-top: 5px;font-size:1em;color:#fff;padding-left: 10px;">暂不使用优惠券</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="style-zhifu order-invoice">
+            <div class="cart-title">
+                <h3 style="font-size:20px;margin: 20px 0;">
+                    <span>是否需要开发票</span>
+                </h3>
+            </div>
+            <div class="zhifu-box" id="shipping_method-3" style="border-top:1px solid #e2e2e2;">
+                <div class="item js-select">
+                    <div class="label">
+                        <ul class="zfb">
+                            <li class="niu-li"  :class="{active:ajaxInfo.buyer_invoice==1}" @click="ajaxInfo.buyer_invoice=1;">
+                                <i class="icon-check-zf" style="display: inline;"></i>
+                                <a href="javascript:void(0);" class="selected">不需要</a>
+                            </li>
+                            <li class="niu-li" :class="{active:ajaxInfo.buyer_invoice==0}" @click="ajaxInfo.buyer_invoice=0;">
+                                <i class="icon-check-zf" style="display: inline;"></i>
+                                <a href="javascript:void(0);" class="selected">需要</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+            <div v-if="ajaxInfo.buyer_invoice==0" style="margin-bottom: 20px;">
+                <h1 style="text-align: center;font-size:22px;margin: 10px;">发票信息</h1>
+                <h4 style="background-color: #fff;padding-bottom: 5px;text-align: center;color:#FF9800;" v-if="orderInfo.shop_config.order_invoice_tax!=0">将收取{{orderInfo.shop_config.order_invoice_tax}}%的税率</h4>
+                <div class="order-reuslt-left float_l" style="width:100%;padding-left: 60px;">
+                    <div class="voucher float_l">
+                        <span>发票抬头：</span>
+                        <input type="text" v-model="ajaxInfo.buyer_company" placeholder="请输入发票抬头">
+                        <!--<a class="btn-use">使用</a>-->
+                    </div>
+                    <div class="voucher float_l" style="margin-left: 20px;">
+                        <span style="width: auto;">纳税人识别码：</span>
+                        <input type="text" v-model="ajaxInfo.buyer_code"  code="" placeholder="请输入纳税人识别码">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="order-reuslt-info">
+            <div class="order-reuslt-left float_l">
+                <div class="voucher float_l">
+                    <span>积分支付：</span>
+                    <input type="number" v-model="ajaxInfo.integral" @change="checkInput('point')" style="width: 150px;" code="" placeholder="请输入积分">
+                    <a style="position: relative;top:5px;margin-left: 10px;">{{'当前可用积分'+orderInfo.member_account.point+'(1积分=' + orderInfo.point_convert_rate+'元)'}}</a>
+                </div>
+                <div class="voucher float_l">
+                    <span>余额支付：</span>
+                    <input type="number" v-model="ajaxInfo.account_balance" @change="checkInput('balance')" code="" style="width: 150px;" placeholder="请输入余额">
+                    <a style="position: relative;top:5px;margin-left: 10px;">{{'当前可用余额为'+orderInfo.member_account.balance+"元"}}</a>
+                </div>
+                <div class="voucher float_l">
+                    <span>买家留言：</span>
+                    <!--<input type="number" v-model="ajaxInfo.account_balance" @change="checkInput('balance')" code="" style="width: 150px;" placeholder="请输入余额">-->
+                    <textarea v-model="ajaxInfo.leavemessage" style="width:400px;height:100px;"></textarea>
+                </div>
+            </div>
+            <div class=" float_r">
+                <ul class="float_l" style="margin-right:33px;">
+                    <li>商品件数:</li>
+                    <li>商品总金额：</li>
+                    <li>运费：</li>
+                    <li>优惠减：</li>
+                    <li>积分抵：</li>
+                    <li >抵用券抵：</li>
+                    <li >余额支付：</li>
+
+                </ul>
+                <ul class="result-second-ul">
+                    <li id="goods-sum">{{orderInfo.select_goods_list.total_num}}件</li>
+                    <li id="price_sum">¥{{orderInfo.count_money}}</li>
+                    <li id="goods-freight">+¥{{express}}</li>
+                    <li id="discount_price">-¥{{orderInfo.discount_money}}</li>
+                    <li id="reserve_price">-¥{{moneyInfo.point_money}}</li>
+                    <li>-¥{{moneyInfo.coupon_money}}</li>
+                    <li>-¥{{ajaxInfo.account_balance}}</li>
+
+                </ul>
+            </div>
+        </div>
+        <p v-if="selectedAddress!=''" style="margin-top:1em;font-size:16px;text-align: right;">收货地址：<span v-html="selectedAddress"></span></p>
+    </div>
+    <div class="paybtn-wrap float_r" style="margin: 20px 0">
+        <!--<input type="button" :value="'提交订单（¥'+totalPrice+'）'" style="cursor: pointer;width: auto;padding: 10px;text-align: center;" class="paybtn zhifubaobtn alipay" @click="sunmitOrder()">-->
+        <button style="cursor: pointer;width: auto;padding: 10px;text-align: center;" class="paybtn zhifubaobtn alipay" @click="sunmitOrder()">{{'提交订单（¥'+totalPrice+'）'}}</button>
+    </div>
+    <!---begin地址弹框-->
+    <div class="address-box box" id="address-box" style="display: none;z-index:1010;">
+        <input type="hidden" id="address_id">
+        <div class="address-content">
+            <div class="adderss-item mt0"><input type="text" value="" id="address_name" placeholder="收货人姓名" v-model="address.consigner"></div>
+            <div class="adderss-item"><input type="text" value="" placeholder="手机号" id="address_mobile" v-model="address.mobile"></div>
+            <div class="adderss-item"><input type="text" value="" placeholder="固定电话(选填)" id="address_phone" v-model="address.phone"></div>
+            <div class="adderss-item">
+                <select id="province" class="address-province" data-rel="3" v-model="address.province" @change="getCity()">
+                    <option value="">省份</option>
+                    <option v-for="item in addressInfo.province" :value="item.id">{{item.province_name}}</option>
+                </select>
+                <select id="city" class="address-city" data-rel="37" v-model="address.city" @change="getDistrict()">
+                    <option value="">城市</option>
+                    <option v-for="item in addressInfo.city" :value="item.id">{{item.city_name}}</option>
+                </select>
+            </div>
+            <div class="adderss-item">
+                <select id="district" class="address-district"  v-model="address.district" data-rel="409">
+                    <option value="">县/区</option>
+                    <option v-for="item in addressInfo.district" :value="item.id">{{item.district_name}}</option>
+                </select>
+            </div>
+            <div class="adderss-item"><input id="address" type="text" value="" placeholder="路名、街道地址、门牌号" v-model="address.address"></div>
+            <div class="adderss-item"><input id="zipcode" type="text" value="" placeholder="邮政编码(选填)" v-model="address.zip_code"></div>
+        </div>
+        <div class="address-foot"><input type="button" onclick="hideAddress()" value="关闭" id="choose_again"><input type="button" value="确认地址" id="address_certain" @click="saveAddress()"></div>
+    </div>
+    <!--end地址弹框-->
+</div>
+<div style="clear:both;"></div>
+<div id="dialogBackground" class="dialogBackground" style="height: 870px;"></div>
+<!--end中间栏-->
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var main;
+    var order_tag;
+    $(function () {
+        main = new Vue({
+            el: '.m-body',
+            data: {
+                orderInfo:{
+                    select_goods_list:{total_num:''},
+                    pickup_point_list:{data:[]},
+                    coupon_list:[],
+                    shop_config:{
+                        seller_dispatching:1,
+                        buyer_self_lifting:1
+                    },
+                    member_account:{
+                        point:0,
+                        balance:0
+                    }
+                },
+                cartInfo: [],
+                address: {
+                    id: '',
+                    consigner: '',
+                    mobile: '',
+                    phone: '',
+                    province: '',
+                    city: '',
+                    district: '',
+                    address: '',
+                    zip_code: ''
+                },
+                addressInfo: {
+                    province: [],
+                    city: [],
+                    district: []
+                },
+                addressList:[],
+                ajaxInfo:{
+                    express_type:1,
+                    pick_up_id:'',
+                    buyer_invoice:1,
+                    integral:0,
+                    account_balance:0,
+                    leavemessage:'',
+                    user_coupon:'',
+                    user_coupon_name:'',
+                    pick_type:-1 ,
+                    pick_info:'',
+                    buyer_company:'',
+                    buyer_code:''
+                },
+                moneyInfo:{
+                    coupon_money:0,
+                    point_money:0
+                },
+                express:0
+            },
+            mounted: function () {
+                var goods_list='{$goods_list}';
+                order_tag=goods_list==''?'cart':'buy_now'
+                this.$http.post("{:url('shop/order/orderInfo')}", {goods_list:goods_list,order_tag:order_tag},{
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.orderInfo=res.data.data;
+                        if(this.orderInfo.promotion_full_mail.is_open==1 && this.orderInfo.promotion_full_mail.full_mail_money<= this.orderInfo.count_money){
+                            this.express=0;
+                        }else{
+                            this.express=this.orderInfo.express;
+                        }
+                        if(this.orderInfo.coupon_list.length==0){
+                            this.ajaxInfo.user_coupon_name='暂无可用优惠券';
+                        }else{
+                            this.ajaxInfo.user_coupon_name='请选择优惠券';
+                        }
+                        this.addressList = res.data.data.address_list.data;
+                        this.cartInfo=res.data.data.select_goods_list.data;
+                        if(this.orderInfo.shop_config.seller_dispatching==1){
+                            this.ajaxInfo.express_type=1;
+                        }else if(this.orderInfo.shop_config.buyer_self_lifting==1){
+                            this.ajaxInfo.express_type=2;
+                        }else{
+                            this.ajaxInfo.express_type=0;
+                        }
+                    }
+                });
+
+
+
+                // this.$http.post("{:url('shop/goods/cart')}", {},
+                //         {emulateJSON: true}).then(function (res) {
+                //     if (res.data.code == 0) {
+                //         for (i = 0; i < res.data.data.cartlist.length; i++) {
+                //             if (res.data.data.cartlist[i].selected == 1) {
+                //                 this.cartInfo.push(res.data.data.cartlist[i]);
+                //             }
+                //         }
+                //     }
+                // });
+                this.$http.post("{:url('shop/member/getProvince')}", {},
+                        {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.addressInfo.province = res.data.data;
+                    }
+                });
+                this.$http.post("{:url('shop/member/memberAddress')}", this.address, {
+                    headers: {
+                        authKey: $.cookie('authKey'),
+                        sessionId: $.cookie('sessionId')
+                    }
+                }, {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.addressList=res.data.data.data;
+                    } else {
+                        layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                    }
+                }, function (res) {
+                    layer.msg("获取地址信息失败...", {shade: [0.2, '#393D49']});
+                });
+            },
+            methods: {
+                cutNum: function (index) {
+                    var num = this.cartInfo[index].num;
+                    num--;
+                    if (num < 1) {
+                        return;
+                    } else {
+                        this.cartInfo[index].num = num;
+                    }
+                },
+                addNum: function (index) {
+                    var num = this.cartInfo[index].num;
+                    this.cartInfo[index].num++;
+                },
+                saveAddress: function () {
+                    if (this.address.consigner == '') {
+                        layer.msg("收货人不能为空", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if (this.address.mobile == '') {
+                        layer.msg("手机号码不能为空", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if (!(/^1[34578]\d{9}$/.test(this.address.mobile))) {
+                        layer.msg("请输入正确的手机号码", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if (this.address.province == '' || this.address.city == '' || this.address.district == '' || this.address.address == '') {
+                        layer.msg("请输入完整的地址", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+
+                    var url;
+                    if(this.address.id==''){
+                        url="{:url('shop/member/addMemberAddress')}";
+                    }else{
+                        url="{:url('shop/member/updateMemberAddress')}";
+                    }
+
+                    this.$http.post(url, this.address, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.msg("地址保存成功", {shade: [0.2, '#393D49']},function () {
+                                location.reload();
+                            });
+                            // hideAddress();
+                            // this.addressList=res.data.data.data;
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("地址保存失败", {shade: [0.2, '#393D49']});
+                    });
+                },
+                getCity: function () {
+                    if (this.address.province == '') {
+                        this.addressInfo.city = this.addressInfo.district = [];
+                    }
+                    this.$http.post("{:url('shop/member/getCity')}", {province_id: this.address.province},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressInfo.city = res.data.data;
+                        }
+                    });
+                },
+                getDistrict: function () {
+                    if (this.address.city == '') {
+                        this.addressInfo.district = [];
+                    }
+                    this.$http.post("{:url('shop/member/getDistrict')}", {city_id: this.address.city},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressInfo.district = res.data.data;
+                        }
+                    });
+                },
+                checkDefault:function(index){
+                    this.$http.post("{:url('shop/member/updateAddressDefault')}", {id:this.addressList[index].id}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            // this.addressList=res.data.data.data;
+                            location.reload();
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("获取地址信息失败...", {shade: [0.2, '#393D49']});
+                    });
+                },
+                delAddress:function(index){
+                    this.$http.post("{:url('shop/member/memberAddressDelete')}", {id:this.addressList[index].id}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressList=res.data.data.data;
+                            layer.msg("地址删除成功", {shade: [0.2, '#393D49']},function () {
+                                location.reload();
+                            });
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("获取地址信息失败...", {shade: [0.2, '#393D49']});
+                    });
+                },
+                editAddress:function(index){
+                    this.$http.post("{:url('shop/member/getCity')}", {province_id: this.addressList[index].province},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressInfo.city = res.data.data;
+                            this.$http.post("{:url('shop/member/getDistrict')}", {city_id: this.addressList[index].city},
+                                    {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    this.addressInfo.district = res.data.data;
+                                    this.address={
+                                        id:this.addressList[index].id,
+                                        consigner:this.addressList[index].consigner,
+                                        mobile:this.addressList[index].mobile,
+                                        phone:this.addressList[index].phone,
+                                        province:this.addressList[index].province,
+                                        city:this.addressList[index].city,
+                                        district:this.addressList[index].district,
+                                        address:this.addressList[index].address,
+                                        zip_code:this.addressList[index].zip_code
+                                    };
+                                    showAddressFrame(1);
+                                }
+                            });
+                        }
+                    });
+                },
+                sunmitOrder:function(){
+                    // if(this.addressList==''){
+                    //     layer.msg("请先填写你的收获地址...", {shade: [0.2, '#393D49']});
+                    //     return;
+                    //
+                    //
+                    // }
+                    // var goods_list='';
+                    // for(i=0;i<this.cartInfo.length;i++){
+                    //     if(goods_list==''){
+                    //         goods_list+=this.cartInfo[i].goods_id+":"+this.cartInfo[i].sku_id+":"+this.cartInfo[i].num;
+                    //     }else{
+                    //         goods_list+=","+this.cartInfo[i].goods_id+":"+this.cartInfo[i].sku_id+":"+this.cartInfo[i].num;
+                    //     }
+                    // }
+                    // if(goods_list==""){
+                    //     layer.msg("订单为空，无法提交订单", {shade: [0.2, '#393D49']});
+                    //     return;
+                    // }
+                    // var order={
+                    //     use_coupom:'',
+                    //     integral:'',
+                    //     goods_list:goods_list,
+                    //     leavemessage:'',
+                    //     account_balance:'',
+                    //     pay_type:'',
+                    //     buyer_invoice:''
+                    // };
+                    // this.$http.post("{:url('shop/order/orderCreate')}",order, {
+                    //     headers: {
+                    //         authKey: $.cookie('authKey'),
+                    //         sessionId: $.cookie('sessionId')
+                    //     }
+                    // }, {emulateJSON: true}).then(function (res) {
+                    //     if (res.data.code == 0) {
+                    //         layer.msg("订单提交成功，即将跳转到支付界面", {shade: [0.2, '#393D49']});
+                    //         setInterval(function(){
+                    //             location.href="{:url('pay')}"+"&order_id="+res.data.data.order_id;
+                    //         },2000);
+                    //
+                    //     } else {
+                    //         layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                    //     }
+                    // }, function (res) {
+                    //     layer.msg("提交订单失败...", {shade: [0.2, '#393D49']});
+                    // });
+
+                    var goods_list = '';
+                    for (i = 0; i < this.cartInfo.length; i++) {
+                        if (goods_list == '') {
+                            goods_list += this.cartInfo[i].goods_id + ":" + this.cartInfo[i].sku_id + ":" + this.cartInfo[i].num;
+                        } else {
+                            goods_list += "," + this.cartInfo[i].goods_id + ":" + this.cartInfo[i].sku_id + ":" + this.cartInfo[i].num;
+                        }
+                    }
+                    if (this.addressList.length == 0) {
+                        layer.msg("请先选择收货地址...", {shade: [0.2, '#393D49']});
+                        return
+                    }
+                    if (goods_list == "") {
+                        layer.msg("订单为空，无法提交订单", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if(this.ajaxInfo.express_type==1){
+                        this.ajaxInfo.pick_up_id="";
+                    }else{
+                        if(this.ajaxInfo.pick_type==-1){
+                            layer.msg("请先选择自提点",{shade:[0.2,"#333"]});
+                            return;
+                        }else{
+                            this.ajaxInfo.pick_up_id=this.orderInfo.pickup_point_list.data[this.ajaxInfo.pick_type].id;
+                        }
+                    }
+                    if(this.ajaxInfo.buyer_invoice==0){
+                        if(this.ajaxInfo.buyer_company==''){
+                            layer.msg("请填写发票抬头",{shade:[0.2,"#333"]});
+                            return;
+                        }
+                        if(this.ajaxInfo.buyer_code==''){
+                            layer.msg("请填写纳税人识别码",{shade:[0.2,"#333"]});
+                            return;
+                        }
+                    }
+
+
+                    var order = {
+                        user_coupon: this.ajaxInfo.user_coupon,
+                        integral: this.ajaxInfo.integral!=''?this.ajaxInfo.integral:0,
+                        goods_list: goods_list,
+                        leavemessage: this.ajaxInfo.leavemessage,
+                        account_balance: this.ajaxInfo.account_balance!=''?this.ajaxInfo.account_balance:0,
+                        pay_type: '',
+                        buyer_invoice: this.ajaxInfo.buyer_invoince==1?'':('发票头：'+this.ajaxInfo.buyer_company+';纳税人识别码：'+this.ajaxInfo.buyer_code),
+                        pick_up_id:this.ajaxInfo.pick_up_id,
+                        order_tag:order_tag
+                    };
+                    this.$http.post("{:url('shop/order/orderCreate')}", order, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.msg("订单提交成功，即将跳转到支付界面", {shade: [0.2, '#393D49']});
+                            // return;
+                            setInterval(function(){
+                                location.href = "{:url('pay')}" + "&order_id=" + res.data.data.order_id;
+                            },2000);
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("提交订单失败...", {shade: [0.2, '#393D49']});
+                    });
+
+                },
+                checkInput:function (type) {
+                    if(type=="point"){
+                        var result=true;
+                        var money=parseFloat(this.orderInfo.count_money)-parseFloat(this.orderInfo.discount_money)+parseFloat(this.express)-parseFloat(this.moneyInfo.coupon_money);
+                        var maxPoint=parseInt(money/this.orderInfo.point_convert_rate);
+                        if(!parseInt(this.ajaxInfo.integral) || this.ajaxInfo.integral<0){
+                            this.ajaxInfo.integral=0;
+                            layer.msg("积分必须为大于或等于0的整数",{shade:[0.2,"#333"]});
+                            result=false;
+                        }
+                        if(this.ajaxInfo.integral>this.orderInfo.member_account.point || this.ajaxInfo.integral>maxPoint){
+                            if(this.orderInfo.member_account.point>maxPoint){
+                                this.ajaxInfo.integral=maxPoint;
+                                layer.msg("积分抵扣金额以超过需要支付金额",{shade:[0.2,"#333"]});
+                            }else{
+                                this.ajaxInfo.integral=this.orderInfo.member_account.point;
+                                layer.msg("该积分已超过你当前可用积分",{shade:[0.2,"#333"]});
+                            }
+                            result=false;
+                        }
+                        this.moneyInfo.point_money=this.orderInfo.point_convert_rate*this.ajaxInfo.integral;
+                        return result;
+                    }
+                    if(type=="balance"){
+                        var maxMoney=parseFloat(this.orderInfo.count_money)-parseFloat(this.orderInfo.discount_money)+parseFloat(this.express)-parseFloat(this.moneyInfo.coupon_money)-parseFloat(this.moneyInfo.point_money);
+                        if(!parseFloat(this.ajaxInfo.account_balance) || this.ajaxInfo.account_balance<0){
+                            this.ajaxInfo.account_balance=0;
+                            layer.msg("输入余额必须大于或等于0",{shade:[0.2,"#333"]});
+                        }
+                        if(this.ajaxInfo.account_balance-this.orderInfo.member_account.balance>0 || this.ajaxInfo.account_balance-maxMoney>0){
+                            if(this.ajaxInfo.account_balance>maxMoney){
+                                this.ajaxInfo.account_balance=maxMoney;
+                                layer.msg("输入余额不能超过所需支付金额",{shade:[0.2,"#333"]});
+                            }else{
+                                this.ajaxInfo.account_balance=this.orderInfo.member_account.balance;
+                                layer.msg("输入余额不能超过当前可用余额",{shade:[0.2,"#333"]});
+                            }
+                        }
+                    }
+                },
+                changeCoupon:function (id,money) {
+                    // if(index==''){
+                    //     this.ajaxInfo.user_coupon='';
+                    //     this.moneyInfo.coupon_money=0;
+                    // }else{
+                    //     this.ajaxInfo.user_coupon=id;
+                    //     this.moneyInfo.coupon_money=money;
+                    // }
+                    this.ajaxInfo.user_coupon=id;
+                    this.moneyInfo.coupon_money=money;
+                }
+            },
+            computed: {
+                price: function () {
+                    var num = 0;
+                    for (var i = 0; i < this.cartInfo.length; i++) {
+                        num += this.cartInfo[i].num * this.cartInfo[i].num;
+                    }
+                    return num;
+                },
+                totalPrice: function () {
+                    var price=parseFloat(this.orderInfo.count_money)-parseFloat(this.orderInfo.discount_money)+parseFloat(this.express)-parseFloat(this.moneyInfo.coupon_money)-parseFloat(this.moneyInfo.point_money)-parseFloat(this.ajaxInfo.account_balance);
+                    return price.toFixed(2);
+                },
+                number: function () {
+                    var num = 0;
+                    for (var i = 0; i < this.cartInfo.length; i++) {
+                        if (this.cartInfo[i].selected == 1)
+                            num+=parseInt(this.cartInfo[i].num);
+                    }
+                    return num;
+                },
+                selectedAddress:function(){
+                    var address="";
+                    for(i=0;i<this.addressList.length;i++){
+                        if(this.addressList[i].is_default==1){
+                            address=this.addressList[i].address_info+"&nbsp;"+this.addressList[i].address+"&nbsp;"+this.addressList[i].consigner+"&nbsp;"+this.addressList[i].mobile+"&nbsp;"+this.addressList[i].phone+"&nbsp;邮编："+this.addressList[i].zip_code;
+                            return address;
+                        }
+                    }
+                    return address;
+                }
+            }
+        });
+    });
+    function showAddressFrame(type){
+        if(type==0){
+            main.address={id:'', consigner:'', mobile:'', phone:'', province:'', city:'', district:'', address:'', zip_code:''};
+        }
+        var screenHeight =  $(window).height();
+        var objTop = (screenHeight - $("#address-box").height()) / 2 ;
+        $("div.address-box").css({"top": objTop});
+        $("div.address-box").show();
+        $("#dialogBackground").show();
+    }
+    function hideAddress(){
+        $("div.address-box").hide();
+        $("#dialogBackground").hide();
+    }
+</script>
+</body>
+</html>

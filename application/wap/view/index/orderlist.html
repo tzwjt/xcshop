@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)https://mcheckout.vip.com/checkout.html?t=1504945987 -->
+<html style="font-size: 43.8px;" class="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <link href="__STATIC__/bootstrap-3/css/bootstrap.css" rel="stylesheet">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="__STATIC__/bootstrap-3/js/bootstrap.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        /*响应式布局 start*/
+        function _set_font_size_750() {
+            //先留着这个方法，不要删，要给专题调用
+        }
+        function setRootFontSize() {
+            var width = document.documentElement.clientWidth, fontSize;
+            if (width > 540) {
+                width = 540;
+            }
+            fontSize = (width / 10);
+            document.getElementsByTagName('html')[0].style['font-size'] = fontSize + 'px';
+            window.wapParams = {
+                rootFontSize: fontSize,
+                clientWidth: width
+            };
+        }
+        setRootFontSize();
+        window.addEventListener('resize', function () {
+            setRootFontSize();
+        }, false);
+        /*响应式布局 end*/
+    </script>
+    <link rel="stylesheet" href="__STATIC__/wap/css/vendors.14514243.css">
+    <link rel="stylesheet" href="__STATIC__/wap/css/checkout.097d03bf.css">
+    <script>
+        var nexturl = "orderlist";
+    </script>
+    <style>
+        body, html {
+            overflow: auto;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+        .receiving-info .list .list-item{
+            /*background-color: #aaa;*/
+        }
+        .type-div{
+            position: fixed;
+            top:0;
+            left: 0;
+            width:100%;
+            height:100%;
+            z-index:1666;
+            display: none;
+        }
+        .type-div .hide{
+            display: block!important;
+            width:100%;
+            height:100%;
+            background-color: #000;
+            opacity: 0.4;
+        }
+        .type-div h1{
+            padding: 15px 0;
+            text-align: center;
+            font-size:20px;
+            border-bottom: 1px solid #ccc;
+        }
+        .type-div .content{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width:100%;
+            z-index:6666;
+            opacity: 1;
+            background-color: #fff;
+        }
+        .type-div .list{
+            font-size:15px;
+            color:#666;
+            border-bottom: 1px solid #ccc;
+            padding: 15px 35px;
+            margin: 0;
+            background-image: url("__STATIC__/wap/images/select-1.png");
+            background-position:5px 50%;
+            background-size: 25px;
+            background-repeat: no-repeat;
+
+        }
+        .type-div .list.active{
+            background-image: url("__STATIC__/wap/images/select-2.png");
+
+        }
+        .type-div .foot button{
+            width:70%;padding: 10px 0;margin:15px 5px;background-color: #e80080;border: none;border-radius: 2em;color:#fff;
+        }
+        /*#coupon-type .list{*/
+            /*padding-left: 60px;*/
+            /*height:60px;*/
+            /*background-image: url("__STATIC__/wap/images/coupon-1.png");*/
+            /*background-size: 60px;*/
+            /*border-radius: 2em;*/
+            /*border: 1px solid #ccc;*/
+            /*margin: 5px 10%;*/
+        /*}*/
+        /*#coupon-type .list p{*/
+            /*text-align: center;*/
+        /*}*/
+        /*#coupon-type .list.active{*/
+            /*border-color: #d4237a;*/
+            /*color:#d4237a;*/
+            /*background-image: url("__STATIC__/wap/images/coupon-2.png");*/
+
+        /*}*/
+        .cart-coupon-menu-wrap{
+            margin-top: 1px;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+    {include file="index/auto_login"}
+</head>
+<body>
+<div style="display: none">
+    <img src="__STATIC__/wap/images/select-1.png"/>
+    <img src="__STATIC__/wap/images/select-2.png"/>
+    <img src="__STATIC__/wap/images/coupon-1.png"/>
+    <img src="__STATIC__/wap/images/coupon-2.png"/>
+
+</div>
+<div id="main" v-cloak>
+    <div class="page" id="J-page" style="padding-bottom: 0;">
+        <div style="height:44px;background-color:#000;position: fixed;top:0;left: 0;width:100%;z-index:1555">
+            <div style="width:100%;height: 100%;line-height: 100%;text-align: center;position: absolute;font-size:22px;color:#fff;padding-top: 10px;">确认订单信息</div>
+            <div style="width:24px;height:24px;float: left;margin-top: 10px;margin-left: 10px;position:relative;z-index:5555;">
+                <a href="javascript:window.history.back();">
+                    <img src="__STATIC__/wap/images/back-5.png" style="width:100%;"/></a>
+            </div>
+            <div style="width:24px;height:24px;float: right;margin-top: 10px;margin-right: 10px;position:relative;z-index:5555;">
+                <a href="{:url('index')}">
+                    <img src="__STATIC__/wap/images/home-5.png" style="width:100%;"/></a>
+            </div>
+        </div>
+        <div id="J-receiving-info" style="margin-top: 45px;">
+            <div class="receiving-info">
+                <div class="list" v-for="(item,index) in addressList" v-if="item.is_default==1" @click="addressShow=true">
+                    <a href="javascript:;" class="list-item media more J-receiving-address">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">
+                                        <span class="username">{{item.consigner}}</span>
+                                        <span class="phone-number">{{item.mobile}}</span>
+                                        <span class="phone-number">{{item.phone}}</span>
+                                    </div>
+                                </div>
+                                <div class="item-subtitle"><span v-html="item.address_info"></span>&nbsp;<span
+                                        v-html="item.address"></span></div>
+                            </div>
+                            <i class="icon-back"></i>
+                        </div>
+                    </a>
+                </div>
+                <div class="list" v-if="addressList.length==0">
+                    <a @click="addaddress()" class="list-item media more J-address-empty">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">
+                                        设置收货地址
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="icon-back"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div id="J-cart-info">
+            <div class="shopping-cart-info-box" id="J-shopping-cart-info-box">
+                <div class="section section-cart-order ui-list" id="J-goods-count" data-goods-count="1">
+                    <ul>
+                        <li class="ui-list-item" v-for="(item,index) in cartInfo" style="border-bottom: 1px solid #ccc;">
+                            <div class="ui-list-item-inner">
+                                <a class="ui-list-item-thumb">
+                                    <img :src="item.picture_info.pic_cover_small">
+                                </a>
+                                <div class="ui-list-item-info">
+                                    <a class="meta">
+                                        <h4 class="title">{{item.goods_name}}</h4>
+                                        <p>{{item.sku_name}}</p>
+                                    </a>
+                                    <a class="price">
+                                        <span class="original-price">￥{{item.price}}</span>
+                                    </a>
+                                    <span style="position: absolute;right:1em;bottom: 1em;">X&nbsp;{{item.num}}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="section-footer">
+                        <div class="total-price clearfix">
+                            ¥{{orderInfo.count_money}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="J-cart-countt" onclick="showDiv('pick-point')">
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart">
+                        配送方式
+                        <span style="position: absolute;right:1.5em;font-size:0.9em;color:#999;">{{ajaxInfo.express_type==0?"商家未配置配送方式":(ajaxInfo.express_type==1?"商家配送":"门店自提")}}</span>
+                        <i class="icon-back"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="J-cart-counttt" v-if="ajaxInfo.express_type==2" onclick="$('#pick-address').fadeIn();">
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart">
+                        门店地址选择
+                        <span style="position: absolute;right:1.5em;font-size:0.9em;color:#999;">{{ajaxInfo.pick_info}}</span>
+                        <i class="icon-back"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="J-cart-count">
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart" @click="inputPoing()">
+                        使用积分<span style="font-size:0.7em;color:#999;padding-left: 1em;">(当前积分:{{orderInfo.member_account.point}})</span>
+                        <span style="position: absolute;right:1.5em;font-size:0.9em;color:#999;">{{ajaxInfo.integral}}</span>
+                        <i class="icon-back"></i>
+                        <!--<span style="z-index:1060;position: relative;">使用积分</span>-->
+                        <!--<span style="z-index:1060;position: absolute;bottom: -20px;left: 0;font-size:8px;color:red;">当前可用积分{{orderInfo.member_account.point}},1积分={{orderInfo.point_convert_rate}}元</span>-->
+                        <!--<input type="text" placeholder="" @change="checkInput('point')" v-model="ajaxInfo.integral" style="width:100%;font-size:0.95em;color:#999;height: 100%;position: absolute;top:0;left: 0;border:none;text-align: right;z-index:1050;">-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="J-cart-count11">
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart" @click="inputBalance()">
+                        使用余额<span style="font-size:0.7em;color:#999;padding-left: 1em;">(当前余额:{{orderInfo.member_account.balance}}元)</span>
+                        <span style="position: absolute;right:1.5em;font-size:0.9em;color:#999;">{{ajaxInfo.account_balance}}</span>
+                        <i class="icon-back"></i>
+                        <!--<span style="z-index:1060;position: relative;">使用余额</span>-->
+                        <!--<span style="z-index:1060;position: absolute;bottom: -20px;left: 0;font-size:8px;color:red;">当前可用余额¥{{orderInfo.member_account.balance}}</span>-->
+                        <!--<input type="text" placeholder="" @change="checkInput('balance')" v-model="ajaxInfo.account_balance" style="width:100%;font-size:0.95em;color:#999;height: 100%;position: absolute;top:0;left: 0;border:none;text-align: right;z-index:1050;">-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="J-cart-coupon" onclick="showDiv('coupon')">
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart">
+                        使用优惠券
+                        <span style="position: absolute;right:1.5em;font-size:0.9em;color:#999;">{{ajaxInfo.user_coupon_name}}</span>
+                        <i class="icon-back"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="J-cart-countttk" onclick="$('#invoince-type').fadeIn();">
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart">
+                        是否需要发票
+                        <span style="position: absolute;right:1.5em;font-size:0.9em;color:#999;">{{ajaxInfo.buyer_invoice==1?"不需要":"需要发票"}}</span>
+                        <i class="icon-back"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="J-cart-countttk2" v-if="ajaxInfo.buyer_invoice==0" style="margin: 5px 0;">
+            <h1 style="background-color: #fff;text-align: center;font-size:1.5em;padding: 15px 0;color:#666;">发票信息</h1>
+            <h4 style="background-color: #fff;padding-bottom: 5px;text-align: center;color:#FF9800;" v-if="orderInfo.shop_config.order_invoice_tax!=0">将收取{{orderInfo.shop_config.order_invoice_tax}}%的税率</h4>
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart">
+                        <span style="z-index:1060;position: relative;">发票抬头:</span>
+                        <input type="text" v-model="ajaxInfo.buyer_company" placeholder="个人或公司发票抬头" style="width:100%;font-size:0.95em;color:#999;height: 100%;position: absolute;top:0;left: 0;border:none;text-align: right;z-index:1050;">
+                    </div>
+                </div>
+            </div>
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart">
+                        <span style="z-index:1060;position: relative;">纳税人识别码:</span>
+                        <input type="text" v-model="ajaxInfo.buyer_code" placeholder="纳税人识别码" style="width:100%;font-size:0.95em;color:#999;height: 100%;position: absolute;top:0;left: 0;border:none;text-align: right;z-index:1050;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="J-cart-count1112">
+            <div class="J-cart-coupon-wrap">
+                <div class="cart-coupon-menu-wrap">
+                    <div class="cart-coupon-menu J-cart-coupon-menu " mars_sead="active_te_use_coupon_giftcard_cart" @click="inputMessage()">
+                        买家留言
+                        <span style="position: absolute;right:1.5em;font-size:0.9em;color:#999;">{{ajaxInfo.leavemessage==''?"买家未留言":"买家已留言"}}</span>
+                        <i class="icon-back"></i>
+
+                        <!--<span style="z-index:1060;position: relative;"></span>-->
+                        <!--<input type="text" placeholder="" v-model="ajaxInfo.leavemessage" style="width:100%;font-size:0.95em;color:#999;height: 100%;position: absolute;top:0;left: 0;border:none;text-align: right;z-index:1050;padding-left: 6em;">-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="J-checkout-money" style="padding-bottom: 5px;">
+            <div class="J-checkout-money-wrap">
+                <ul class="u-checkout-money">
+                    <li class="item-money">商品总金额 <span>¥&nbsp;{{orderInfo.count_money}}</span></li>
+                    <li class="item-money">运费 <span>+¥&nbsp;{{express}}</span></li>
+                    <li class="item-money">优惠减 <span>-¥&nbsp;{{orderInfo.discount_money}}</span></li>
+                    <li class="item-money">积分抵 <span>-¥&nbsp;{{moneyInfo.point_money}}</span></li>
+                    <li class="item-money">抵用券抵 <span>-¥&nbsp;{{moneyInfo.coupon_money}}</span></li>
+                    <li class="item-money">余额支付 <span>-¥&nbsp;{{ajaxInfo.account_balance}}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div style="height:85px"></div>
+    <div id="J-checkout-pay" id="div-pay" style="display: block;position: fixed;z-index:1555;">
+        <div class="checkout-pay J-checkout-pay-wrap" style="position: inherit;">
+            <div class="u-checkout-pay">
+                <div class="pay-content J-pay-content border-t">
+                    <div class="total-money">还需支付:<span>¥&nbsp;{{totalPrice}}</span></div>
+                    <!-- 接收银台 -->
+                    <div style="text-align: center;">
+                        <button type="button" class="btn btn-danger btn-right btn-pay-online J-online-pay" @click="sunmitOrder()" style="width:80%;">
+                            提交订单
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mask1504958741449" v-if="addressShow" class="mask"
+         style="z-index: 1777; display: block; opacity: 1;"></div>
+    <div id="J-modal1504958182251" v-if="addressShow" class="modal modal-address from-bottom"
+         style="position: fixed; display: block; opacity: 1; height:auto;z-index:1778;">
+        <div class="modal-container transition-in" style="height:auto;">
+            <div class="modal-header" style="display: block;">
+                <h3 class="border-b">选择收货地址</h3>
+                <a href="javascript:;" class="close J-modal-close-address-list" @click="addressShow=false">
+                    <i class="icon-close"></i>
+                </a>
+            </div>
+            <div class="modal-body" style="padding-bottom: 0;">
+                <div class="modal-main">
+                    <ul class="list">
+                        <li class="list-item media checkbox" v-for="(item,index) in addressList" @click="checkDefault(index)">
+                            <div class="item-content J-select-address">
+                                <div class="item-left">
+                                    <i class="J-icon-circle"
+                                       :class="{'icon-circle-selected':item.is_default==1,'icon-circle':item.is_default!=1}"></i>
+                                </div>
+                                <div class="item-inner" style="padding-top: 5px;padding-bottom: 5px;">
+                                    <div class="item-title-row">
+                                        <div class="item-title">
+                                            <span class="username">{{item.consigner}}</span>
+                                            <span class="phone-number">{{item.mobile}}</span>
+                                            <span class="phone-number">{{item.phone}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-subtitle"><span v-html="item.address_info"></span>&nbsp;<span
+                                            v-html="item.address"></span></div>
+                                </div>
+                            </div>
+                            <div class="address-handle" style="top:-5px;right:5px;">
+                                <a @click="editAddress(index)" class="J-update-address">修改</a>
+                                <a class="J-delete-address" @click="delAddress(index)">删除</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="add-address border-t" style="padding: 5px 0;text-align: center;">
+                        <a class="btn btn-danger btn-sm" @click="addaddress()">添加收货地址</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--收货方式-->
+    <div class="type-div" id="express-type">
+        <div class="hide"></div>
+        <div class="content">
+            <h1>选择配送方式</h1>
+            <img src="__STATIC__/wap/images/close.png" style="width:28px;position: absolute;top:10px;right:10px;" onclick="$('.type-div').hide();"/>
+            <div class="select">
+                <div class="list" :class="{active:ajaxInfo.express_type==1}" @click="changeType('express',1)" v-if="orderInfo.shop_config.seller_dispatching==1">商家配送</div>
+                <div class="list" :class="{active:ajaxInfo.express_type==2}" @click="changeType('express',2)" v-if="orderInfo.shop_config.buyer_self_lifting==1">门店自提</div>
+            </div>
+            <div style="margin: 30px 0;font-size:1.2em;text-align: center;color:#888;" v-if="orderInfo.shop_config.seller_dispatching!=1&&orderInfo.shop_config.buyer_self_lifting!=1">
+                商家未配置配送方式
+            </div>
+            <div class="foot" style="text-align: center;">
+                <button type="button" class="btn btn-info" style="">确定</button>
+            </div>
+        </div>
+    </div>
+    <div class="type-div" id="pick-address">
+        <div class="hide"></div>
+        <div class="content">
+            <h1>选择自提点</h1>
+            <img src="__STATIC__/wap/images/close.png" style="width:28px;position: absolute;top:10px;right:10px;" onclick="$('.type-div').hide();"/>
+            <div class="select">
+                <div class="list" :class="{active:ajaxInfo.pick_type==index}" @click="changeType('pick',index)" v-for="(item,index) in orderInfo.pickup_point_list.data">
+                    <p>{{item.name}}</p>
+                    <p style="font-size:0.8em;padding-top: 0.5em;">地址:{{item.province_name}}{{item.city_name}}{{item.district_name}}{{item.address}}</p>
+                </div>
+            </div>
+            <div class="foot" style="text-align: center;">
+                <button type="button" class="btn btn-info" style="">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--优惠券选择-->
+    <div class="type-div" id="coupon-type">
+        <div class="hide"></div>
+        <div class="content">
+            <h1>优惠券</h1>
+            <img src="__STATIC__/wap/images/close.png" style="width:28px;position: absolute;top:10px;right:10px;" onclick="$('.type-div').hide();"/>
+
+            <div class="select">
+                <div class="list" :class="{active:ajaxInfo.user_coupon==''}" @click="changeType('coupon','')" style="padding-left: 45px;">暂不使用优惠券</div>
+                <div class="list" :class="{active:ajaxInfo.user_coupon==item.id}" @click="changeType('coupon',item.id,index)" v-for="(item,index) in orderInfo.coupon_list" style="padding: 15px 10px 15px 35px;">
+                    <p style="padding-left: 10px;">{{item.coupon_name}}<span class="pull-right" style="font-size:1.5em;padding-top: 0.3em;">¥{{item.money}}</span></p>
+                    <p style="padding-top: 5px;font-size:0.8em;color:#888;padding-left: 10px;">满元减{{item.money}}元</p>
+                </div>
+            </div>
+
+            <!--<div class="select">-->
+                <!--<div class="list" :class="{active:ajaxInfo.user_coupon==''}" @click="changeType('coupon','')">-->
+                    <!--<div class="div-left" style="width: 75%;float: left;height: 100%;">-->
+                        <!--<p>暂不使用优惠券</p>-->
+                        <!--<p>有效期至:永久</p>-->
+                    <!--</div>-->
+                    <!--<div class="div-right" style="width:25%;float: left;height: 100%;border-left:1px dotted #ccc;">-->
+                        <!--<p style="width:100%;height: 100%;line-height: 100%;text-align: center;padding-top: 0.1em;font-size:1.6em;">¥0</p>-->
+                    <!--</div>-->
+                    <!--<div style="clear: both;"></div>-->
+                <!--</div>-->
+
+                <!--<div class="list" :class="{active:ajaxInfo.user_coupon==item.id}" v-for="(item,index) in orderInfo.coupon_list" @click="changeType('coupon',item.id,index)">-->
+                    <!--<div class="div-left" style="width: 75%;float: left;height: 100%;">-->
+                        <!--<p>{{item.coupon_name}}</p>-->
+                        <!--<p>有效期至:{{item.end_tiem}}</p>-->
+                    <!--</div>-->
+                    <!--<div class="div-right" style="width:25%;float: left;height: 100%;border-left:1px dotted #ccc;">-->
+                        <!--<p style="width:100%;height: 100%;line-height: 100%;text-align: center;padding-top: 0.1em;font-size:1.6em;">¥{{item.money}}</p>-->
+                    <!--</div>-->
+                    <!--<div style="clear: both;"></div>-->
+                <!--</div>-->
+                <!--<h2 v-if="orderInfo.coupon_list.length==0" style="margin: 20px 0;font-size:1.2em;color:#666;text-align: center;">暂无可使用优惠券</h2>-->
+            <!--</div>-->
+            <div class="foot" style="text-align: center;">
+                <button type="button" class="btn btn-info">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="type-div" id="invoince-type">
+        <div class="hide"></div>
+        <div class="content">
+            <h1>是否需要发票</h1>
+            <img src="__STATIC__/wap/images/close.png" style="width:28px;position: absolute;top:10px;right:10px;" onclick="$('.type-div').hide();"/>
+            <div class="select">
+                <div class="list" :class="{active:ajaxInfo.buyer_invoice==1}" @click="changeType('invoince',1)">不需要</div>
+                <div class="list" :class="{active:ajaxInfo.buyer_invoice==0}" @click="changeType('invoince',0)">需要发票</div>
+            </div>
+            <div class="foot" style="text-align: center;">
+                <button type="button" class="btn btn-info" style="">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+
+    var main;
+    var order_tag;
+    $(function () {
+        main = new Vue({
+            el: '#main',
+            data: {
+                orderInfo:{
+                    pickup_point_list:{data:[]},
+                    coupon_list:[],
+                    shop_config:{
+                        seller_dispatching:1,
+                        buyer_self_lifting:1
+                    },
+                    member_account:{
+                        point:0,
+                        balance:0
+                    }
+                },
+                cartInfo: [],
+                address: {
+                    id: '',
+                    consigner: '',
+                    mobile: '',
+                    phone: '',
+                    province: '',
+                    city: '',
+                    district: '',
+                    address: '',
+                    zip_code: ''
+                },
+                addressInfo: {
+                    province: [],
+                    city: [],
+                    district: []
+                },
+                addressList: [],
+                addressShow: false,
+                ajaxInfo:{
+                    express_type:0,
+                    pick_up_id:'',
+                    buyer_invoice:1,
+                    integral:0,
+                    account_balance:0,
+                    leavemessage:'',
+                    user_coupon:'',
+                    user_coupon_name:'',
+                    pick_type:-1 ,
+                    pick_info:'请选择自提点',
+                    buyer_company:'',
+                    buyer_code:''
+                },
+                moneyInfo:{
+                    coupon_money:0,
+                    point_money:0
+                },
+                express:0
+            },
+            mounted: function () {
+                var goods_list='{$goods_list}';
+                order_tag=goods_list==''?'cart':'buy_now';
+                this.$http.post("{:url('shop/order/orderInfo')}", {goods_list:goods_list,order_tag:order_tag},{
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.orderInfo=res.data.data;
+                        if(this.orderInfo.promotion_full_mail.is_open==1 && this.orderInfo.promotion_full_mail.full_mail_money<= this.orderInfo.count_money){
+                            this.express=0;
+                        }else{
+                            this.express=this.orderInfo.express;
+                        }
+                        if(this.orderInfo.coupon_list.length==0){
+                            this.ajaxInfo.user_coupon_name='暂无可用优惠券';
+                        }else{
+                            this.ajaxInfo.user_coupon_name='请选择优惠券';
+                        }
+                        this.addressList = res.data.data.address_list.data;
+                        this.cartInfo=res.data.data.select_goods_list.data;
+                        if(this.orderInfo.shop_config.seller_dispatching==1){
+                            this.ajaxInfo.express_type=1;
+                        }else if(this.orderInfo.shop_config.buyer_self_lifting==1){
+                            this.ajaxInfo.express_type=2;
+                        }else{
+                            this.ajaxInfo.express_type=0;
+                        }
+                        // layer.load();
+                    }
+                });
+            },
+            methods: {
+                cutNum: function (index) {
+                    var num = this.cartInfo[index].num;
+                    num--;
+                    if (num < 1) {
+                        return;
+                    } else {
+                        this.cartInfo[index].num = num;
+                    }
+                },
+                addNum: function (index) {
+                    var num = this.cartInfo[index].num;
+                    this.cartInfo[index].num++;
+                },
+                checkDefault: function (index) {
+                    layer.load(1, {shade: [0.2, '#393D49']});
+                    this.$http.post("{:url('shop/member/updateAddressDefault')}", {id: this.addressList[index].id}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            // layer.closeAll("loading");
+                            // this.addressList = res.data.data.data;
+                            location.reload();
+                        } else {
+                            // layer.closeAll("loading");
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.closeAll("loading");
+                        layer.msg("设置默认地址失败...", {shade: [0.2, '#393D49']});
+                    });
+                },
+                delAddress: function (index) {
+                    this.$http.post("{:url('shop/member/memberAddressDelete')}", {id: this.addressList[index].id}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressList = res.data.data.data;
+                            layer.msg("地址删除成功", {shade: [0.2, '#393D49']});
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("获取地址信息失败...", {shade: [0.2, '#393D49']});
+                    });
+                },
+                sunmitOrder: function () {
+                    var goods_list = '';
+                    for (i = 0; i < this.cartInfo.length; i++) {
+                        if (goods_list == '') {
+                            goods_list += this.cartInfo[i].goods_id + ":" + this.cartInfo[i].sku_id + ":" + this.cartInfo[i].num;
+                        } else {
+                            goods_list += "," + this.cartInfo[i].goods_id + ":" + this.cartInfo[i].sku_id + ":" + this.cartInfo[i].num;
+                        }
+                    }
+                    if (this.addressList.length == 0) {
+                        layer.msg("请先选择收货地址...", {shade: [0.2, '#393D49']});
+                        return
+                    }
+                    if (goods_list == "") {
+                        layer.msg("订单为空，无法提交订单", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if(this.ajaxInfo.express_type==1){
+                        this.ajaxInfo.pick_up_id="";
+                    }else{
+                        if(this.ajaxInfo.pick_type==-1){
+                            layer.msg("请先选择自提点",{shade:[0.2,"#333"]});
+                            return;
+                        }else{
+                            this.ajaxInfo.pick_up_id=this.orderInfo.pickup_point_list.data[this.ajaxInfo.pick_type].id;
+                        }
+                    }
+                    if(this.ajaxInfo.buyer_invoice==0){
+                        if(this.ajaxInfo.buyer_company==''){
+                            layer.msg("请填写发票抬头",{shade:[0.2,"#333"]});
+                            return;
+                        }
+                        if(this.ajaxInfo.buyer_code==''){
+                            layer.msg("请填写纳税人识别码",{shade:[0.2,"#333"]});
+                            return;
+                        }
+                    }
+                    var order = {
+                        user_coupon: this.ajaxInfo.user_coupon,
+                        integral: this.ajaxInfo.integral!=''?this.ajaxInfo.integral:0,
+                        goods_list: goods_list,
+                        leavemessage: this.ajaxInfo.leavemessage,
+                        account_balance: this.ajaxInfo.account_balance!=''?this.ajaxInfo.account_balance:0,
+                        pay_type: '',
+                        buyer_invoice: this.ajaxInfo.buyer_invoince==1?'':('发票头：'+this.ajaxInfo.buyer_company+';纳税人识别码：'+this.ajaxInfo.buyer_code),
+                        pick_up_id:this.ajaxInfo.pick_up_id,
+                        order_tag:order_tag
+                    };
+                    this.$http.post("{:url('shop/order/orderCreate')}", order, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.msg("订单提交成功，即将跳转到支付界面", {shade: [0.2, '#393D49']});
+                            setInterval(function(){
+                                location.href = "{:url('order_detail')}" + "&order_id=" + res.data.data.order_id;
+                            },2000);
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("提交订单失败...", {shade: [0.2, '#393D49']});
+                    });
+                },
+                addaddress: function () {
+                    location.href = "{:url('addaddress')}" + "&orginalurl=" + encodeURIComponent(location.href);
+                },
+                editAddress: function (index) {
+                    location.href = "{:url('addaddress')}" + "&orginalurl=" + encodeURIComponent(location.href) + "&address_id=" + this.addressList[index].id + "&province=" + this.addressList[index].province + "&city=" + this.addressList[index].city + "&district=" + this.addressList[index].district;
+                },
+                changeType:function (type,val,index) {
+                    if(type=="express"){
+                        this.ajaxInfo.express_type=val;
+                    }
+                    if(type=="invoince"){
+                        this.ajaxInfo.buyer_invoice=val;
+
+                    }
+                    if(type=='pick'){
+                        this.ajaxInfo.pick_type=val;
+                        this.ajaxInfo.pick_info=this.orderInfo.pickup_point_list.data[val].name;
+                    }
+                    if(type=='coupon'){
+                        this.ajaxInfo.user_coupon=val;
+                        if(val==''){
+                            this.ajaxInfo.user_coupon_name="不使用优惠券";
+                            this.moneyInfo.coupon_money=0;
+                        }else{
+                            this.moneyInfo.coupon_money=this.orderInfo.coupon_list[index].money;
+                            this.ajaxInfo.user_coupon_name="优惠"+this.orderInfo.coupon_list[index].money+"元";
+                        }
+                    }
+                    setTimeout(function () {
+                        $(".type-div").fadeOut();
+                    },500)
+                },
+                checkInput:function (type) {
+                    if(type=="point"){
+                        var result=true;
+                        var money=parseFloat(this.orderInfo.count_money)-parseFloat(this.orderInfo.discount_money)+parseFloat(this.express)-parseFloat(this.moneyInfo.coupon_money);
+                        var maxPoint=parseInt(money/this.orderInfo.point_convert_rate);
+                        if(!parseInt(this.ajaxInfo.integral) || this.ajaxInfo.integral<0){
+                            this.ajaxInfo.integral=0;
+                            layer.msg("积分必须为大于或等于0的整数",{shade:[0.2,"#333"]});
+                            result=false;
+                        }
+                        if(this.ajaxInfo.integral>this.orderInfo.member_account.point || this.ajaxInfo.integral>maxPoint){
+                            if(this.orderInfo.member_account.point>maxPoint){
+                                this.ajaxInfo.integral=maxPoint;
+                                layer.msg("积分抵扣金额以超过需要支付金额",{shade:[0.2,"#333"]});
+                            }else{
+                                this.ajaxInfo.integral=this.orderInfo.member_account.point;
+                                layer.msg("该积分已超过你当前可用积分",{shade:[0.2,"#333"]});
+                            }
+                            result=false;
+                        }
+                        this.moneyInfo.point_money=this.orderInfo.point_convert_rate*this.ajaxInfo.integral;
+                        return result;
+                    }
+                    if(type=="balance"){
+                        var maxMoney=parseFloat(this.orderInfo.count_money)-parseFloat(this.orderInfo.discount_money)+parseFloat(this.express)-parseFloat(this.moneyInfo.coupon_money)-parseFloat(this.moneyInfo.point_money);
+                        if(!parseFloat(this.ajaxInfo.account_balance) || this.ajaxInfo.account_balance<0){
+                            this.ajaxInfo.account_balance=0;
+                            layer.msg("输入余额必须大于或等于0",{shade:[0.2,"#333"]});
+                        }
+                        // alert("maxMoney"+maxMoney);
+                        // alert("this.ajaxInfo.account_balance"+this.ajaxInfo.account_balance);
+                        // alert("this.orderInfo.member_account.balance"+this.orderInfo.member_account.balance);
+                        // alert(this.ajaxInfo.account_balance-this.orderInfo.member_account.balance>0);
+                        // alert(this.ajaxInfo.account_balance>maxMoney);
+
+                        if(this.ajaxInfo.account_balance-this.orderInfo.member_account.balance>0 || this.ajaxInfo.account_balance-maxMoney>0){
+                            if(this.ajaxInfo.account_balance>maxMoney){
+                                this.ajaxInfo.account_balance=maxMoney;
+                                layer.msg("输入余额不能超过所需支付金额",{shade:[0.2,"#333"]});
+                            }else{
+                                this.ajaxInfo.account_balance=this.orderInfo.member_account.balance;
+                                layer.msg("输入余额不能超过当前可用余额",{shade:[0.2,"#333"]});
+                            }
+                        }
+                    }
+                },
+                inputPoing:function () {
+                    if(this.orderInfo.member_account.point<=0){
+                        layer.msg('积分不足',{shade:[0.3,"#333"]});
+                        return;
+                    }
+                    var title='当前可用积分'+this.orderInfo.member_account.point+'(1积分=' + this.orderInfo.point_convert_rate+'元)';
+                    layer.prompt({title: title, formType: 0}, function(pass, index){
+                        main.ajaxInfo.integral=pass;
+                        main.checkInput('point');
+                        layer.close(index);
+
+                    });
+                },
+                inputBalance:function () {
+                    if(this.orderInfo.member_account.balance<=0){
+                        layer.msg('余额不足',{shade:[0.3,"#333"]});
+                        return;
+                    }
+                    var title='当前可用余额为'+this.orderInfo.member_account.balance+"元";
+                    layer.prompt({title: title, formType: 0}, function(pass, index){
+                        main.ajaxInfo.account_balance=pass;
+                        main.checkInput('balance');
+                        layer.close(index);
+                    });
+                },
+                inputMessage:function () {
+
+                    layer.prompt({title: "请输入你的留言", formType: 2,value:main.ajaxInfo.leavemessage}, function(text, index){
+                        main.ajaxInfo.leavemessage=text;
+                        layer.close(index);
+                    });
+
+                }
+            },
+            computed: {
+                price: function () {
+                    var num = 0;
+                    for (var i = 0; i < this.cartInfo.length; i++) {
+                        num += this.cartInfo[i].num * this.cartInfo[i].num;
+                    }
+                    return num;
+                },
+                totalPrice: function () {
+                    var price=parseFloat(this.orderInfo.count_money)-parseFloat(this.orderInfo.discount_money)+parseFloat(this.express)-parseFloat(this.moneyInfo.coupon_money)-parseFloat(this.moneyInfo.point_money)-parseFloat(this.ajaxInfo.account_balance);
+                    return price.toFixed(2);
+                    },
+                number: function () {
+                    var num = 0;
+                    for (var i = 0; i < this.cartInfo.length; i++) {
+                        if (this.cartInfo[i].selected == 1)
+                            num += this.cartInfo[i].num;
+                    }
+                    return num;
+                },
+                selectedAddress: function () {
+                    var address = "";
+                    for (i = 0; i < this.addressList.length; i++) {
+                        if (this.addressList[i].is_default == 1) {
+                            address = this.addressList[i].address_info + "&nbsp;" + this.addressList[i].address + "&nbsp;" + this.addressList[i].consigner + "&nbsp;" + this.addressList[i].mobile + "&nbsp;" + this.addressList[i].phone + "&nbsp;邮编：" + this.addressList[i].zip_code;
+                            return address;
+                        }
+                    }
+                    return address;
+                }
+            }
+        });
+        $(".type-div .foot button").click(function () {
+            $(".type-div").fadeOut();
+        });
+    });
+    function showDiv(type) {
+        if(type=='coupon'){
+            if(main.orderInfo.coupon_list.length!=0){
+                $("#coupon-type").fadeIn();
+            }
+        }
+        if(type=='pick-point'){
+            if(main.orderInfo.pickup_point_list.length==0){
+                layer.msg("暂无自提点，目前只能商家配送");
+                return;
+            }else{
+                $('#express-type').fadeIn();
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

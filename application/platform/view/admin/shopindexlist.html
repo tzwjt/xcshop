@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+
+    <style>
+        .Switch_FlatRadius.On span.switch-open{background-color: #0072D2;border-color: #0072D2;}
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+        table td{
+            text-align: center;
+        }
+        a{
+            color:#0072D2;
+        }
+    </style>
+</head>
+<body>
+{include file='index/head'/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file='index/nav_left'/}
+        <nav>
+            <ul>
+                <li class="selected" onclick="location.href='{:url('shopindexlist')}'" title="商城首页层">商城首页层</li>
+                <li onclick="location.href='{:url('shopMenuList')}'" title="商城菜单">商城菜单</li>
+                <li onclick="location.href='{:url('shopIntroduce')}'" title="商城介绍">商城介绍</li>
+
+            </ul>
+        </nav>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    商城首页层
+                </div>
+            </div>
+        </div>
+
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">商城首页层</li>
+                </ul>
+            </nav>
+            <div class="right-side-operation">
+                <ul>
+                    <li><a href="{:url('addshopindex')}"><i class="fa fa-plus-circle"></i>&nbsp;添加楼层</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main">
+            <table class="table-class">
+                <thead>
+                <!--名称（title)、位置类型（sort_name)、层次（0表示“最上层轮播）、1表示“第一层次”以此类推）、类别（type, 1表示“图片”， 2表示“视频”， 3表示“图片+视频），-->
+                <!--是否启用（is_use ,1表示“是”， 0表示“否”) 操作（编辑，删除）-->
+                <tr>
+                    <th>编号</th>
+                    <th>名称</th>
+                    <th>位置类型</th>
+                    <th>层次</th>
+                    <th>类别</th>
+                    <th>是否启用</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="list">
+                <tr v-for="(item,index) in info.list">
+                    <td>{{(info.page_index-1)*info.page_size+index+1}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.sort_name}}</td>
+                    <td>{{item.position}}</td>
+                    <td>{{item.type_name}}</td>
+                    <td>
+                        <a v-if="item.is_use==1" style="color:green;" @click="setUse(item.id,0)">启用</a>
+                        <a v-if="item.is_use==0" style="color:red;" @click="setUse(item.id,1)">暂停</a>
+                    </td>
+                    <td>
+                        <a style="color:blue" :href="'{:url('editshopindexblock')}&block_id='+item.id">编辑</a>
+                        <a style="color:red" @click="delBlock(item.id)">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="7" style="text-align: center" id="pagelist"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </section>
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname= '{$platformName}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                info:{
+                    page_index:1,
+                    page_size:10,
+                    title:'',
+                    sort:'',
+                    list:[]
+                }
+            },
+            mounted:function () {
+                this.getInfo();
+            },
+            methods:{
+                getInfo:function () {
+                    this.$http.post("{:url('platform/System/shopIndexBlockList')}", {
+                            page_index:this.info.page_index,
+                            page_size:this.info.page_size,
+                            title:this.info.title,
+                            sort:this.info.sort,
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.info.list=res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.info.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: vueMain.info.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.info.page_index = obj.curr;
+                                            vueMain.getInfo();
+                                        }
+                                    }
+                                });
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                delBlock:function (id) {
+                    layer.confirm('你确定要删除该数据吗？', {
+                        btn: ['确定','取消']//按钮
+                    }, function(){
+                        vueMain.$http.post("{:url('platform/System/delShopIndexBlock')}", {block_id:id},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert("删除成功!",{icon:6});
+                                this.getInfo();
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+
+                    });
+
+                },
+                setUse:function (id,use) {
+                    layer.confirm((use==1?'启用':'关闭')+'该楼层吗？', {
+                        btn: ['确定','取消'], //按钮
+                        icon:3
+                    }, function(){
+                        vueMain.$http.post("{:url('platform/System/setShopIndexBlockUse')}", {block_id:id,is_use:use},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6});
+                                this.getInfo();
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+
+                    });
+
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

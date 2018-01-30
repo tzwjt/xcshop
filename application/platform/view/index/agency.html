@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <script src="__STATIC__/admin/js/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/member_list.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+
+    <style>
+        .head-portrait {
+            margin-top: 15px;
+        }
+
+        .niu-a {
+            width: 70px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            text-align: center;
+            display: inline-block;
+            border-width: 1px;
+            border-style: solid;
+            margin-top: 0.5em;
+            font-size: 10px;
+            border-radius: 5px;
+        }
+
+        .modal-infp-style table tr td {
+            border: none;
+        }
+
+        .modal.fade.in {
+            top: 5px;
+        }
+
+        .modal-body {
+            padding: 0px;
+        }
+
+        .modal-infp-style table tr td {
+            padding: 4px;
+        }
+
+        #login-modal td, #rate-modal td, #adjust-modal td {
+            padding: 10px 15px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        #order-list-table td {
+            text-align: center !important;
+        }
+
+        #total-data .li-data {
+            color: #fff;
+            width: 19%;
+            margin: 5px 1%;
+            height: 100px;
+            float: left;
+            padding: 5px 2%;
+        }
+
+        #total-data .li-data p {
+            margin: 5px 0;
+        }
+        #agent-type-2 input[disabled]{
+            background-color: #fff;
+        }
+        .modal{
+            max-height:95%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
+    <script>
+        var UPLOADAGENT = 'UPLOAD_AGENT';
+    </script>
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak v-if="is_show">
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+            <nav>
+                {foreach item="vo" name="module_second"}
+
+                <li {if condition="$vo['selected'] eq true"}
+                    class='selected'
+                    {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                {/foreach}
+                <!--{include file="index/agency_nav"/}-->
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                       代理商列表
+                    </div>
+                </div>
+            </div>
+            <div id="total-data">
+                <div class="li-data" style="background-color: #03A9F4;">
+                    <p>有效商家总数：{{totalData.agent_validcount}}</p>
+                    <p>代理商数：{{totalData.agent_first_validcount}}</p>
+                    <p>加盟店数：{{totalData.agent_second_validcount}}</p>
+                    <p>商家有效会员数：{{totalData.memeber_validcount}}</p>
+                </div>
+                <div class="li-data" style="background-color: #F96969;">
+                    <p>商家有效订单数：{{totalData.order_validcount}}</p>
+                    <p>商家销售总额：¥{{totalData.sales_total_money}}</p>
+                </div>
+                <div class="li-data" style="background-color: #FF9800;">
+                    <p>商家直接佣金总额：¥{{totalData.commission_first_total_money}}</p>
+                    <p>商家间接佣金总额：¥{{totalData.commission_second_total_money}}</p>
+                    <p>商家佣金调整额: ¥{{totalData.commission_adjust_total_money}}</p>
+                    <p>商家佣金总额：¥{{totalData.commission_total_money}}</p>
+                </div>
+                <div class="li-data" style="background-color: #33CDA6;">
+                    <p>商家收益总额：¥{{totalData.commission_total_money}}</p>
+                    <p>商家收益提取总额：¥{{totalData.withdraw_total_money}}</p>
+                    <p>商家收益剩余额：¥{{totalData.commission_remain_total_money}}</p>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li :class="{selected:status==-1}" @click="searchByStatus(-1)">全部
+                        </li>
+                        <li :class="{selected:status==0}" @click="searchByStatus(0)">未完善
+                        </li>
+                        <li :class="{selected:status==1}" @click="searchByStatus(1)">待审核
+                        </li>
+                        <li :class="{selected:status==2}" @click="searchByStatus(2)">正常
+                        </li>
+                        <li :class="{selected:status==3}" @click="searchByStatus(3)">未通过
+                        </li>
+                        <li :class="{selected:status==4}" @click="searchByStatus(4)">暂停
+                        </li>
+                        <li :class="{selected:status==5}" @click="searchByStatus(5)">无效
+                        </li>
+                    </ul>
+                </nav>
+                <div class="right-side-operation">
+                    <ul>
+                        <li><a href="javascript:;" onclick="add_agency();" style="color:#1c8fef"><i
+                                class="fa fa-plus-circle"></i>&nbsp;增加代理商</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ns-main">
+                <table class="mytable">
+                    <tr>
+                        <th>
+                            <input type="text" id='search_text' placeholder="输入手机号/邮箱/昵称" class="input-common"/>
+                            <input type="button" onclick="searchData()" value="搜索" class="btn-common"/>
+                        </th>
+                    </tr>
+                </table>
+                <table class="table-class">
+                    <thead>
+                    <tr align="center">
+                        <th style="width: 20%;">代理商</th>
+                        <th>类别</th>
+                        <th>地区</th>
+                        <th>收益</th>
+                        <th>数据</th>
+                        <th>关系</th>
+                        <th>状态</th>
+                        <th style="width: 25%;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productTbody">
+                    <tr align="center" v-for="(item,index) in agencyInfo">
+                        <td align="left">
+                            <div style="text-align: center;width:100%;">
+                                <label style="float:none;width:100%">{{item.agent_name}}</label>
+                                <label style="float:none;width:100%">账号：{{item.user_name}}</label>
+                                <label style="float:none;width:100%">识别码:{{item.identify_code}}</label>
+                                <label style="float:none;width:100%">创建时间:{{item.create_time}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <label style="float:none;width:100%">{{item.agent_type_name}}</label>
+                            <label style="float:none;width:100%"><a style="color:#5bb75b;" @click="agent_type_modal(item,1)" v-if="item.agent_type==2">升级</a></label>
+                            <label style="float:none;width:100%"><a class="" style="color:#8E2823;" @click="agent_type_modal(item,2)" v-if="item.agent_type==1">降级</a></label>
+                            <label style="float:none;width:100%"><a class="" style="color:#a80070;" @click="agent_type_modal(item,3)" v-if="item.agent_type==2">更换上级</a></label>
+                        </td>
+                        <td><p>{{item.province_name}}</p>
+                            <p>{{item.city_name}}</p>
+                            <p>{{item.district_name}}</p></td>
+                        <td>
+                            <label style="float:none;width:100%">直接佣金额：¥{{item.commission_money_first}}</label>
+                            <label style="float:none;width:100%" v-if="item.agent_type!=2">间接佣金额：¥{{item.commission_money_second}}</label>
+                            <label style="float:none;width:100%">佣金调整额：¥{{item.commission_adjust_money}}</label>
+                            <label style="float:none;width:100%">收益总额：¥{{item.proceeds_money_total}}</label>
+                            <label style="float:none;width:100%">收益提取额：¥{{item.proceeds_withdraw_amount}}</label>
+                            <label style="float:none;width:100%">收益剩余额：¥{{item.proceeds_money_remain}}</label>
+                            <label style="float:none;width:100%" v-if="item.agent_type!=0"><a style="color:#00CCFF;"
+                                                                    @click="commssion_details_model(item.id)">佣金明细</a></label>
+                        </td>
+                        <td>
+                            <label style="float:none;width:100%">直接会员数:{{item.member_count_first}}</label>
+                            <label style="float:none;width:100%" v-if="item.agent_type!=2">间接会员数:{{item.member_count_second}}</label>
+                            <label style="float:none;width:100%">直接订单数:{{item.order_count_first}}</label>
+                            <label style="float:none;width:100%" v-if="item.agent_type!=2">间接订单数:{{item.order_count_second}}</label>
+                            <label style="float:none;width:100%">直接销售额:{{item.sales_money_first}}</label>
+                            <label style="float:none;width:100%" v-if="item.agent_type!=2">间接销售额:{{item.sales_money_second}}</label>
+                            <label style="float:none;width:100%">直接佣金率:{{item.commission_rate_first}}</label>
+                            <label style="float:none;width:100%" v-if="item.agent_type!=2">间接佣金率:{{item.commission_rate_second}}</label>
+                        </td>
+                        <td>
+                            <label style="float:none;width:100%">上级名称:{{item.p_agent_name}}</label>
+                            <label style="float:none;width:100%">上级识别码:{{item.p_agent_code}}</label>
+                            <label style="float:none;width:100%" v-if="item.agent_type!=2"><a style="color:#ed5565"
+                                                                                              @click="nextList(item.id)">下级列表</a></label>
+                            <label style="float:none;width:100%"><a style="color:#1ab394"
+                                                                    @click="show_members_modal(item.id)">会员列表</a></label>
+                        </td>
+                        <td style="color:green;">{{item.status_name}}</td>
+                        <td>
+                            <template v-if="item.agent_type!=0">
+                            <a class="niu-a" style="border-color: #23c6c8;color:#23c6c8;"
+                               @click="show_update_agency(index)" v-if="item.status==0">完善资料</a>
+                            <a class="niu-a" style="border-color: #23c6c8;color:#23c6c8;"
+                               @click="show_update_agency(index)" v-if="item.status!=0">修改资料</a>
+                            <a class="niu-a" style="border-color: #23c6c8;color:#23c6c8;" v-if="item.status==1"
+                               @click="show_review_agency(index)">审核</a>
+                            <a class="niu-a" style="border-color: #23c6c8;color:#23c6c8;"
+                               @click="get_agent_user_info(item)">登录用户</a><br>
+                            <a class="niu-a" style="border-color: #ed5565;color:#ed5565;"
+                               @click="show_detail_agency_modal(index)" v-if="item.status>1">详情</a>
+                            <a class="niu-a" style="border-color: #ed5565;color:#ed5565;"
+                               @click="adjust_money_model(item)">佣金调整</a>
+                            <a class="niu-a" style="border-color: #ed5565;color:#ed5565;" @click="get_rate_info(item)">佣金率调整</a><br>
+                            <a class="niu-a" style="border-color: #1c84c6;color:#1c84c6;"
+                               @click="withdraw_money_modal(item)">佣金提取</a>
+                            <a class="niu-a" style="border-color: #1c84c6;color:#1c84c6;"
+                               @click="withdraw_detail_modal(item.id)">提现明细</a>
+                            <a class="niu-a" style="border-color: #1c84c6;color:#1c84c6;"
+                               @click="order_list_modal(item.id)">会员订单</a><br>
+                            <a class="niu-a" style="border-color: #00ec00;color:#00ec00;" v-if="item.status>1"
+                               @click="show_status_model(item)">状态调整</a><br/>
+                            </template>
+                            <template v-if="item.agent_type==0">
+                                <a class="niu-a" style="border-color: #1c84c6;color:#1c84c6;"
+                                   @click="order_list_modal(item.id)">会员订单</a><br>
+                            </template>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" id="pagelist" style="text-align: center;background-color: #fff;"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- 添加代理商 -->
+                <div class="modal fade hide" id="add_agency" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>添加代理商</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="modal-tab">
+                                        <tr>
+                                            <td style="width:25%;">排序</td>
+                                            <td colspan='3'>
+                                                <input type="number" class="input-common" v-model="add_agency.sort"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>账号</td>
+                                            <td colspan='3'>
+                                                <input type="text" class="input-common" v-model="add_agency.user_name">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>登录密码</td>
+                                            <td colspan='3'>
+                                                <input type="password" class="input-common"
+                                                       v-model="add_agency.user_pwd">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>类型</td>
+                                            <td colspan='3'>
+                                                <select class="select-common" v-model="add_agency.agent_type">
+                                                    <option value="1">代理商</option>
+                                                    <option value="2">加盟店</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="add_agency.agent_type==2">
+                                            <td>所属代理商</td>
+                                            <td colspan='3'>
+                                                <select class="select-common" v-model="p_agent_id">
+                                                    <option :value="item.id" v-for="(item,index) in agencyList">
+                                                        {{item.agent_name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>商家名称(简称)</td>
+                                            <td colspan='3'>
+                                                <input type="text" class="input-common"
+                                                       v-model="add_agency.agent_name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>识别码</td>
+                                            <td colspan='3'>
+                                                <input type="text" class="input-common"
+                                                       v-model="add_agency.identify_code"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>经营地区</td>
+                                            <td colspan='3'>
+                                                <select class="select-common" v-model="add_agency.province_id"
+                                                        style="width:110px;" @change="changeProvince()">
+                                                    <option :value="item.id" v-for="(item,index) in province">
+                                                        {{item.province_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="add_agency.city_id"
+                                                        style="width:110px;" @change="changeCity()">
+                                                    <option :value="item.id" v-for="(item,index) in city">
+                                                        {{item.city_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="add_agency.district_id"
+                                                        style="width:110px;" v-if="add_agency.city_id!=0">
+                                                    <option :value="item.id" v-for="(item,index) in district">
+                                                        {{item.district_name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="addAgency()">保存</button>
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide" id="update_agency" tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>完善代理商资料</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="modal-tab">
+                                        <tr>
+                                            <td>排序</td>
+                                            <td colspan="3">
+                                                <input type="number" class="input-common" v-model="select_agency.sort"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>类型</td>
+                                            <td>
+                                                <select class="select-common" v-model="select_agency.agent_type">
+                                                    <option value="1">代理商</option>
+                                                    <option value="2">加盟店</option>
+                                                </select>
+                                            </td>
+
+                                            <td><span v-if="select_agency.agent_type==2">所属代理商</span></td>
+                                            <td>
+                                                <!--<input v-if="select_agency.agent_type==2" type="text"-->
+                                                       <!--class="input-common" v-model="select_agency.p_agent_name"-->
+                                                       <!--disabled="disabled"/>-->
+
+
+                                                <select class="select-common" v-model="select_agency.p_agent_name"
+                                                v-if="select_agency.agent_type==2">
+                                                <option :value="item.id" v-for="(item,index) in agencyList">
+                                                {{item.agent_name}}
+                                                </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>商家名称(简称)</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.agent_name"/>
+                                            </td>
+                                            <td style="text-align: right">识别码</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.identify_code"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>经营地区</td>
+                                            <td colspan="3">
+                                                <select class="select-common" v-model="select_agency.province_id"
+                                                        style="width:110px;" @change="changeProvince()">
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.province">
+                                                        {{item.province_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="select_agency.city_id"
+                                                        style="width:110px;" @change="changeCity()">
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.city">
+                                                        {{item.city_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="select_agency.district_id"
+                                                        style="width:110px;" v-if="select_agency.city_id!=0">
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.district">
+                                                        {{item.district_name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>代理商状态</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.status_name" disabled="disabled"/>
+                                            </td>
+
+                                            <td style="text-align: right">公司名称</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>公司地址</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_address"/>
+                                            </td>
+
+                                            <td style="text-align: right">法人姓名</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_name"/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>经度</td>
+                                            <td>
+                                                <input type="number" class="input-common"
+                                                       v-model="select_agency.company_lng"/>
+                                            </td>
+
+                                            <td style="text-align: right">纬度</td>
+                                            <td>
+                                                <input type="number" class="input-common"
+                                                       v-model="select_agency.company_lat"/>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>法人手机号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_mobile"/>
+                                            </td>
+
+                                            <td style="text-align: right">法人身份证号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_id_no"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center">图片上传</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4">
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo"><p style="height:160px;"><img id="imglogo1"
+                                                                                                          :src="select_agency.business_licence_pic"
+                                                                                                          style="max-height: 160px;"/>
+                                                    </p></div>
+                                                    <div class="upload-btn">
+                                                        <span>
+                                                            <input name="file_upload" id="uploadImg1" type="file"
+                                                                   onchange="imgUpload(this,'imglogo1')"
+                                                                   class="input-file">
+                                                        </span>
+                                                        <p style="width:120px;"><i class="fa fa-cloud-upload"></i>上传营业执照
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo"><p style="height:160px;"><img id="imglogo2"
+                                                                                                          :src="select_agency.legal_person_id_front"
+                                                                                                          style="max-height: 160px;"/>
+                                                    </p></div>
+                                                    <div class="upload-btn">
+                                                        <span>
+                                                            <input name="file_upload" id="uploadImg2" type="file"
+                                                                   onchange="imgUpload(this,'imglogo2')"
+                                                                   class="input-file">
+                                                        </span>
+                                                        <p style="width:120px;"><i class="fa fa-cloud-upload"></i>上传身份证正面
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo"><p style="height:160px;"><img id="imglogo3"
+                                                                                                          :src="select_agency.legal_person_id_back"
+                                                                                                          style="max-height: 160px;"/>
+                                                    </p></div>
+                                                    <div class="upload-btn">
+                                                        <span>
+                                                            <input name="file_upload" id="uploadImg3" type="file"
+                                                                   onchange="imgUpload(this,'imglogo3')"
+                                                                   class="input-file">
+                                                        </span>
+                                                        <p style="width:120px;"><i class="fa fa-cloud-upload"></i>上传身份证反面
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="updateAgency()">保存</button>
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide" id="review_agency" tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>审核代理商资料</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="modal-tab">
+                                        <tr>
+                                            <td>类型</td>
+                                            <td>
+                                                <select class="select-common" v-model="select_agency.agent_type"
+                                                        disabled>
+                                                    <option value="1">代理商</option>
+                                                    <option value="2">加盟店</option>
+                                                </select>
+                                            </td>
+
+                                            <td><span v-if="select_agency.agent_type==2">所属代理商</span></td>
+                                            <td>
+                                                <select class="select-common" v-model="select_agency.p_agent_id"
+                                                        v-if="select_agency.agent_type==2" disabled>
+                                                    <option :value="item.id" v-for="(item,index) in agencyList">
+                                                        {{item.agent_name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>商家名称(简称)</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.agent_name" disabled/>
+                                            </td>
+                                            <td style="text-align: right">识别码</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.identify_code" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>经营地区</td>
+                                            <td colspan="3">
+                                                <select class="select-common" v-model="select_agency.province_id"
+                                                        style="width:110px;" @change="changeProvince()" disabled>
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.province">
+                                                        {{item.province_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="select_agency.city_id"
+                                                        style="width:110px;" @change="changeCity()" disabled>
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.city">
+                                                        {{item.city_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="select_agency.district_id"
+                                                        style="width:110px;" v-if="select_agency.city_id!=0" disabled>
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.district">
+                                                        {{item.district_name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>代理商状态</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.status_name" disabled="disabled"/>
+                                            </td>
+
+                                            <td style="text-align: right">公司名称</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>公司地址</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_address" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">法人姓名</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_name" disabled/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>经度</td>
+                                            <td>
+                                                <input type="number" class="input-common"
+                                                       v-model="select_agency.company_lng" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">纬度</td>
+                                            <td>
+                                                <input type="number" class="input-common"
+                                                       v-model="select_agency.company_lat" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>法人手机号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_mobile" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">法人身份证号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_id_no" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center">图片</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4">
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo">
+                                                        <p style="height:160px;"><img
+                                                                :src="select_agency.business_licence_pic"
+                                                                style="max-height: 160px;"/></p>
+                                                    </div>
+                                                    <p style="text-align: center;">营业执照</p>
+
+                                                </div>
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo">
+                                                        <p style="height:160px;"><img
+                                                                :src="select_agency.legal_person_id_front"
+                                                                style="max-height: 160px;"/></p>
+                                                    </div>
+                                                    <p style="text-align: center;">身份证正面</p>
+                                                </div>
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo">
+                                                        <p style="height:160px;"><img
+                                                                :src="select_agency.legal_person_id_back"
+                                                                style="max-height: 160px;"/></p>
+                                                    </div>
+                                                    <p style="text-align: center;">身份证反面</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center">
+                                                <input type="radio" name="review" value="2" v-model="review"/>
+                                                通过&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="review" value="3" v-model="review"/>
+                                                不通过
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="reviewAgency()">审核</button>
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide" id="detail_agency" tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>代理商资料详情</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="modal-tab">
+                                        <tr>
+                                            <td>类型</td>
+                                            <td>
+                                                <select class="select-common" v-model="select_agency.agent_type"
+                                                        disabled>
+                                                    <option value="1">代理商</option>
+                                                    <option value="2">加盟店</option>
+                                                </select>
+                                            </td>
+
+                                            <td><span v-if="select_agency.agent_type==2">所属代理商</span></td>
+                                            <td>
+                                                <select class="select-common" v-model="select_agency.p_agent_id"
+                                                        v-if="select_agency.agent_type==2" disabled>
+                                                    <option :value="item.id" v-for="(item,index) in agencyList">
+                                                        {{item.agent_name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>商家名称(简称)</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.agent_name" disabled/>
+                                            </td>
+                                            <td style="text-align: right">识别码</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.identify_code" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>经营地区</td>
+                                            <td colspan="3">
+                                                <select class="select-common" v-model="select_agency.province_id"
+                                                        style="width:110px;" @change="changeProvince()" disabled>
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.province">
+                                                        {{item.province_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="select_agency.city_id"
+                                                        style="width:110px;" @change="changeCity()" disabled>
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.city">
+                                                        {{item.city_name}}
+                                                    </option>
+                                                </select>
+                                                <select class="select-common" v-model="select_agency.district_id"
+                                                        style="width:110px;" v-if="select_agency.city_id!=0" disabled>
+                                                    <option :value="item.id"
+                                                            v-for="(item,index) in select_address.district">
+                                                        {{item.district_name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>代理商状态</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.status_name" disabled="disabled"/>
+                                            </td>
+
+                                            <td style="text-align: right">公司名称</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>公司地址</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_address" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">法人姓名</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_name" disabled/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>经度</td>
+                                            <td>
+                                                <input type="number" class="input-common"
+                                                       v-model="select_agency.company_lng" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">纬度</td>
+                                            <td>
+                                                <input type="number" class="input-common"
+                                                       v-model="select_agency.company_lat" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>法人手机号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_mobile" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">法人身份证号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_id_no" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center">图片</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4">
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo">
+                                                        <p style="height:160px;"><img
+                                                                :src="select_agency.business_licence_pic"
+                                                                style="max-height: 160px;"/></p>
+                                                    </div>
+                                                    <p style="text-align: center;">营业执照</p>
+
+                                                </div>
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo">
+                                                        <p style="height:160px;"><img
+                                                                :src="select_agency.legal_person_id_front"
+                                                                style="max-height: 160px;"/></p>
+                                                    </div>
+                                                    <p style="text-align: center;">身份证正面</p>
+                                                </div>
+                                                <div style="width:33.33%;float: left;">
+                                                    <div class="class-logo">
+                                                        <p style="height:160px;"><img
+                                                                :src="select_agency.legal_person_id_back"
+                                                                style="max-height: 160px;"/></p>
+                                                    </div>
+                                                    <p style="text-align: center;">身份证反面</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!--<button class="btn btn-primary" @click="reviewAgency()">审核</button>-->
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="width:800px;margin-left: -400px;margin-top: 200px;" class="modal fade hide"
+                     id="status_agency"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>代理商状态更改</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="modal-tab">
+
+                                        <tr>
+                                            <td>商家名称(简称)</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.agent_name" disabled/>
+                                            </td>
+                                            <td style="text-align: right">识别码</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.identify_code" disabled/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>代理商状态</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.status_name" disabled="disabled"/>
+                                            </td>
+                                            <td style="text-align: right">公司名称</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>公司地址</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.company_address" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">法人姓名</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_name" disabled/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>法人手机号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_mobile" disabled/>
+                                            </td>
+
+                                            <td style="text-align: right">法人身份证号</td>
+                                            <td>
+                                                <input type="text" class="input-common"
+                                                       v-model="select_agency.legal_person_id_no" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center">
+                                                <input type="radio" name="review" value="1" v-model="agent_status"
+                                                       v-if="select_agency.status!=1"/>
+                                                <span v-if="select_agency.status!=1">待审核</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="review" value="2" v-model="agent_status"
+                                                       v-if="select_agency.status!=2"/>
+                                                <span v-if="select_agency.status!=2">正常</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="review" value="3" v-model="agent_status"
+                                                       v-if="select_agency.status!=3"/>
+                                                <span v-if="select_agency.status!=3">未通过</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="review" value="4" v-model="agent_status"
+                                                       v-if="select_agency.status!=4"/>
+                                                <span v-if="select_agency.status!=4">暂停</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="review" value="5" v-model="agent_status"
+                                                       v-if="select_agency.status!=5"/>
+                                                <span v-if="select_agency.status!=5">无效</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="changeStatus(select_agency.id)">更改</button>
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide"
+                     id="next_agency"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>下级列表</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>名称</th>
+                                            <th>编码</th>
+                                            <th>类别</th>
+                                            <th>经营地区</th>
+                                            <th>状态</th>
+                                            <th>会员数</th>
+                                            <th>订单数</th>
+                                            <th>销售额</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in getSonAgentList.list">
+                                            <td>{{item.agent_name}}</td>
+                                            <td>{{item.identify_code}}</td>
+                                            <td>{{item.agent_type_name}}</td>
+                                            <td>{{item.province_name}}{{item.city_name}}{{item.district_name}}</td>
+                                            <td>{{item.status_name}}</td>
+                                            <td>{{item.agent_name}}</td>
+                                            <td>{{item.agent_name}}</td>
+                                            <td>{{item.agent_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" style="text-align: center;background-color: #fff;"
+                                                id="next-page"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide"
+                     id="members_agency"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>会员列表</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>用户名</th>
+                                            <th>登录手机号</th>
+                                            <th>昵称</th>
+                                            <th>等级</th>
+                                            <th>状态</th>
+                                            <th>所在地区</th>
+                                            <th>订单数</th>
+                                            <th>销售额</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in membersList.list">
+                                            <td>{{item.user_name}}</td>
+                                            <td>{{item.login_phone}}</td>
+                                            <td>{{item.nickname}}</td>
+                                            <td>Lv{{item.member_level}}&nbsp;&nbsp;{{item.level_name}}</td>
+                                            <td>{{item.status}}</td>
+                                            <td>{{item.province_name}}{{item.city_name}}{{item.district_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" style="text-align: center;background-color: #fff;"
+                                                id="members-page"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade hide" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>登录信息</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table">
+                                        <tr class="warning">
+                                            <td style="text-align: right;width:30%;">代理商名称:</td>
+                                            <td>{{agent_info.agent_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商识别码:</td>
+                                            <td>{{agent_info.identify_code}}</td>
+                                        </tr>
+                                        <tr class="danger">
+                                            <td style="text-align: right;width:30%;">代理商类型:</td>
+                                            <td>{{agent_info.type_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商状态:</td>
+                                            <td>{{agent_info.status_name}}</td>
+                                        </tr>
+                                        <tr class="info">
+                                            <td style="text-align: right;width:30%;">登录用户名:</td>
+                                            <td>{{agent_info.user_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">登录密码:</td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-info"
+                                                        @click="reset_agent_login_pwd(agent_info.id)">密码重置
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="success">
+                                            <td style="text-align: right;width:30%;">登陆次数:</td>
+                                            <td>{{agent_info.login_count}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">最近登录时间:</td>
+                                            <td>{{agent_info.last_login_time}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade hide" id="rate-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>佣金率调整</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table">
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商名称:</td>
+                                            <td>{{rate_info.agent_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商识别码:</td>
+                                            <td>{{rate_info.identify_code}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商类型:</td>
+                                            <td>{{rate_info.agent_type_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商状态:</td>
+                                            <td>{{rate_info.status_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商直接佣金率:</td>
+                                            <td><span style="display: inline-block;width:70px">{{rate_info.commission_rate_first}}</span>
+                                                <button type="button" class="btn btn-xs btn-info"
+                                                        style="font-size:12px;" @click="reset_rate(1,rate_info)">调整
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="rate_info.agent_type!=2">
+                                            <td style="text-align: right;width:30%;">代理商间接佣金率:</td>
+                                            <td><span style="display: inline-block;width:70px">{{rate_info.commission_rate_second}}</span>
+                                                <button type="button" class="btn btn-xs btn-info"
+                                                        style="font-size:12px;" @click="reset_rate(2,rate_info)">调整
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade hide" id="adjust-modal" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>佣金调整</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table">
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商名称:</td>
+                                            <td>{{adjust_info.agent_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商识别码:</td>
+                                            <td>{{adjust_info.identify_code}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商类型:</td>
+                                            <td>{{adjust_info.agent_type_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商状态:</td>
+                                            <td>{{adjust_info.status_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商佣金:</td>
+                                            <td><span style="display: inline-block;width:70px">¥{{adjust_info.commission_adjust_money}}</span>
+                                                <button type="button" class="btn btn-xs btn-info"
+                                                        style="font-size:12px;" @click="reset_adjust(adjust_info)">调整
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade hide" id="withdraw-modal" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>佣金提取</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table">
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商名称:</td>
+                                            <td>{{withdraw_info.agent_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商识别码:</td>
+                                            <td>{{withdraw_info.identify_code}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商类型:</td>
+                                            <td>{{withdraw_info.agent_type_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">代理商状态:</td>
+                                            <td>{{withdraw_info.status_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">收益剩余额:</td>
+                                            <td>¥{{withdraw_info.proceeds_money_remain}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">本次提取额(单位:元):</td>
+                                            <td><input type="number" class="input-common" placeholder="提取额必须为整数"
+                                                       v-model="withdraw_info.withdraw_money"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">操作人:</td>
+                                            <td><input type="text" class="input-common"
+                                                       v-model="withdraw_info.operator"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;width:30%;">提现时间:</td>
+                                            <td><input type="text" class="input-common" onclick="WdatePicker()"
+                                                       id="withdraw-time"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="submitWithdraw(withdraw_info)">提交</button>
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div style="width:1000px;margin-left: -400px;" class="modal fade hide"
+                     id="order-list"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>会员订单</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table table-striped" id="order-list-table">
+                                        <thead>
+                                        <tr>
+                                            <th>订单编号</th>
+                                            <th>下单时间</th>
+                                            <th>状态</th>
+                                            <th>会员用户</th>
+                                            <th>订单金额</th>
+                                            <th>支付金额</th>
+                                            <th>结算金额</th>
+                                            <th>订单详情</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in order_list_info.list">
+                                            <td>{{item.order_no}}</td>
+                                            <td>{{item.create_time}}</td>
+                                            <td>{{item.status_name}}</td>
+                                            <td>{{item.user_name}}</td>
+                                            <td>¥{{item.order_money}}</td>
+                                            <td>¥{{item.pay_money}}</td>
+                                            <td>¥{{item.real_account_money}}</td>
+                                            <td><a :href="'{:url('orderdetail')}'+'&order_id='+item.id" target="_blank"
+                                                   class="btn btn-xs btn-info" style="font-size:10px;padding: 2px;">&nbsp;&nbsp;查看&nbsp;&nbsp;</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" v-if="order_list_info.list.length==0"
+                                                style="text-align: center;">暂无会员订单
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" style="text-align: center;background-color: #fff;"
+                                                id="order-list-page"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide"
+                     id="withdraw_detail"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>提现明细</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>流水号</th>
+                                            <th>项目</th>
+                                            <th>提取金额</th>
+                                            <th>经办人</th>
+                                            <th>佣金</th>
+                                            <th>提取时间</th>
+                                            <th>建立时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in withdraw_detail_info.list">
+                                            <td>{{item.serial_no}}</td>
+                                            <td>{{item.operation}}</td>
+                                            <td>{{item.withdraw_money}}</td>
+                                            <td>{{item.operator}}</td>
+                                            <td>{{item.commission_money}}</td>
+                                            <td>{{item.withdraw_time}}</td>
+                                            <td>{{item.create_time}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" v-if="withdraw_detail_info.list.length==0"
+                                                style="text-align: center;">暂无提现信息
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" style="text-align: center;background-color: #fff;"
+                                                id="withdraw-page"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide"
+                     id="commssion_detail"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>佣金明细</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>流水号</th>
+                                            <th>项目</th>
+                                            <th>订单号</th>
+                                            <th>结算金额</th>
+                                            <td>佣金率</td>
+                                            <th>佣金</th>
+                                            <th>建立时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in commssion_details">
+                                            <td>{{item.serial_no}}</td>
+                                            <td>{{item.operation}}</td>
+                                            <td>{{item.order_no}}</td>
+                                            <td>{{item.account_money}}</td>
+                                            <td>{{item.commission_rate}}</td>
+                                            <td>{{item.commission_money}}</td>
+                                            <td>{{item.create_time}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" v-if="commssion_details.length==0"
+                                                style="text-align: center;">暂无数据
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" style="text-align: center;background-color: #fff;"
+                                                id="commission-page"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:600px;margin-left: -400px;" class="modal fade hide" id="agent-type-2" tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h3>代理商降级</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="modal-tab">
+                                        <tr>
+                                            <td style="width:35%;">代理商名称</td>
+                                            <td colspan="3" style="width:60%;">
+                                                <input type="text" class="input-common" v-model="agentTypeInfo.agent_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>识别码</td>
+                                            <td colspan="3">
+                                                <input type="text" class="input-common" v-model="agentTypeInfo.identify_code" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>代理商类型</td>
+                                            <td colspan="3">
+                                                <input type="text" class="input-common" v-model="agentTypeInfo.agent_type_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>为下级选择新代理商</td>
+                                            <td colspan="3">
+                                                <select class="select-common" v-model="agentTypeInfo.p_agent_id">
+                                                    <option :value="item.id" v-for="(item,index) in agentTypeInfo.validAgents">{{item.agent_name}}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="downAgent()">降级</button>
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:800px;margin-left: -400px;" class="modal fade hide" id="agent-type-3" tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h3>更新父级代理商</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-infp-style">
+                                    <table class="modal-tab">
+                                        <tr>
+                                            <td>代理商名称</td>
+                                            <td colspan="3">
+                                                <input type="text" class="input-common" v-model="agentTypeInfo.agent_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>识别码</td>
+                                            <td colspan="3">
+                                                <input type="text" class="input-common" v-model="agentTypeInfo.identify_code" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>代理商类型</td>
+                                            <td colspan="3">
+                                                <input type="text" class="input-common" v-model="agentTypeInfo.agent_type_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>当前上级代理商</td>
+                                            <td colspan="3">
+                                                <input type="text" class="input-common" v-model="agentTypeInfo.p_agent_name" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>选择新的上级</td>
+                                            <td colspan="3">
+                                                <select class="select-common" v-model="agentTypeInfo.p_agent_id">
+                                                    <option :value="item.id" v-for="item in agentTypeInfo.validAgents">{{item.agent_name}}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="updatePAgent()">更换代理商</button>
+                                <button class="btn" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+</div>
+<div id="dialog"></div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script src="__STATIC__/js/ajax_file_upload.js" type="text/javascript"></script>
+<script src="__STATIC__/js/file_upload.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script type="text/javascript">
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                agencyInfo: {},
+                agencyList: [],
+                pageData: {},
+                page_index: 1,
+                page_size: 10,
+                search_text: '',
+                status: -1,
+                p_agent_id: '',
+                province: [],
+                city: [],
+                district: [],
+                review: '2',
+                select_address: {
+                    province: [],
+                    city: [],
+                    district: []
+                },
+                select_address_id: {
+                    province_id: '',
+                    city_id: '',
+                    district_id: ''
+                },
+                add_agency: {
+                    sort: 0,
+                    user_name: '',
+                    user_pwd: '',
+                    agent_type: 1,
+                    p_agent_id: '',
+                    agent_name: '',
+                    identify_code: '',
+                    province_id: '',
+                    city_id: '',
+                    district_id: ''
+                },
+                select_agency: {},
+                agent_status: '',
+                getSonAgentList: {
+                    list: [],
+                    agent_id: '',
+                    page_size: 10,
+                },
+                membersList: {
+                    list: [],
+                    agent_id: '',
+                    page_size: 10,
+                },
+                agent_info: {},
+                rate_info: {},
+                adjust_info: {},
+                withdraw_info: {},
+                order_list_info: {
+                    list: [],
+                    agent_id: '',
+                    page_size: 10,
+                },
+                withdraw_detail_info: {
+                    list: [],
+                    agent_id: '',
+                    page_size: 10,
+                },
+                totalData: {},
+                commssion_details: [],
+                agentTypeInfo:{},
+                is_show:true,
+            },
+            mounted: function () {
+                this.pageData = {
+                    page_index: 1,
+                    page_size: this.page_size,
+                };
+                this.getAgencyInfo(1);
+                this.$http.post("{:url('platform/Agent/validFirstAgentList')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.agencyList=res.data.data.data;
+                    }
+                });
+
+                this.$http.post("{:url('platform/agent/agentTotalData')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.totalData = res.data.data;
+                    }
+                });
+                this.$http.post("{:url('shop/member/getProvince')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.province = res.data.data;
+                        this.select_address.province = res.data.data;
+                        this.add_agency.province_id = this.province[0].id;
+                        this.changeProvince();
+                    }
+                });
+            },
+            methods: {
+
+
+
+                //显示佣金明细modal
+                commssion_details_model: function (agent_id) {
+                    this.get_commssion_details_info(agent_id, 1);
+                    $("#commssion_detail").modal("show");
+
+                },
+                get_commssion_details_info: function (agent_id, page_index) {
+                    this.$http.post("{:url('platform/Agent/getCommssionDetailsByAgent')}", {
+                            agent_id: agent_id,
+                            page_index: page_index,
+                            page_size: 10,
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.commssion_details = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'commission-page',
+                                    count: res.data.data.total_count,
+                                    limit: 10,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+
+                                            vueMain.get_commssion_details_info(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+
+
+                },
+                getAgencyInfo: function (type) {
+                    this.agencyInfo = [];
+                    this.$http.post("{:url('platform/Agent/agentList')}", {
+                            page_index: this.page_index,
+                            page_size: this.page_size,
+                            search_text: this.search_text,
+                            status: this.status
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.agencyInfo = res.data.data.agent_list.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: res.data.data.agent_list.total_count,
+                                    limit: vueMain.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: vueMain.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.page_index = obj.curr;
+                                            vueMain.getAgencyInfo(1);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                changeStatus: function (agent_id) {
+                    this.$http.post("{:url('platform/agent/setAgentStatus')}", {
+                            agent_id: agent_id,
+                            agent_status: this.agent_status
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            $("#status_agency").modal("hide");
+                            layer.msg(res.data.msg);
+                            this.getAgencyInfo(1);
+                        } else {
+                            layer.msg(res.data.msg);
+                        }
+                    }, function (res) {
+                        layer.msg("很抱歉，状态更改失败...");
+                    });
+                },
+                changeProvince: function () {
+//                    alert(province_id);
+                    var endName = '';
+
+                    for (i = 0; i < this.province.length; i++) {
+                        if (this.province[i].id == this.add_agency.province_id) {
+                            endName = this.province[i].province_name.substring(this.province[i].province_name.length - 1);
+                            break;
+                        }
+                    }
+                    this.$http.post("{:url('platform/member/getCity')}", {province_id: this.add_agency.province_id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.city = [{id: 0, city_name: '全' + endName}].concat(res.data.data);
+                            this.add_agency.city_id = 0;
+                            this.add_agency.district_id = 0;
+                        }
+                    });
+
+
+                },
+                changeCity: function () {
+
+                    if (this.add_agency.city_id == 0) {
+                        this.add_agency.district_id == 0;
+                        return;
+                    }
+                    this.$http.post("{:url('shop/member/getDistrict')}", {city_id: this.add_agency.city_id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            var endName = '';
+                            for (i = 0; i < this.city.length; i++) {
+                                if (this.city[i].id == this.add_agency.city_id) {
+                                    endName = this.city[i].city_name.substring(this.city[i].city_name.length - 1);
+                                    break;
+                                }
+                            }
+                            this.district = [{id: 0, district_name: '全' + endName}].concat(res.data.data);
+                            this.add_agency.district_id = 0;
+
+                        }
+                    });
+
+                },
+                show_members_modal: function (id) {
+                    this.membersList.agent_id = id;
+                    this.get_members_list_info(1);
+                    $("#members_agency").modal("show");
+                },
+                get_members_list_info: function (page_index) {
+                    this.$http.post("{:url('platform/agent/getMemberListByAgent')}", {
+                            agent_id: this.membersList.agent_id,
+                            page_index: page_index,
+                            page_size: this.membersList.page_size
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.membersList.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'members-page',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.membersList.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.get_members_list_info(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                nextList: function (id) {
+                    this.getSonAgentList.agent_id = id;
+                    this.get_next_list_info(1);
+                    $("#next_agency").modal("show");
+
+                },
+                get_next_list_info: function (page_index) {
+                    this.$http.post("{:url('platform/agent/getSonAgentList')}", {
+                            agent_id: this.getSonAgentList.agent_id,
+                            page_index: page_index,
+                            page_size: this.getSonAgentList.page_size
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.getSonAgentList.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'next-page',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.getSonAgentList.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.get_next_list_info(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+
+                },
+                update_get_address: function (province_id, city_id, district_id) {
+                    var endName = '';
+                    for (i = 0; i < this.select_address.province.length; i++) {
+                        if (this.select_address.province[i].id == province_id) {
+                            endName = this.select_address.province[i].province_name.substring(this.select_address.province[i].province_name.length - 1);
+                            break;
+                        }
+                    }
+                    this.$http.post("{:url('platform/member/getCity')}", {province_id: province_id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.select_address.city = [{id: 0, city_name: '全' + endName}].concat(res.data.data);
+                            this.select_agency.city_id = city_id;
+                            if (this.select_agency.city_id == 0) {
+                                return;
+                            }
+                            endName = '';
+                            for (i = 0; i < this.select_address.city.length; i++) {
+                                if (this.select_address.city[i].id == city_id) {
+                                    endName = this.select_address.city[i].city_name.substring(this.select_address.city[i].city_name.length - 1);
+                                    break;
+                                }
+                            }
+                            this.$http.post("{:url('shop/member/getDistrict')}", {city_id: city_id},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    this.select_address.district = [{
+                                        id: 0,
+                                        district_name: '全' + endName
+                                    }].concat(res.data.data);
+                                    this.select_agency.district_id = district_id;
+
+                                }
+                            });
+                        }
+                    });
+                },
+                reviewAgency: function () {
+                    var agent_id = this.select_agency.id;
+                    var status = this.review;
+                    this.$http.post("{:url('platform/agent/setAgentStatus')}", {
+                            agent_id: agent_id,
+                            agent_status: status
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            $("#review_agency").modal("hide");
+                            layer.msg(res.data.msg);
+                            this.getAgencyInfo(1);
+                        } else {
+                            layer.msg(res.data.msg);
+                        }
+                    }, function (res) {
+                        layer.msg("很抱歉，审核失败...");
+                    });
+
+                },
+                updateAgency: function () {
+                    var data = this.select_agency;
+                    if(data.status==0){
+                        data.agent_status = 1;
+                    }else{
+                        data.agent_status = data.status;
+                    }
+                    data.agent_id = data.id;
+                    if (data.agent_name == "") {
+                        layer.msg("商家名称（简称）不能必须填写...")
+                        return;
+                    }
+                    if (data.identify_code == "") {
+                        layer.msg("识别码不能必须填写...")
+                        return;
+                    }
+                    if (data.city_id == 0) {
+                        data.district_id = 0;
+                    }
+                    if (data.company_name == "") {
+                        layer.msg("公司名称必须填写...")
+                        return;
+                    }
+                    if (data.company_address == "") {
+                        layer.msg("公司地址必须填写...")
+                        return;
+                    }
+                    if (data.company_lng === "") {
+                        layer.msg("经度必须填写...")
+                        return;
+                    }
+                    if (data.company_lat === "") {
+                        layer.msg("纬度必须填写...")
+                        return;
+                    }
+                    if (data.legal_person_name == "") {
+                        layer.msg("法人名称必须填写...")
+                        return;
+                    }
+                    if (data.legal_person_mobile == "") {
+                        layer.msg("法人手机号必须填写...")
+                        return;
+                    }
+                    if (!(/^1[34578]\d{9}$/.test(data.legal_person_mobile))) {
+                        layer.msg("手机号码有误，请重填...");
+                        return;
+                    }
+                    if (data.legal_person_id_no == "") {
+                        layer.msg("法人身份证号必须填写...")
+                        return;
+                    }
+                    var cP = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+                    if (!cP.test(data.legal_person_id_no)) {
+                        layer.msg("法人身份证格式不正确...")
+                        return;
+                    }
+
+                    if (data.business_licence_pic == "") {
+                        layer.msg("请先上传营业执照...")
+                        return;
+                    }
+                    if (data.legal_person_id_front == "") {
+                        layer.msg("请先上传法人身份证正面照...")
+                        return;
+                    }
+                    if (data.legal_person_id_back == "") {
+                        layer.msg("请先上传法人身份证正面照反面照...")
+                        return;
+                    }
+                    this.$http.post("{:url('platform/Agent/updateAgentInfo')}", data,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            $("#update_agency").modal("hide");
+                            layer.msg(res.data.msg);
+                            this.getAgencyInfo(1);
+                        } else {
+                            layer.msg(res.data.msg);
+                        }
+                    }, function (res) {
+                        layer.msg("很抱歉，添加失败...");
+                    });
+                },
+                addAgency: function () {
+                    if (this.add_agency.sort < 0 || this.add_agency.sort != parseInt(this.add_agency.sort)) {
+                        layer.msg("排序数不能小于0,且必须为整数...");
+                        return;
+                    }
+                    if (this.add_agency.user_name == '') {
+                        layer.msg("账号不能为空...");
+                        return;
+                    }
+                    if (this.add_agency.user_pwd == '') {
+                        layer.msg("登录密码不能为空...");
+                        return;
+                    }
+                    if (!this.add_agency.user_pwd.match(/\d/) || !this.add_agency.user_pwd.match(/[a-zA-Z]/)) {
+                        layer.msg("密码必须包含字母和数字",{shade:[0.2,'#393D49']});
+                        return true;
+                    }
+                    if (this.add_agency.user_pwd.length < 6 || this.add_agency.user_pwd.length > 20) {
+                        layer.msg("密码长度不能小于6，且不能大于20",{shade:[0.2,'#393D49']});
+                        return true;
+                    }
+                    if (this.add_agency.agent_type == 1) {
+                        this.add_agency.p_agent_id = 0;
+                    } else {
+                        this.add_agency.p_agent_id = this.p_agent_id;
+                    }
+                    if (this.add_agency.agent_name == '') {
+                        layer.msg("商户名称不能为空...");
+                        return;
+                    }
+                    if (this.add_agency.identify_code == '') {
+                        layer.msg("识别码不能为空...");
+                        return;
+                    }
+                    this.$http.post("{:url('platform/Agent/addAgent')}", this.add_agency,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            $("#add_agency").modal("hide");
+                            layer.alert(res.data.msg, {icon: 6});
+                            this.add_agency = {
+                                sort: 0,
+                                user_name: '',
+                                user_pwd: '',
+                                agent_type: 1,
+                                p_agent_id: '',
+                                agent_name: '',
+                                identify_code: '',
+                                province_id: '',
+                                city_id: '',
+                                district_id: ''
+                            };
+                            this.getAgencyInfo(1);
+                        } else {
+                            layer.alert(res.data.msg, {icon: 5});
+
+                        }
+                    }, function (res) {
+                        layer.msg("很抱歉，添加失败...");
+                    });
+                },
+                show_update_agency: function (index) {
+                    this.update_get_address(this.agencyInfo[index].province_id, this.agencyInfo[index].city_id, this.agencyInfo[index].district_id);
+                    this.select_agency = this.agencyInfo[index];
+                    $("#update_agency").modal("show");
+                },
+                show_review_agency: function (index) {
+                    this.update_get_address(this.agencyInfo[index].province_id, this.agencyInfo[index].city_id, this.agencyInfo[index].district_id);
+                    this.select_agency = this.agencyInfo[index];
+                    $("#review_agency").modal("show");
+                },
+                show_detail_agency_modal: function (index) {
+                    this.update_get_address(this.agencyInfo[index].province_id, this.agencyInfo[index].city_id, this.agencyInfo[index].district_id);
+                    this.select_agency = this.agencyInfo[index];
+                    $("#detail_agency").modal("show");
+                },
+                searchByStatus: function (stauts) {
+                    this.page_index = 1;
+                    this.search_text = '';
+                    this.status = stauts;
+                    this.getAgencyInfo();
+                },
+                show_status_model: function (info) {
+                    this.select_agency = info;
+                    $("#status_agency").modal("show");
+                },
+                get_agent_user_info: function (info) {
+                    console.log(info);
+                    this.$http.post("{:url('platform/agent/getAgentUserInfo')}", {agent_id: info.id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.agent_info = res.data.data;
+                            this.agent_info.agent_name = info.agent_name;
+                            this.agent_info.identify_code = info.identify_code;
+                            this.agent_info.type_name = info.agent_type_name;
+                            this.agent_info.status_name = info.status_name;
+                            $("#login-modal").modal("show");
+                        }
+                    });
+                },
+                reset_agent_login_pwd: function (id) {
+                    layer.prompt({title: '请输入新密码', formType: 1}, function (pass, index) {
+                        if (pass == '') {
+                            layer.msg("密码不能为空...");
+                            return;
+                        }
+                        if (pass.length < 6 || pass.length > 20) {
+                            layer.msg("密码长度不能小于6，且不能大于20...");
+                            return;
+                        }
+                        var reg = new RegExp(/^(?![^a-zA-Z]+$)(?!\D+$)/);
+                        if (!reg.test(pass)) {
+                            layer.msg("密码必须包含数字和字母组成...");
+                            return;
+                        }
+                        vueMain.$http.post("{:url('platform/agent/setAgentUserPassword')}", {
+                                user_id: id,
+                                password: pass
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6}, function () {
+                                    layer.closeAll();
+                                });
+                            } else {
+                                layer.alert(res.data.msg, {icon: 5});
+
+                            }
+                        });
+                    });
+                },
+                get_rate_info: function (info) {
+                    this.rate_info = info;
+                    $("#rate-modal").modal("show");
+                },
+                reset_rate: function (type, info) {
+                    var msg;
+                    var first_rate;
+                    var second_rate;
+                    if (type == 1) {
+                        msg = "请输入直接佣金率,佣金率必须为大于等于0，小于1数字"
+                    } else {
+                        msg = "请输入间接佣金率,佣金率必须为大于等于0，小于1数字"
+                    }
+                    layer.prompt({title: msg, formType: 0}, function (pass, index) {
+                        if (isNaN(pass) || pass < 0 || pass >= 1) {
+                            layer.msg("佣金率必须为大于等于0，小于1数字");
+                            return;
+                        }
+                        if (type == 1) {
+                            first_rate = pass;
+                            second_rate = info.commission_rate_second;
+                        } else {
+                            first_rate = info.commission_rate_first;
+                            second_rate = pass;
+                        }
+                        vueMain.$http.post("{:url('platform/agent/setAgentCommissionRate')}", {
+                                agent_id: info.id,
+                                rate_first: first_rate,
+                                rate_second: second_rate
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6}, function () {
+                                    layer.closeAll();
+                                    info.commission_rate_first = first_rate;
+                                    info.commission_rate_second = second_rate;
+                                });
+                            } else {
+                                layer.alert(res.data.msg, {icon: 5});
+
+                            }
+                        });
+                    });
+                },
+                adjust_money_model: function (info) {
+                    this.adjust_info = info;
+                    $("#adjust-modal").modal("show");
+                },
+                reset_adjust: function (info) {
+                    layer.prompt({title: "佣金必须为整数，增加为正，减少为负，不可为0", formType: 0}, function (pass, index) {
+                        if (pass == '') {
+                            layer.msg("请输入佣金");
+                            return;
+                        }
+                        if (pass == 0) {
+                            layer.msg("佣金不能为0");
+                            return;
+                        }
+                        if (parseInt(pass) != pass) {
+                            layer.msg("佣金必须为整数，增加为正，减少为负");
+                            return;
+                        }
+                        vueMain.$http.post("{:url('platform/agent/adjustAgentCommission')}", {
+                                agent_id: info.id,
+                                adjust_money: pass
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6}, function () {
+                                    layer.closeAll();
+                                    $("#adjust-modal").modal("hide");
+                                    vueMain.getAgencyInfo();
+                                });
+                            } else {
+                                layer.alert(res.data.msg, {icon: 5});
+                            }
+                        });
+                    });
+                },
+                withdraw_money_modal: function (info) {
+                    this.withdraw_info = info;
+                    $("#withdraw-modal").modal("show");
+                },
+                submitWithdraw: function (info) {
+                    if (info.withdraw_money == '') {
+                        layer.msg("请正确填写提现金额...");
+                        return;
+                    }
+                    if (info.operator == '') {
+                        layer.msg("请正确填写操作人...");
+                        return;
+                    }
+                    var time = $("#withdraw-time").val();
+                    if (time == '') {
+                        layer.msg("请选择提现时间...");
+                        return;
+                    }
+                    this.$http.post("{:url('platform/agent/agentWithdraw')}", {
+                            agent_id: info.id,
+                            withdraw_money: info.withdraw_money,
+                            operator: info.operator,
+                            withdraw_time: time
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg, {icon: 6}, function () {
+                                layer.closeAll();
+                                $("#withdraw-modal").modal("hide");
+                                vueMain.getAgencyInfo();
+                            });
+                        } else {
+                            layer.alert(res.data.msg, {icon: 5});
+                        }
+                    });
+                },
+                order_list_modal: function (id) {
+                    this.order_list_info.agent_id = id;
+                    this.get_order_list(1);
+                    $("#order-list").modal("show");
+                },
+                get_order_list: function (page_index) {
+                    this.$http.post("{:url('platform/agent/getOrderListByAgent')}", {
+                            agent_id: this.order_list_info.agent_id,
+                            page_index: page_index,
+                            page_size: this.order_list_info.page_size
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.order_list_info.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'order-list-page',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.order_list_info.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.get_order_list(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                withdraw_detail_modal: function (id) {
+                    this.withdraw_detail_info.agent_id = id;
+                    this.get_withdraw_detail_list(1);
+                    $("#withdraw_detail").modal("show");
+                },
+                get_withdraw_detail_list: function (page_index) {
+                    this.$http.post("{:url('platform/agent/getWithdrawDetailsByAgent')}", {
+                            agent_id: this.withdraw_detail_info.agent_id,
+                            page_index: page_index,
+                            page_size: this.withdraw_detail_info.page_size
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.withdraw_detail_info.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'withdraw-page',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.withdraw_detail_info.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.get_withdraw_detail_list(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                agent_type_modal:function (item,type) {
+                    this.agentTypeInfo={};
+                    for(var key in item){
+                        this.agentTypeInfo[key]=item[key];
+                    }
+                    if(type==1){
+                        layer.confirm('您确定将此“加盟店”升级为“直接代理商”吗？', {
+                            btn: ['确定','取消'] //按钮
+                        }, function(){
+                            vueMain.$http.post("{:url('platform/Agent/agentUpgrade')}", {
+                                    agent_id:vueMain.agentTypeInfo.id
+                                },
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.closeAll();
+                                    layer.alert(res.data.msg,{icon:6},function () {
+                                        vueMain.getAgencyInfo();
+                                        layer.closeAll();
+                                    });
+                                }else{
+                                    layer.closeAll();
+                                    layer.alert(res.data.msg,{icon:5});
+                                }
+                            });
+                        });
+                    }
+                    if(type==2){
+//                        p_agent_id
+                        this.$http.post("{:url('platform/Agent/validFirstAgentList')}", {
+                                agent_id:this.agentTypeInfo.id
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                this.agentTypeInfo.p_agent_id='';
+                                this.agentTypeInfo.validAgents=res.data.data.data;
+                                console.log(this.agentTypeInfo);
+                                this.is_show=false;
+                                this.is_show=true;
+                                $("#agent-type-2").modal("show");
+                                // setTimeout(function () {
+                                //     console.log(vueMain.agentTypeInfo);
+                                // },3000);
+                            }
+                        });
+                    }
+                    if(type==3){
+                        this.$http.post("{:url('platform/Agent/validFirstAgentList')}", {
+                                agent_id:this.agentTypeInfo.p_agent_id
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                this.agentTypeInfo.p_agent_id='';
+                                this.agentTypeInfo.validAgents=res.data.data.data;
+                                this.is_show=false;
+                                this.is_show=true;
+                                $("#agent-type-3").modal("show");
+                            }
+                        });
+                    }
+                },
+                downAgent:function () {
+                    if(this.agentTypeInfo.p_agent_id==''||this.agentTypeInfo.p_agent_id==undefined){
+                        layer.alert("请先选择新的所属代理商",{icon:5});
+                        return;
+                    }
+                    this.$http.post("{:url('platform/Agent/agentDowngrade')}", {
+                            agent_id:this.agentTypeInfo.id,
+                        p_agent_id:this.agentTypeInfo.p_agent_id
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                vueMain.getAgencyInfo();
+                                $("#agent-type-2").modal("hide");
+                                layer.closeAll();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                updatePAgent:function () {
+                    if(this.agentTypeInfo.p_agent_id==''||this.agentTypeInfo.p_agent_id==undefined){
+                        layer.alert("请先选择新的所属代理商",{icon:5});
+                        return;
+                    }
+                    this.$http.post("{:url('platform/agent/updatePAgent')}", {
+                            agent_id:this.agentTypeInfo.id,
+                            p_agent_id:this.agentTypeInfo.p_agent_id
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                vueMain.getAgencyInfo();
+                                $("#agent-type-3").modal("hide");
+                                layer.closeAll();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+
+                }
+            }
+        });
+    });
+
+
+    function showMessage(type, message, url, time) {
+        if (url == undefined) {
+            url = '';
+        }
+        if (time == undefined) {
+            time = 2;
+        }
+        //成功之后的跳转
+        if (type == 'success') {
+            $("#dialog").dialog({
+                buttons: {
+                    "确定,#51A351": function () {
+                        $(this).dialog('close');
+                    }
+                },
+                contentText: message,
+                time: time,
+                timeHref: url,
+            });
+        }
+        //失败之后的跳转
+        if (type == 'error') {
+            $("#dialog").dialog({
+                buttons: {
+                    "确定,#e57373": function () {
+                        $(this).dialog('close');
+                    }
+                },
+                time: time,
+                contentText: message,
+                timeHref: url,
+            });
+        }
+    }
+
+    function showConfirm(content) {
+        $("#dialog").dialog({
+            buttons: {
+                "确定": function () {
+                    $(this).dialog('close');
+                    return 1;
+                },
+                "取消,#e57373": function () {
+                    $(this).dialog('close');
+                    return 0;
+                }
+            },
+            contentText: content,
+        });
+    }
+
+    //添加代理商弹出
+    function add_agency() {
+        this.is_show=false;
+        this.is_show=true;
+        $("#add_agency").modal("show");
+    }
+    //图片上传
+    function imgUpload(event, str) {
+        var fileid = $(event).attr("id");
+        var data = {'file_path': UPLOADAGENT};
+        uploadFile(fileid, data, function (res) {
+            if (res.code == 0) {
+                $("#" + str).attr("src", res.data);
+                if (str == "imglogo1") {
+                    vueMain.select_agency.business_licence_pic = res.data;
+                }
+                if (str == "imglogo2") {
+                    vueMain.select_agency.legal_person_id_front = res.data;
+                }
+                if (str == "imglogo3") {
+                    vueMain.select_agency.legal_person_id_back = res.data;
+                }
+                layer.alert(res.msg, {icon: 6, title: '提示'});
+            } else {
+                if (str == "imglogo1") {
+                    vueMain.select_agency.business_licence_pic = '';
+                }
+                if (str == "imglogo2") {
+                    vueMain.select_agency.legal_person_id_front = '';
+                }
+                if (str == "imglogo3") {
+                    vueMain.select_agency.legal_person_id_back = '';
+                }
+                layer.alert("图片上传失败", {icon: 6, title: '提示'});
+            }
+        }, "{:url('util/img_upload/uploadFile')}");
+    }
+</script>
+</body>
+</html>

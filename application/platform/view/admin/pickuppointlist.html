@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <style>
+        #pagelist input {
+            height: auto !important;
+        }
+    </style>
+</head>
+<body>
+{include file='index/head'/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+            <nav>
+                <ul>
+                    <li class="selected" onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                    <li class="" onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+                    <li onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                    <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                    <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                    <li onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                    <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                    <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                    <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_desc"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_meta"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        自提点管理
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li onclick="location.href='{:url('expresscompany')}';">物流公司</li>
+                        <li class="selected" onclick="location.href='{:url('pickuppointlist')}';">自提点管理</li>
+                        <li onclick="location.href='{:url('pickuppointfreight')}';">自提点运费</li>                        <li onclick="location.href='{:url('returnsetting')}';">商家地址</li>
+
+                    </ul>
+                </nav>
+                <div class="right-side-operation">
+                    <ul>
+                        <li><a href="{:url('pickuppoint')}"><i class="fa fa-plus-circle"></i>&nbsp;添加自提点</a></li>
+                        <li style="display:none;"><a class="js-open-warmp-prompt"><i class="fa fa-info-circle"></i>&nbsp;提示</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ns-main">
+
+                <table class="mytable">
+                    <tr>
+                        <th width="2%" style="text-align: left;">
+                            <button class="btn btn-small" @click="batchDelete()">批量删除</button>
+                        </th>
+                        <th width="20%">
+                            <input type="text" id='search_text' placeholder="请输入自提名称" class="input-common"/>
+                            <input type="button" onclick="searchData()" value="搜索" class="btn-common"/>
+                        </th>
+                    </tr>
+                </table>
+                <table class="table-class">
+                    <colgroup>
+                        <col style="width: 1%">
+                        <col style="width: 10%;">
+                        <col style="width: 20%;">
+                        <col style="width: 10%;">
+                        <col style="width: 10%;">
+                        <col style="width: 14%;">
+                        <col style="width: 15%;">
+                    </colgroup>
+                    <thead>
+                    <tr align="center">
+                        <th><input id="ckall" type="checkbox" v-model="allCheck" @click="checkAll()"></th>
+                        <th>自提名称</th>
+                        <th>地址</th>
+                        <th>联系人</th>
+                        <th>联系电话</th>
+                        <th>发布时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr align="center" v-for="item in info">
+                        <td><input name="sub" type="checkbox" v-model="item.check" @click="isAllCheck()"></td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.province_name}}/{{item.city_name}}/{{item.dictrict_name}}/{{item.address}}</td>
+                        <td>{{item.contact}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.create_time}}</td>
+                        <td><a :href="'{:url('pickuppoint')}'+'&pickup_point_id='+item.id">修改</a><a
+                                @click="deletepickupPoint(item.id)">删除</a></td>
+                    </tr>
+                    <tr align="center" v-if="info.length==0">
+                        <td colspan="9">暂无自提点</td>
+                    </tr>
+                    <tr align="center">
+                        <td colspan="9" id="pagelist" style="background-color: #fff;"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </article>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                info: [],
+                page_index: 1,
+                page_size: 10,
+                search_text: '',
+                allCheck:false,
+            },
+            mounted: function () {
+                this.getInfo();
+            },
+            methods: {
+                getInfo: function () {
+                    this.$http.post("{:url('platform/agent/pickupPointList')}", {
+                            page_index: this.page_index,
+                            page_size: this.page_size,
+                            search_text: this.search_text
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.info = res.data.data.pickup_point_list.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: res.data.data.pickup_point_list.total_count,
+                                    limit: vueMain.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: vueMain.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.page_index = obj.curr;
+                                            vueMain.getInfo();
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                deletepickupPoint:function (data) {
+                    layer.confirm('你确定要删除吗？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            vueMain.$http.post("{:url('platform/agent/deletePickupPoint')}", {pickup_point_id: data},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg, {title: "提示"}, function () {
+                                        vueMain.getInfo();
+                                        layer.closeAll();
+                                    });
+                                }
+                            });
+                        }
+                    );
+                },
+                checkAll:function () {
+                    for(i=0;i<this.info.length;i++){
+                        this.info[i].check=this.allCheck;
+                    }
+                },
+                isAllCheck:function () {
+                    for(i=0;i<this.info.length;i++){
+                        if(!this.info[i].check){
+                            this.allCheck=false;
+                            return;
+                        }
+                    }
+                    this.allCheck=true;
+                },
+                batchDelete:function () {
+                    var data='';
+                    for(i=0;i<this.info.length;i++){
+                        if(this.info[i].check){
+                            if(data==''){
+                                data=this.info[i].id;
+                            }else{
+                                data+=","+this.info[i].id;
+                            }
+                        }
+
+                    }
+                    if(data==''){
+                        layer.alert("请至少选择一项", {title: "提示",icon:5});
+                        return;
+                    }
+                    this.delExpress(data);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

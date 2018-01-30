@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <!--<link rel="stylesheet" href="__STATIC__/ztree/css/demo.css" type="text/css">-->
+    <link rel="stylesheet" href="__STATIC__/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <!--<link  src="__STATIC__/admin/ztree/jquery.treeview.css"></link>-->
+
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/admin/ztree/jquery.cookie.js"></script>
+    <script type="text/javascript" src="__STATIC__/ztree/js/jquery.ztree.core.js"></script>
+
+
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <script src="__STATIC__/admin/js/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/member_list.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+    <style>
+        .head-portrait {
+            margin-top: 15px;
+        }
+
+        .niu-a {
+            width: 70px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            text-align: center;
+            display: inline-block;
+            border-width: 1px;
+            border-style: solid;
+            margin-top: 0.5em;
+            font-size: 10px;
+            border-radius: 5px;
+        }
+
+        .modal-infp-style table tr td {
+            border: none;
+        }
+
+        .modal.fade.in {
+            top: 5px;
+        }
+
+        .modal-body {
+            padding: 0px;
+        }
+
+        .modal-infp-style table tr td {
+            padding: 4px;
+        }
+
+        #login-modal td, #rate-modal td, #adjust-modal td {
+            padding: 10px 15px;
+        }
+        .ztree li{
+            padding: 5px 0;
+        }
+        .ztree li span{
+            font-size:16px;
+            color:#888;
+        }
+        /*[v-cloak]{*/
+        /*display: none;*/
+        /*}*/
+        /*#tree,#tree ul{*/
+        /*padding-left: 3em;*/
+        /*!*font-size:1.2em;*!*/
+        /*!*display: none;*!*/
+        /*!*background-image: url("__STATIC__/images/item-1.png");*!*/
+        /*!*background-repeat: no-repeat;*!*/
+        /*!*background-size: ;*!*/
+        /*}*/
+
+        /*#tree>li ul{*/
+        /*!*display: none;*!*/
+        /*}*/
+        /*#tree ul li{*/
+        /*font-size:15px;*/
+        /*font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;*/
+        /*margin: 5px 0;*/
+        /*}*/
+    </style>
+    <script>
+        var UPLOADAGENT = 'UPLOAD_AGENT';
+    </script>
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main">
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+            <nav>
+                {foreach item="vo" name="module_second"}
+
+                <li {if condition="$vo['selected'] eq true"}
+                    class='selected'
+                    {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                {/foreach}
+                <!--{include file="index/agency_nav"/}-->
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        代理商树形列表
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">代理商树形列表
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main" style="min-height:500px;">
+                <ul id="treeDemo" class="ztree">
+
+                </ul>
+            </div>
+        </section>
+    </article>
+</div>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script src="__STATIC__/js/ajax_file_upload.js" type="text/javascript"></script>
+<script src="__STATIC__/js/file_upload.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript">
+    var zNodes = new Array();
+    $(function () {
+        $.ajax({
+            url: "{:url('platform/agent/getAgentTree')}",
+            type: 'post',
+            data: {},
+            datatype: "json",
+            success: function (res) {
+                var treeInfo = res.data.platform.agent_list;
+                zNodes.push({id: res.data.platform.id, pId: res.data.platform.p_agent_id, name: res.data.platform.agent_name+"(编码："+res.data.platform.identify_code+")"});
+                getData(treeInfo);
+
+                var setting = {
+                    view: {
+                        showIcon: showIconForTree
+                    },
+                    data: {
+                        simpleData: {
+                            enable: true
+                        }
+                    }
+                };
+                $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            }
+        });
+
+    });
+
+    function showIconForTree(treeId, treeNode) {
+        return !treeNode.isParent;
+    };
+    function getData(info) {
+        for (i = 0; i < info.length; i++) {
+            zNodes.push({
+                id: info[i].id,
+                pId: info[i].p_agent_id,
+                name: info[i].agent_name + "(编码：" + info[i].identify_code +"，状态："+info[i].status_name+"，地区："+info[i].province_name+(info[i].city_id!=0?('-'+info[i].city_name):'')+(info[i].district_id!=0?('-'+info[i].district_name):'')+")"
+            });
+            if (info[i].agent_child_list.length != 0) {
+                getData(info[i].agent_child_list);
+            }
+        }
+    }
+</script>
+</body>
+</html>

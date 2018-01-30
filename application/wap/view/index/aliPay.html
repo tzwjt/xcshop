@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+</head>
+<body style="padding: 0;">
+    <img src="__STATIC__/template/wap/images/alipay1.png" style="width: 100%;display: none;" id="wImg">
+<script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+<script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+    {include file='index/auto_login'}
+<script>
+    $(function () {
+        $.ajax({
+            url:"{:url('shop/pay/aliPay')}",
+            data:{'out_trade_no': "{$out_trade_no}"},
+            type:'post',
+            datatype:'json',
+            headers: {
+                authKey: $.cookie('authKey'),
+                sessionId: $.cookie('sessionId')
+            },
+            success:function (res) {
+                if(res.code==0){
+                    if(res.data.status==1){
+                        location.href=res.data.res;
+                    }else{
+                        $("body").css("background-color","#000");
+                        $("#wImg").show();
+                    }
+                }else{
+                    layer.msg(res.msg,{shade:[0.2,"#333"]},function () {
+                        window.history.back();
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<style>
+    #nav-bar{
+        background-color: rgba(0, 0, 0, 0.6);
+        position: fixed;
+        top:0;
+        left: 0;
+    }
+    #nav-bar a {
+        text-decoration: none !important;
+        color: #ccc;
+    }
+    #nav-bar a:hover{
+        color:#fff;
+    }
+    .header-logo .header-logo-img{
+        background-image: url("__STATIC__/web/images/logo-5.png");
+        background-size: 100% 100%;
+    }
+    body{
+        padding-top: 110px;
+    }
+    [v-cloak]{
+        display: none;
+    }
+</style>
+<div class="mushu-header-container" id="nav-bar">
+    <div class="mushu-header cf theme-main">
+        <div class="header-logo">
+            <a href="{:url('index')}" class="header-logo-img" alt="logo"></a>
+        </div>
+        <div class="header-cart">
+            <a href="{:url('shopcart')}" class="header-cart-img"><span class="num" id="shopcart-num" style="display: none;"></span></a>
+        </div>
+        <div class="header-user header-user-1">
+            <span><a class="header-user-option" href="{:url('web/index/login')}">登录</a></span><span>|</span><span><a
+                class="header-user-option" href="{:url('web/index/register')}">注册</a></span>
+        </div>
+        <div class="header-user header-user-2">
+            <span><a class="header-user-option" href="{:url('web/index/self')}">会员中心</a></span><span>|</span><span><a
+                class="header-user-option" onclick="clearCookie()">退出</a></span>
+        </div>
+        <ul class="header-link" id="niu-head-nav">
+            <!--<li class="header-link-item"><a href="{:url('index')}">首页</a></li>-->
+            <!--<li class="header-link-item"><a href="{:url('detail',array('list'=>'73'))}">产品方案</a></li>-->
+            <!--<li class="header-link-item"><a href="{:url('app')}">App下载</a></li>-->
+            <!--<li class="header-link-item"><a href="">设备共享</a></li>-->
+            <!--<li class="header-link-item"><a href="">防伪查询</a></li>-->
+            <!--<li class="header-link-item"><a href="{:url('about')}">关于我们</a></li>-->
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(".header-about").hover(function () {
+            $(".header-about-list li").slideDown();
+        }, function () {
+            $(".header-about-list li").hide();
+        });
+        if ($.cookie('login_phone') == undefined || $.cookie('login_phone') == '') {
+            $(".header-user-1").show();
+            $(".header-user-2").hide();
+
+        } else {
+            $(".header-user-2").show();
+            $(".header-user-1").hide();
+        }
+        $.ajax({
+            url:"{:url('shop/goods/getCartNum')}",
+            type:"post",
+            data:{},
+            datatype:"json",
+            success:function(res){
+                if(res.code==0){
+                    $("#shopcart-num").html(res.data);
+                    $("#shopcart-num").show();
+                }
+            }
+        });
+
+        $.ajax({
+            url:"{:url('shop/AutoTask/loadAutoTask')}",
+            type:"post",
+            data:{},
+            datatype:"json",
+            success:function(res){
+
+            }
+        });
+        //获取菜单
+        $.ajax({
+            url:"{:url('shop/System/pcShopMenu')}",
+            type:"post",
+            data:{},
+            datatype:"json",
+            success:function(res){
+                if(res.code==0){
+                    var str='';
+                    for(i=0;i<res.data.data.length;i++){
+                        str+='<li class="header-link-item"><a href="__ROOT__/index.php?s='+res.data.data[i].menu_url+'">'+res.data.data[i].menu_name+'</a></li>';
+                    }
+                    $("#niu-head-nav").prepend(str);
+                }
+
+            }
+        });
+    });
+    function clearCookie() {
+        var layMsg=layer.msg("您是否确认要退出?", {
+            btn: ['按错了', '确认'],
+            shade: [0.2, '#393D49'],
+            yes:function(){
+                layer.close(layMsg);
+            },
+            btn2:function(){
+                $.ajax({
+                    url:"{:url('shop/member/logout')}",
+                    data:{},
+                    datatype:"json",
+                    type:"json",
+                    headers:{
+                        authKey: $.cookie('authKey'),
+                        sessionId: $.cookie('sessionId')
+                    },
+                    success:function(res){
+                        if(res.code==0){
+                            var keys=document.cookie.match(/[^ =;]+(?=\=)/g);
+                            if (keys) {
+                                for (var i =  keys.length; i--;)
+                                    document.cookie=keys[i]+'=0;expires=' + new Date( 0).toUTCString()
+                            }
+                            location.href="{:url('index')}";
+                        }
+                    }
+                });
+            }
+        });
+    }
+    function getSign() {
+        $.ajax({
+            url: "{:url('shop/member/signIn')}",
+            data: {},
+            datatype: "json",
+            type: "json",
+            headers: {
+                authKey: $.cookie('authKey'),
+                sessionId: $.cookie('sessionId')
+            },
+            success: function (res) {
+                alert("签到成功");
+                location.reload();
+            }
+        });
+    }
+</script>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html lang="ch" style="font-size: 64.6875px;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/tyd/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/tyd/public.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/tyd/style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/tyd/style-yxy.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/tyd/newstyle.css">
+
+    <script src="__STATIC__/tyd/jquery.min.js" type="text/javascript"></script>
+
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="__STATIC__/tyd/jquery.infinitescroll.js" type="text/javascript"></script>
+    <script src="__STATIC__/tyd/base.js"></script>
+    <script src="__STATIC__/tyd/common.js"></script>
+    <script src="__STATIC__/tyd/common(1).js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<!-- content -->
+<!--本页面需要的单独的js或css文件-->
+<script src="__STATIC__/tyd/union.js" type="text/javascript"></script>
+<script src="__STATIC__/tyd/unionorder.js" type="text/javascript"></script>
+<script src="__STATIC__/tyd/swiper.min.js"></script>
+<link rel="stylesheet" type="text/css" href="__STATIC__/tyd/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/tyd/SwStyle.css">
+<!--本页面需要的单独的js或css文件-->
+<style type="text/css">
+    .starstatus:before {
+        color: #ff8000;
+    }
+    .content img{
+        max-width: 100%;
+    }
+    [v-cloak]{
+        display: none;
+    }
+</style>
+{include file="index/nav_bar"/}
+<main class="ShopInfo" id="vue-main" v-cloak>
+    <div class="">
+        <div class="" style="">
+
+            <div class="" style="" align="center">
+                <img :src="shopImg" alt="" class="" height="250" width="98%">
+            </div>
+        </div>
+    </div>
+    <ul class="InfoList">
+        <li class="title">
+            <p class="shopname"><span>{{tydInfo.shop_name}}</span></p>
+        </li>
+        <li>
+            <p class="iconfont icon-dingwei" style="float: left; width: 90%;"><span onclick="showtodaohang();">{{tydInfo.shop_address}}</span><span
+                    onclick="showtodaohang();"
+                    style="color: crimson;float: right; font-family: &#39;黑体&#39;; padding-left: 0.2rem; border-left-color: #ebebeb; border-left-style: solid; border-left-width: 1px;"><img
+                    src="__STATIC__/tyd/daohang.png"
+                    style="width: 0.25rem; height: 0.25rem; padding-right: 0.1rem; margin-bottom: -0.05rem;">去导航</span>
+            </p>
+        </li>
+        <li>
+            <p class="iconfont icon-dianhua" style="width: 90%; float: left;"><a :href="'tel://'+tydInfo.shop_phone">{{tydInfo.shop_phone}}</a><a
+                    :href="'tel://'+tydInfo.shop_phone"><span
+                    style="color: crimson; float: right; font-family: &#39;黑体&#39;; padding-left: 0.2rem; border-left-color: #ebebeb; border-left-style: solid; border-left-width: 1px;"><img
+                    src="__STATIC__/tyd/dadianhua.png"
+                    style="width: 0.25rem; height: 0.25rem; padding-right: 0.1rem; margin-bottom: -0.05rem;">打电话</span></a>
+            </p>
+        </li>
+        <li>
+            <p class="iconfont icon-shijian">{{tydInfo.business_begin}}-{{tydInfo.business_end}}</p>
+        </li>
+
+        <li class="text"><p>体验店介绍</p></li>
+        <li class="textContetn">
+            <p>{{tydInfo.shop_introduce}}</p>
+        </li>
+        <!--<li class="text"><p>体验须知</p></li>-->
+    </ul>
+    <div class="content" v-html="tydInfo.shop_content"></div>
+
+
+    <!-- <button class="ShopInfoBtn">立即购买</button> -->
+</main>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+
+
+<script type="text/javascript">
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                tydInfo:{},
+                shopImg:''
+            },
+            mounted:function () {
+                this.$http.post("{:url('shop/Member/memberAgentShop')}", {},{
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    },
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.tydInfo=res.data.data;
+                        this.shopImg=this.tydInfo.shop_banner.split(';')[0];
+                    }
+                });
+            }
+
+
+        });
+    });
+
+
+
+    function showtodaohang(to_address, to_lat, to_lng) {
+
+
+        //var map_url = 'http://apis.map.qq.com/uri/v1/routeplan?type=drive&from=&fromcoord='+curr_latitude+','+curr_longitude+'&to='+to_address+'&tocoord='+to_lat+','+to_lng+'&policy=1&referer=myapp';
+        var map_url = "http://api.map.baidu.com/marker?location=32.463273,119.963614&title=美肤日制SKINDAY--江苏泰州体验店&name=美肤日制SKINDAY--江苏泰州体验店&output=html&src=we7";
+        window.location.href = map_url;
+
+        // console.log(map_url);
+    }
+</script>
+
+<!-- alert/confirm提示框 弹出层 -->
+</body>
+</html>

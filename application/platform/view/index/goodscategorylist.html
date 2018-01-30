@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script>
+        var PLATFORM_NAME = "{$platformInfo.platform_site_name}";
+        var ADMINIMG = "__STATIC__/admin/images";//后台图片请求路径
+        var PAGESIZE = "20";//分页显示页数
+        var _STATIC = "__STATIC__";
+        //上传文件路径
+        var UPLOADGOODS = 'upload/goods/';//存放商品图片
+        var UPLOADGOODSSKU = 'upload/goods_sku/';//存放商品SKU
+        var UPLOADGOODSBRAND = 'upload/goods_brand/';//存放商品品牌图
+        var UPLOADGOODSGROUP = 'upload/goods_group/';////存放商品分组图片
+        var UPLOADGOODSCATEGORY = 'upload/goods_category/';////存放商品分类图片
+        var UPLOADCOMMON = 'upload/common/';//存放公共图片、网站logo、独立图片、没有任何关联的图片
+        var UPLOADAVATOR = 'upload/avator/';//存放用户头像
+        var UPLOADPAY = 'upload/pay/';//存放支付生成的二维码图片
+        var UPLOADADV = 'upload/advertising/';//存放广告位图片
+        var UPLOADEXPRESS = 'upload/express/';//存放物流图片
+        var UPLOADCMS = 'upload/cms/';//存放文章图片
+    </script>
+    <style>
+        .table-class input {
+            color: #666;
+            width: 206px;
+            margin-bottom: 0px;
+            border: 1px solid #ccc;
+        }
+
+        .table-class input.sort {
+            width: auto;
+            text-align: center;
+        }
+        #niu-table tr td{
+            padding: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+{include file="index/head" /}
+<article class="ns-base-article">
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+
+        <nav id="nav-list">
+            <ul>
+                {foreach item="vo" name="module_second"}
+
+                <li {if condition="$vo['selected'] eq true"}
+                    class='selected'
+                    {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                {/foreach}
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    商品分类
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">商品分类</li>
+                </ul>
+            </nav>
+            <div class="right-side-operation">
+                <ul>
+                    <li><a href="{:url('addgoodscategory')}"><i class="fa fa-plus-circle"></i>&nbsp;添加商品分类</a></li>
+                    <li style="display:none;"><a class="js-open-warmp-prompt"><i class="fa fa-bell"></i>提示</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main">
+            <table class="table-class">
+                <colgroup>
+                    <col style="width: 1%;">
+                    <col style="width: 5%;">
+                    <col style="width: 29%;">
+                    <col style="width: 29%;">
+                    <col style="width: 16%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                </colgroup>
+                <thead>
+                <tr align="center">
+                    <th></th>
+                    <th>排序</th>
+                    <th style="text-align: left;">商品分类</th>
+
+                    <th style="text-align: left;">关联类型</th>
+                    <th>是否显示</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <colgroup>
+                    <col style="width: 5%;">
+                    <col style="width: 5%;">
+                    <col style="width: 40%;">
+                    <col style="width: 10%;">
+                    <col style="width: 15%;">
+                    <col style="width: 15%;">
+                </colgroup>
+                <tbody id="niu-table">
+                <template v-for="(item,index) in data">
+                    <tr style="height: 30px;">
+                        <td>
+                            <template v-if="item.child_list.length!=0">
+                            <a href="javascript:;" @click="tab_switch(item.id)" :class="'tab_jia_'+item.id"
+                               style="display: block;"><i
+                                    class="fa fa-plus-circle"></i></a>
+                            <a href="javascript:;" @click="tab_switch(item.id)" :class="'tab_jian_'+item.id"
+                               style="display: none;"><i
+                                    class="fa fa-minus-circle"></i></a>
+                            </template>
+                        </td>
+                        <td style="text-align: center;">
+                            {{index+1}}
+                            <!--<input type="text" class="sort input-common" fieldid="1" fieldname="sort" :value="index+1" size="1"></td>-->
+                        <td>
+                        {{item.category_name}}
+                        <!--<input class="input-common" type="text" fieldid="1" fieldname="category_name" v-model="item.category_name" style="width: 150px;">-->
+                    </td>
+                        <td></td>
+                        <td style="text-align: center;">是</td>
+                        <td style="text-align: center;">
+                            <a @click="getUrl(item.id)">修改</a>
+                            <a href="javascript:void(0);" @click="delCategory(item.id)">删除</a>
+                        </td>
+                    </tr>
+                    <template v-for="(item1,index1) in item.child_list">
+                        <tr :class="'pid_'+item.id" style="height: 30px;display: none;">
+                            <td>
+                                <template v-if="item1.child_list.length!=0">
+                                <a href="javascript:;" @click="tab_switch(item1.id)" :class="'tab_jian_'+item1.id"
+                                   style="display: block;"><i class="fa fa-minus-circle"></i></a>
+                                <a href="javascript:;" @click="tab_switch(item1.id)" :class="'tab_jia_'+item1.id"
+                                   style="display: none;"><i class="fa fa-plus-circle"></i></a>
+                                    </template>
+                            </td>
+                            <td style="text-align: center;">
+                                {{index1+1}}
+                                <!--<input type="text" class="sort input-common" fieldid="14" fieldname="sort" :value="index1+1" size="1">-->
+                            </td>
+
+                            </td>
+                            <td><span
+                                    style="color:#ccc;">|——</span>
+                                {{item1.category_name}}
+                                <!--<input type="text" class="input-common" fieldid="14" fieldname="short_name" v-model="item1.category_name" style="width: 150px;"></td>-->
+                            <td></td>
+                            <td style="text-align: center;">是</td>
+                            <td style="text-align: center;">
+                                <a @click="getUrl(item1.id)">修改</a>
+                                <a href="javascript:void(0);" @click="delCategory(item1.id)">删除</a>
+                            </td>
+                        </tr>
+                        <template v-for="(item2,index2) in item1.child_list">
+                            <tr :class=['pid_'+item1.id,'pid_'+item.id] style="height: 30px;display:none;">
+                                <td></td>
+                                <td style="text-align: center;">
+                                    {{index2+1}}
+                                    <!--<input type="text" class="sort input-common" fieldid="55" fieldname="sort" :value="index2+1" size="1">-->
+                                </td>
+                                <td><span
+                                        style="color:#ccc;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|——</span>
+                                    {{item2.category_name}}
+                                    <!--<input type="text" class="input-common" fieldid="55" fieldname="category_name" v-model="item2.category_name" style="width: 100px;">-->
+                                </td>
+                                <td></td>
+                                <td style="text-align: center;">是</td>
+                                <td style="text-align: center;">
+                                    <a @click="getUrl(item2.id)">修改</a>
+                                    <a href="javascript:void(0);" @click="delCategory(item2.id)">删除</a>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                </template>
+                </tbody>
+            </table>
+
+            <script src="__STATIC__/js/page.js"></script>
+            <div class="page" id="turn-ul" style="display: none;">
+                <div class="pagination">
+                    <ul>
+                        <li class="total-data">共0有条数据</li>
+                        <li class="according-number">每页显示<input type="text" class="input-medium" id="showNumber"
+                                                                value="20" data-default="20" autocomplete="off"/>条
+                        </li>
+                        <li><a id="beginPage" class="page-disable" style="border: 1px solid #dddddd;">首页</a></li>
+                        <li><a id="prevPage" class="page-disable">上一页</a></li>
+                        <li id="pageNumber"></li>
+                        <li><a id="nextPage">下一页</a></li>
+                        <li><a id="lastPage">末页</a></li>
+                        <li class="page-count">共0页</li>
+                    </ul>
+                </div>
+            </div>
+            <input type="hidden" id="page_count"/>
+            <input type="hidden" id="page_size"/>
+            <script>
+                $(function () {
+                    try {
+                        $("#turn-ul").show();//显示分页
+                        LoadingInfo(1);//通过此方法调用分页类
+                    } catch (e) {
+                        $("#turn-ul").hide();
+                    }
+                    //首页
+                    $("#beginPage").click(function () {
+                        if (jumpNumber != 1) {
+                            jumpNumber = 1;
+                            LoadingInfo(1);
+                            changeClass("begin");
+                        }
+                        return false;
+                    });
+
+                    //上一页
+                    $("#prevPage").click(function () {
+                        var obj = $(".currentPage");
+                        var index = parseInt(obj.text()) - 1;
+                        if (index > 0) {
+                            obj.removeClass("currentPage");
+                            obj.prev().addClass("currentPage");
+                            jumpNumber = index;
+                            LoadingInfo(index);
+                            //判断是否是第一页
+                            if (index == 1) {
+                                changeClass("prev");
+                            } else {
+                                changeClass();
+                            }
+                        }
+                        return false;
+                    });
+
+                    //下一页
+                    $("#nextPage").click(function () {
+                        var obj = $(".currentPage");
+                        //当前页加一（下一页）
+                        var index = parseInt(obj.text()) + 1;
+                        if (index <= $("#page_count").val()) {
+                            jumpNumber = index;
+                            LoadingInfo(index);
+                            obj.removeClass("currentPage");
+                            obj.next().addClass("currentPage");
+                            //判断是否是最后一页
+                            if (index == $("#page_count").val()) {
+                                changeClass("next");
+                            } else {
+                                changeClass();
+                            }
+                        }
+                        return false;
+                    });
+
+                    //末页
+                    $("#lastPage").click(function () {
+                        jumpNumber = $("#page_count").val();
+                        if (jumpNumber > 1) {
+                            LoadingInfo(jumpNumber);
+                            $("#pageNumber a:eq(" + (parseInt($("#page_count").val()) - 1) + ")").text($("#page_count").val());
+                            changeClass("next");
+                        }
+                        return false;
+                    });
+
+                    //每页显示页数
+                    $("#showNumber").blur(function () {
+                        if (isNaN($(this).val())) {
+                            $("#showNumber").val(20);
+                            jumpNumber = 1;
+                            LoadingInfo(jumpNumber);
+                            return;
+                        }
+                        //页数没有变化的话，就不要再执行查询
+                        if (parseInt($(this).val()) != $(this).attr("data-default")) {
+// 			jumpNumber = 1;//设置每页显示的页数，并且设置到第一页
+                            $(this).attr("data-default", $(this).val());
+                            LoadingInfo(jumpNumber);
+                        }
+                        return false;
+                    }).keyup(function (event) {
+                        if (event.keyCode == 13) {
+                            if (isNaN($(this).val())) {
+                                $("#showNumber").val(20);
+                                jumpNumber = 1;
+                                LoadingInfo(jumpNumber);
+                            }
+                            //页数没有变化的话，就不要再执行查询
+                            if (parseInt($(this).val()) != $(this).attr("data-default")) {
+// 				jumpNumber = 1;//设置每页显示的页数，并且设置到第一页
+                                $(this).attr("data-default", $(this).val());
+                                //总数据数量
+                                var total_count = parseInt($(".total-data").attr("data-total-count"));
+                                //计算用户输入的页数是否超过当前页数
+                                var curr_count = Math.ceil(total_count / parseInt($(this).val()));
+                                if (curr_count != 0 && curr_count < jumpNumber) {
+                                    jumpNumber = curr_count;//输入的页数超过了，没有那么多
+                                }
+                                LoadingInfo(jumpNumber);
+                            }
+                        }
+                        return false;
+                    });
+                });
+
+                //跳转页面
+                function JumpForPage(obj) {
+                    jumpNumber = $(obj).text();
+                    LoadingInfo($(obj).text());
+                    $(".currentPage").removeClass("currentPage");
+                    $(obj).addClass("currentPage");
+                    if (jumpNumber == 1) {
+                        changeClass("prev");
+                    } else if (jumpNumber < parseInt($("#page_count").val())) {
+                        changeClass();
+                    } else if (jumpNumber == parseInt($("#page_count").val())) {
+                        changeClass("next");
+                    }
+                }
+            </script>
+        </div>
+
+    </section>
+</article>
+
+<!-- 公共的操作提示弹出框 common-success：成功，common-warning：警告，common-error：错误，-->
+<div class="common-tip-message js-common-tip">
+    <div class="inner"></div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/json/nav-bar.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<div id="dialog"></div>
+<script type="text/javascript">
+    $(function () {
+        var vm = new Vue({
+            el: "#nav-list",
+            data: {
+                list: navBar[1],
+                type: 4
+            },
+            methods: {
+                changeUrl: function (url) {
+                    location.href = "../" + url;
+                }
+            }
+        });
+        var list = new Vue({
+            el: "tbody",
+            data: {
+                data:'',
+            },
+            methods: {
+                tab_switch: function (module_id) {
+                    if ($(".pid_" + module_id).css('display') != 'none') {
+                        $(".tab_jian_" + module_id).hide();
+                        $(".tab_jia_" + module_id).show();
+                        $(".pid_" + module_id).hide(300);
+                    } else {
+                        $(".tab_jian_" + module_id).show();
+                        $(".tab_jia_" + module_id).hide();
+                        $(".pid_" + module_id).show(500);
+                    }
+                },
+                getUrl:function(id){
+                    this.$http.post("{:url('platform/Index/getUrl')}",
+                            {type:'updateCategory',id:id},
+                            {emulateJSON: true}).then(function (res) {
+//                        alert(res.data.result=="OK");
+                        if(res.data.result=="OK"){
+                            location.href=res.data.url;
+                        }
+                    }, function (res) {
+                        layer.alert('操作失败，请稍后重试', {icon: 6, title: '提示'});
+                    });
+                },
+                delCategory:function(category_id){
+                    this.$http.post("{:url('platform/Goods/deleteGoodsCategory')}",
+                            {category_id:category_id},
+                            {emulateJSON: true}).then(function (res) {
+                        if(res.data.code==0){
+                            layer.alert(res.data.msg, {icon: 6, title: '提示'},function(){
+                                location.reload();
+                            });
+                        }else{
+                            layer.alert(res.data.msg, {icon: 6, title: '提示'});
+                        }
+                    }, function (res) {
+                        layer.alert('操作失败，请稍后重试', {icon: 6, title: '提示'});
+                    });
+                }
+
+            },
+            created:function(){
+                this.$http.post("{:url('platform/Goods/getGoodsCategoryList')}",
+                        {name:'ttt'},
+                        {emulateJSON: true}).then(function (res) {
+                    if(res.data.code==0){
+                        this.data=res.data.data;
+                    }
+                }, function (res) {
+                    layer.alert('操作失败，请稍后重试', {icon: 6, title: '提示'});
+                });
+            }
+        });
+    });
+
+    function showMessage(type, message, url, time) {
+        if (url == undefined) {
+            url = '';
+        }
+        if (time == undefined) {
+            time = 2;
+        }
+        //成功之后的跳转
+        if (type == 'success') {
+            $("#dialog").dialog({
+                buttons: {
+                    "确定,#51A351": function () {
+                        $(this).dialog('close');
+                    }
+                },
+                contentText: message,
+                time: time,
+                timeHref: url,
+            });
+        }
+        //失败之后的跳转
+        if (type == 'error') {
+            $("#dialog").dialog({
+                buttons: {
+                    "确定,#e57373": function () {
+                        $(this).dialog('close');
+                    }
+                },
+                time: time,
+                contentText: message,
+                timeHref: url,
+            });
+        }
+    }
+
+    function showConfirm(content) {
+        $("#dialog").dialog({
+            buttons: {
+                "确定": function () {
+                    $(this).dialog('close');
+                    return 1;
+                },
+                "取消,#e57373": function () {
+                    $(this).dialog('close');
+                    return 0;
+                }
+            },
+            contentText: content,
+        });
+    }
+</script>
+<!--<script src="__STATIC__/admin/js/ns_common_base.js"></script>-->
+<script src="__STATIC__/blue/js/ns_common_blue.js"></script>
+<script>
+    $(function () {
+        //顶部导航管理显示隐藏
+        $(".ns-navigation-title>span").click(function () {
+            $(".ns-navigation-management").slideUp(400);
+        });
+
+        $(".js-nav").toggle(function () {
+            $(".ns-navigation-management").slideDown(400);
+        }, function () {
+            $(".ns-navigation-management").slideUp(400);
+        });
+    });
+
+</script>
+</body>
+</html>

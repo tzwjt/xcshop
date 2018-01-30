@@ -1,0 +1,182 @@
+<style>
+    #niu-address {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+        z-index: 5555;
+    }
+
+    .niu-address-title {
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background-color: #f9f9f9;
+        margin: 0;
+        font-size: 20px;
+        font-weight: normal;
+        font-family: "Helvetica Neue";
+        vertical-align: middle;
+        color: #051b28;
+        padding-right: 40px;
+    }
+
+    .niu-address-title img {
+        cursor: pointer;
+        width: 40px !important;
+    }
+
+    .niu-address-li-list {
+        height: 32px;
+        line-height: 32px;
+        font-size: 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #cfcfcf;
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+        color: #3f3f3f;
+        padding-left: 10px;
+    }
+</style>
+
+<div id="niu-address" style="display: none;">
+    <h1 class="niu-address-title">
+        <img src="__STATIC__/wap/images/back.png" style="width:40px;height:40px;float: left;" @click="goBack()">
+        选择地区
+    </h1>
+    <ul id="address-list">
+        <li class="niu-address-li-list" v-for="item in list" @click="getAddress(item.id,item.name)">{{item.name}}</li>
+    </ul>
+</div>
+<!--<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>-->
+<!--<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>-->
+<!--<script src="__STATIC__/wap/js/jquery.js"></script>-->
+<!--<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>-->
+<script>
+    $(function () {
+        var address = new Vue({
+            el: "#niu-address",
+            data: {
+                index: 0,
+                info: [],
+                list: [],
+                address: {
+                    province: '',
+                    province_id: '',
+                    city: '',
+                    city_id: '',
+                    district: '',
+                    district_id: '',
+                }
+            },
+            created: function () {
+                $("#address-list").hide();
+                this.$http.post("{:url('shop/member/getProvince')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.info[0] = res.data.data;
+                        this.list = [];
+                        for (i = 0; i < this.info[0].length; i++) {
+                            this.list.push({id: this.info[0][i].id, name: this.info[0][i].province_name});
+                        }
+                    }
+                });
+                $("#address-list").show();
+            },
+            methods: {
+                getAddress: function (id, name) {
+                    $("#address-list").hide();
+                    if (this.index == 0) {
+                        this.address.province = name;
+                        this.address.province_id = id;
+                        this.index = 1;
+                        this.$http.post("{:url('shop/member/getCity')}", {province_id: id},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                this.info[1] = res.data.data;
+                                this.info[1].unshift({city_name: "全省", id: 0});
+                                this.list = [];
+                                for (i = 0; i < this.info[1].length; i++) {
+                                    this.list.push({id: this.info[1][i].id, name: this.info[1][i].city_name});
+                                }
+                            }
+                        });
+                    } else if (this.index == 1) {
+                        if (id == 0) {
+                            vueMain.address = this.address.province;
+                            this.hideAddress(this.address.province, '', '');
+                            return;
+                        }
+                        this.address.city = name;
+                        this.address.city_id = id;
+                        this.index = 2;
+                        this.$http.post("{:url('shop/member/getDistrict')}", {city_id: id},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                this.info[2] = res.data.data;
+                                this.info[2].unshift({district_name: "全市", id: 0});
+                                this.list = [];
+                                for (i = 0; i < this.info[2].length; i++) {
+                                    this.list.push({id: this.info[2][i].id, name: this.info[2][i].district_name});
+                                }
+                            }
+                        });
+                    } else {
+                        if (id == 0) {
+                            vueMain.address = this.address.province + "&nbsp;" + this.address.city;
+                            this.hideAddress(this.address.province, this.address.city, '');
+                            return;
+                        } else {
+                            this.address.district_id = id;
+                            vueMain.address = this.address.province + "&nbsp;" + this.address.city + "&nbsp;" + name;
+                            this.hideAddress(this.address.province, this.address.city, this.address.district);
+                        }
+                    }
+                    $("#address-list").show();
+                },
+                hideAddress: function (province, city, district) {
+                    // this.index=0;
+                    // this.list=[];
+                    // for (i = 0; i < this.info[0].length; i++) {
+                    //     this.list.push({id: this.info[0][i].id, name: this.info[0][i].province_name});
+                    // }
+                    this.$http.post("{:url('shop/member/getAgentByAddress')}", {
+                            province: province,
+                            city: city,
+                            district: district
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            vueMain.agentList = res.data.data;
+                            vueMain.agent_id = -1;
+                            $("#niu-address").hide();
+                            $("#vue-main").show();
+                        }
+                    });
+                },
+                goBack: function () {
+                    $("#address-list").hide();
+                    if (this.index == 0) {
+                        $("#niu-address").hide();
+                        $("#main").show();
+
+                    } else if (this.index == 1) {
+                        this.index = 0;
+                        this.list = [];
+                        for (i = 0; i < this.info[0].length; i++) {
+                            this.list.push({id: this.info[0][i].id, name: this.info[0][i].province_name});
+                        }
+                    } else {
+                        this.index = 1;
+                        this.list = [];
+                        for (i = 0; i < this.info[1].length; i++) {
+                            this.list.push({id: this.info[1][i].id, name: this.info[1][i].city_name});
+                        }
+                    }
+                    $("#address-list").show();
+                }
+            }
+        });
+    });
+</script>

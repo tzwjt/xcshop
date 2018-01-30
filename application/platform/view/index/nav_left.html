@@ -1,0 +1,17 @@
+<header>
+    <article class="ns-base-user">
+        <div class="ns-head-portrait">
+            <img src="__STATIC__/blue/img/head_portrait_default.png"/>
+        </div>
+        <div class="ns-base-info">
+            <span id="admin-userName">&nbsp;</span>
+            <span id="admin-userReal">&nbsp;</span>
+        </div>
+    </article>
+    <a href="{:url('index/resetpwd')}" data-toggle="modal" title="密码重置">密码重置</a>
+    <a href="{:url('platform/User/logout')}" title="安全退出">安全退出</a>
+</header>
+<div style="position: absolute;bottom: 50px;left: 0;width:100%;background: #fff;text-align: center;">
+    <p style="font-size:10px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin: 5px 0;line-height: 20px;">{$copyInfo}</p>
+    <p style="font-size:10px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin: 5px 0;line-height: 20px;">{$platformInfo.web_icp}</p>
+</div>

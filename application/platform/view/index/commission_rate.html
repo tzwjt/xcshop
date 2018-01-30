@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link href="__STATIC__/admin/css/express/freight_edit.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+
+</head>
+<body>
+{include file='index/head'/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+
+            <nav>
+
+
+                <ul>
+                {foreach item="vo" name="module_second"}
+
+                <li {if condition="$vo['selected'] eq true"}
+                    class='selected'
+                    {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                {/foreach}
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_desc"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_meta"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        默认佣金率设置
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">默认佣金率设置</li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main">
+                <div class="mod-table">
+                    <div class="table-div">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td class="table-1td" style="width:200px;">代理商直接佣金率</td>
+                                <td>
+                                    <div>
+                                        <input class="input-mini input-common" @change="checkNum('first_rate')" v-model="first_rate" type="text"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-1td">代理商间接佣金率</td>
+                                <td>
+                                    <div>
+                                        <input class="input-mini input-common" @change="checkNum('second_rate')" v-model="second_rate" type="text"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-1td">加盟店直接佣金率</td>
+                                <td>
+                                    <div>
+                                        <input class="input-mini input-common" @change="checkNum('son_first_rate')" v-model="son_first_rate" type="text"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-1td">加盟店间接佣金率</td>
+                                <td>
+                                    <div>
+                                        <input class="input-mini input-common" @change="checkNum('son_second_rate')" v-model="son_second_rate" type="text"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt60" style="text-align: right;width:400px;">
+                        <button class="btn-common btn-big" @click="ajaxSubmit();">保存</button>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </article>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                first_rate: 0,
+                second_rate: 0,
+                son_first_rate: 0,
+                son_second_rate: 0
+            },
+            mounted: function () {
+                this.$http.post("{:url('platform/agent/getDefaultCommissionRate')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.first_rate = res.data.data.first_rate;
+                        this.second_rate = res.data.data.second_rate;
+                        this.son_first_rate = res.data.data.son_first_rate;
+                        this.son_second_rate = res.data.data.son_second_rate;
+                    }
+                });
+            },
+            methods: {
+                ajaxSubmit: function () {
+                    this.$http.post("{:url('platform/agent/setDefaultCommissionRate')}", {
+                            first_rate: this.first_rate,
+                            second_rate: this.second_rate,
+                            son_first_rate: this.son_first_rate,
+                            son_second_rate: this.son_second_rate
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6});
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                checkNum:function (info) {
+                    if(isNaN(this[info]) || this[info]>=1 || this[info]<0){
+                        layer.msg("佣金率必须为大于等于0小于1的数...");
+                        this[info]=0;
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

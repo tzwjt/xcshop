@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <meta content="text/html; charset=UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+
+    <!--<link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/pro-detail.css">-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/dropload/dropload.css">
+
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    <script src="__STATIC__/dropload/dropload.js"></script>
+
+    {include file="index/auto_login"/}
+
+    <style>
+        body .sub-nav.nav-b5 dd i {
+            margin: 3px auto 5px auto;
+        }
+
+        body .fixed.bottom {
+            bottom: 0;
+        }
+
+        .mask-layer-loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+            top: 0;
+            left: 0;
+            text-align: center;
+            display: none;
+        }
+
+        .mask-layer-loading i, .mask-layer-loading img {
+            text-align: center;
+            color: #000000;
+            font-size: 50px;
+            position: relative;
+            top: 50%;
+        }
+
+        .sub-nav.nav-b5 dd {
+            width: 25%
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/member_balance.css">
+    <script type="text/javascript">window.onerror = function () {
+        return true;
+    }</script>
+    <style type="text/css">
+        .ns-table td {
+            width: 100%;
+        }
+
+        .ns-lf {
+            float: left;
+        }
+
+        .ns-rg {
+            color: red;
+            font-size: 14px;
+            float: right
+        }
+
+        .ns-rg-time {
+            font-size: 14px;
+            float: right
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body class="body-gray">
+
+<div style="height:44px;background-color:#000;position: fixed;top:0;left: 0;width:100%;z-index:1555">
+    <div style="width:100%;height: 100%;line-height: 100%;text-align: center;position: absolute;font-size:22px;color:#fff;padding-top: 10px;">
+        我的积分
+    </div>
+    <div style="width:24px;height:24px;float: left;margin-top: 10px;margin-left: 10px;position:relative;z-index:5555;">
+        <a href="javascript:window.history.back();">
+            <img src="__STATIC__/wap/images/back-5.png" style="width:100%;"/></a>
+    </div>
+    <div style="width:24px;height:24px;float: right;margin-top: 10px;margin-right: 10px;position:relative;z-index:5555;">
+        <a href="{:url('index')}">
+            <img src="__STATIC__/wap/images/home-5.png" style="width:100%;"/></a>
+    </div>
+</div>
+<div id="vue-main" v-cloak>
+    <div id="main" class="detail-main">
+        <div class="my-account">
+            <div class="account-box">
+                <p class="balace">{{totolPoint}}</p>
+                <p style="font-size: 15px;color: #fff;">积分(个)</p>
+                <div class="account-option" style="margin-top: 10px;border-top:1px solid #f86126;padding-top: 10px;">
+                    <ul>
+                        <li class="account-option-left" style="width:100%;color:#fff;">积分明细</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <table class="ns-table" style="margin-bottom: 0;">
+            <tr align="center" v-for="item in info.data">
+                <td style="padding-bottom: 0.2rem;font-size: 16px;">
+                    <span class="ns-lf" style="color: #444">{{item.type_name}}</span>
+                    <span class="ns-rg">{{item.number}}</span>
+                </td>
+                <td style="padding-top: 0.2rem;font-size: 14px;color: #888;">
+                    <span class="ns-lf">{{item.remark}}</span>
+                    <span class="ns-rg-time">{{item.create_time}}</span>
+                </td>
+            </tr>
+        </table>
+        <div id="no-data" style="display: none;">
+            <div class="emptyFrame"><i class="user_balance"></i><span>您暂时还没有积分记录哦！</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- 加载弹出层 -->
+<div class="mask-layer-loading">
+    <img src="__STATIC__/template/wap/images/mask_load.gif"/>
+</div>
+
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                info: {
+                    data: []
+                },
+                totolPoint: '',
+                page_index: 0,
+                page_size: 10
+            },
+            mounted: function () {
+//                this.$http.post("{:url('shop/member/integralWater')}", {
+//                    page_index: this.page_index, page_size: this.page_size
+//                }, {
+//                    headers: {
+//                        authKey: $.cookie('authKey'),
+//                        sessionId: $.cookie('sessionId')
+//                    }
+//                }, {emulateJSON: true}).then(function (res) {
+//                    if (res.data.code == 0) {
+//                        this.info = res.data.data.member_point_list;
+//                        this.totolPoint = res.data.data.point;
+//
+//                    }
+//                });
+            },
+            methods: {}
+        });
+        $('#main').dropload({
+            scrollArea: window,
+            domDown: {
+                domClass: 'dropload-down',
+                domRefresh: '<div class="dropload-refresh">↑上拉加载更多...</div>',
+                domLoad: '<div class="dropload-load"><span class="loading"></span>正在努力加载订单信息...</div>',
+                domNoData: '<div class="dropload-noData">已到底...</div>'
+            },
+            loadDownFn: function (me) {
+                vueMain.page_index++;
+                vueMain.$http.post("{:url('shop/member/integralWater')}", {
+                        page_index: vueMain.page_index,
+                        page_size: vueMain.page_size
+                    }, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    },
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+//                        vueMain.orderInfo=res.data.data.data;
+                        vueMain.totolPoint=res.data.data.point;
+                        for (i = 0; i < res.data.data.member_point_list.data.length; i++) {
+                            vueMain.info.data.push(res.data.data.member_point_list.data[i]);
+                        }
+                        if(vueMain.info.data.length==0){
+                            $("#no-data").show();
+                        }
+                        if (res.data.data.member_point_list.data.length < vueMain.page_size) {
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                            me.resetload();
+                        } else {
+                            me.resetload();
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

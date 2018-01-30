@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <meta content="text/html; charset=UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/pro-detail.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/font-awesome.min.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    {include file="index/auto_login"/}
+    <style>
+        body .sub-nav.nav-b5 dd i {margin: 3px auto 5px auto;}
+        body .fixed.bottom {bottom: 0;}
+        .mask-layer-loading{position: fixed;width: 100%;height: 100%;z-index: 999999;top: 0;left: 0;text-align: center;display: none;}
+        .mask-layer-loading i,.mask-layer-loading img{text-align: center;color:#000000;font-size:50px;position: relative;top:50%;}
+        .sub-nav.nav-b5 dd{width:25%}
+    </style>
+
+    <style>
+        .face-box{
+            background: #272822;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .facepic{
+            margin: 100px 2% 0 2%;
+            width: 96%;
+            position: absolute;
+            z-index: 5;
+        }
+        .upload_face{
+            width: 96%;
+            height: 40px;
+            line-height: 40px;
+            background: #E03115;
+            color: #fff;
+            text-align: center;
+            margin:0 2% 20px 2%;
+            position: absolute;
+            bottom: 15px;
+            border-radius: 5px;
+            z-index: 20;
+        }
+    </style>
+    <script>
+        UPLOADAVATOR='UPLOAD_AVATOR';
+    </script>
+</head>
+<body class="body-gray">
+
+<div style="height:44px;background-color:#000;position: fixed;top:0;left: 0;width:100%;z-index:1555">
+    <div style="width:100%;height: 100%;line-height: 100%;text-align: center;position: absolute;font-size:22px;color:#fff;padding-top: 10px;">个人头像</div>
+    <div style="width:24px;height:24px;float: left;margin-top: 10px;margin-left: 10px;position:relative;z-index:5555;">
+        <a href="javascript:window.history.back();">
+            <img src="__STATIC__/wap/images/back-5.png" style="width:100%;"/></a>
+    </div>
+    <div style="width:24px;height:24px;float: right;margin-top: 10px;margin-right: 10px;position:relative;z-index:5555;">
+        <a href="{:url('index')}">
+            <img src="__STATIC__/wap/images/home-5.png" style="width:100%;"/></a>
+    </div>
+</div>
+
+
+<section class="face-box">
+    <img src="__STATIC__/wap/images/uploadImg.png" alt="" class="facepic" id="imgLogo">
+    <a href="javascript:void(0);">
+   		<span style=""> 
+       		<input hidefocus="true" size="1" class="input-file" name="file_upload" id="uploadImg" nc_type="change_store_label" type="file" style="width: 95%;padding: 0;border: none 0;opacity: 0;filter: alpha(opacity = 0);cursor: pointer;margin: 0 2% 0 2%;position: absolute;z-index: 10;top: 20px;"
+                   onchange="imgUpload(this);"> 
+			<input type="hidden" id="Logo" value="" />
+		</span>
+    </a>
+    <div class="upload_face">
+        保存头像
+    </div>
+</section>
+
+<!-- 加载弹出层 -->
+<div class="mask-layer-loading">
+    <img src="__STATIC__/template/wap/images/mask_load.gif"/>
+</div>
+<script src="__STATIC__/js/ajax_file_upload.js" type="text/javascript"></script>
+<script src="__STATIC__/js/file_upload.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+
+<script>
+    var imgUrl;
+    $(function(){
+
+        var windowHeight = $(document).height();
+        var imgHeight = $(".facepic").height();
+        $("#uploadImg").height(windowHeight);
+        $(".face-box").height(windowHeight);
+    })
+    function imgUpload(event) {
+        var fileid = $(event).attr("id");
+        var data = { 'file_path' : UPLOADAVATOR };
+        uploadFile(fileid,data,function(res){
+            if(res.code==0){
+                $("#imgLogo").attr("src",res.data);
+                imgUrl=res.data;
+            }else{
+                layer.msg(res.data.msg,{shade:[0.2,'#393D49']});
+            }
+        },"{:url('util/img_upload/uploadFile')}");
+    }
+    $(".upload_face").click(function(){
+        if(imgUrl==""){
+            layer.msg("请先选择头像图片",{shade:[0.2,'#393D49']});
+            return;
+        }
+        $.ajax({
+            type : "post",
+            url : "{:url('shop/member/modifyFace')}",
+            data : {"member_headimg" : imgUrl},
+            headers:{
+                authKey: $.cookie('authKey'),
+                sessionId: $.cookie('sessionId')
+            },
+            success : function(data){
+                if(data.code==0){
+                    layer.msg("头像更改成功",{shade:[0.2,'#393D49']});
+                    setTimeout(function () {
+                        location.href="{:url('personalData')}";
+                    },2000);
+                }
+            }
+        })
+    })
+</script>
+
+</body>
+</html>

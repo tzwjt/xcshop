@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="font-size: 37.037px;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <link href="__STATIC__/web/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!--<link href="__STATIC__/wap/css/iconfont.css" rel="stylesheet">-->
+    <!--<link href="__STATIC__/wap/css/mui.min.css" rel="stylesheet">-->
+    <!--<link href="__STATIC__/wap/css/all.css" rel="stylesheet">-->
+    <!--<link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/base.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/style.css">-->
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+</head>
+<body class="mui-android mui-android-6 mui-android-6-0">
+{include file="index/nav_bar"/}
+<div class="container" id="vue-main" v-cloak>
+    <h1 style="text-align: center;color:#666;font-size:22px;">防伪查询</h1>
+    <div class="row">
+    <div class="form-group">
+        <!--<label for="FwCode" class="col-xs-3 control-label"></label>-->
+        <div class="col-xs-9">
+            <input type="text" class="form-control" name="FwCode" id="FwCode" placeholder="请输入防伪码" maxlength="28" />
+        </div>
+        <div class="col-xs-3">
+            <input type="button" class="form-control btn btn-primary" name="btnQuery" id="btnQuery" value="查询" onclick="fwchack('FwCode','ReturnResult')"/>
+        </div>
+    </div>
+        <div class="col-xs-12" id="ReturnResult" style="color: #FF0000;margin-top: 10px;"></div>
+
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-xs-12">
+        <h4 style="color:#1B9AF7;">防伪提示</h4>
+        <p>1、检查标贴的完好性，刮开/揭开防伪标签。</p>
+        <p>2、在左面的输入框内依次正确输入上面的防伪码。</p>
+        <p>3、核对输入框内的防伪码和标贴一致后点击查询按钮。</p>
+        <p>4、稍后系统会显示出查询结果
+        </div>
+    </div>
+
+    <!--<div class="fwcode" style="text-align:center;">-->
+        <!--&lt;!&ndash;防伪码：<input type="text" name="FwCode" id="FwCode" maxlength="28" />&ndash;&gt;-->
+        <!--<input type="button" name="btnQuery" id="btnQuery"    value="查询" onclick="fwchack('FwCode','ReturnResult')" />-->
+        <!--<br />-->
+        <!--<div id="ReturnResult" style="color: #FF0000">-->
+        <!--</div>-->
+    <!--</div>-->
+</div>
+<div style="position: fixed;bottom: 0;left: 0;width:100%;">
+{include file="index/footernew"/}
+</div>
+<script src="__STATIC__/web/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/js/fwcx.js"></script>
+<!--插件-->
+</body>
+</html>

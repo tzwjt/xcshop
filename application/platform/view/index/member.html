@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/member_list.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css"/>
+
+    <style>
+        .head-portrait {
+            margin-top: 15px;
+        }
+        [v-cloak]{
+            display: none;
+        }
+        #member-count{
+            /*width:300px;*/
+            background: #0e80e1;
+            color:#fff;
+            /*display: inline-block;*/
+            margin: 10px 20px;
+        }
+        #member-count span{
+            display: inline-block;
+            width: 18%;
+            font-size:13px;
+            padding: 10px 20px;
+        }
+    </style>
+
+</head>
+<body>
+
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+           {include file="index/nav_left"/}
+            <nav>
+                <ul>
+                    {foreach item="vo" name="module_second"}
+
+                    <li {if condition="$vo['selected'] eq true"}
+                        class='selected'
+                        {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                    {/foreach}
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        会员列表
+                    </div>
+                </div>
+            </div>
+            <div id="member-count" style="">
+
+                <span>会员总数：{{memberCountInfo.member_total_count}}</span>
+                <span>有效会员总数：{{memberCountInfo.member_valid_total_count}}</span>
+                <span>平台有效会员总数：{{memberCountInfo.platfor_member_valid_total_count}}</span>
+                <span>代理商有效会员总数：{{memberCountInfo.agent_member_valid_total_count}}</span>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">会员列表</li>
+                    </ul>
+                </nav>
+                <div class="right-side-operation">
+                    <ul>
+
+                        <li><a href="javascript:;" onclick="add_user();"><i class="fa fa-plus-circle"></i>&nbsp;添加会员</a>
+                        </li>
+
+
+                        <li style="display:none;"><a class="js-open-warmp-prompt"><i class="fa fa-bell"></i>提示</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="ns-main">
+
+                <table class="mytable">
+                    <tr>
+
+                        <th>
+                            <select id="level_name" class="select-common" @change="changeLevel()" v-model="nowLevel">
+                                <option value="">请选择会员等级</option>
+                                <option value="" v-for="(item,index) in levelList" :value="item.id">
+                                    {{item.level_name}}
+                                </option>
+                            </select>
+
+                            <input type="text" id='search_text' placeholder="输入手机号/邮箱/会员昵称" class="input-common"
+                                   v-model="search_text"/>
+                            <input type="button" @click="searchData()" value="搜索" class="btn-common"/>
+                            <!--<input type="button" onclick="dataExcel()" value="导出数据" class="btn-common"/>-->
+                        </th>
+                    </tr>
+                </table>
+                <table class="table-class">
+                    <thead>
+                    <tr align="center">
+                        <th>会员</th>
+                        <th>所在地</th>
+                        <th>所属代理商</th>
+                        <th>数据</th>
+                        <th>注册&登录</th>
+                        <th>状态</th>
+                        <th style="width: 20%;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productTbody">
+                    <tr align="center" v-for="(item,index) in memberList">
+
+                        <td align="left">
+                            <img src="__STATIC__/images/default_user_portrait.gif" class="head-portrait">
+                            <div style="float:left;">
+                                <label style="float:none;width:100%">登录手机号：<span>{{item.login_phone}}</span></label>
+                                <label style="float:none;width:100%">昵称：<span>{{item.nickname}}</span></label>
+                                <label style="float:none;width:100%">邮箱：<span>{{item.email}}</span></label>
+                                <label style="float:none;width:100%">等级：<span>Lv{{item.member_level}}</span></label>
+                            </div>
+
+                        </td>
+
+                        <td>
+                            {{item.province_name}}<br/>
+                            {{item.city_name}}<br/>
+                            {{item.district_name}}
+                        </td>
+                        <td>
+                            {{item.agent_id}}<br/>
+                            {{item.agent_name}}
+                        </td>
+
+                        <td>
+                            <div style="float:left; text-align: left;">
+                                <label style="float:none;width:100%">积分：<span>{{item.point}}</span></label>
+                                <label style="float:none;width:100%">账户余额：<span>¥{{item.balance}}</span></label>
+                                <label style="float:none;width:100%">有效订单数：<span>{{item.order_sum}}</span></label>
+                                <label style="float:none;width:100%">消费金额：<span>Lv{{item.cunsum}}</span></label>
+                            </div>
+                        </td>
+                        <td>注册时间:{{item.create_time}}<br>最后登录:{{item.last_login_time}}</td>
+                        <td :style="{color:item.status==0?'red':'green'}">{{item.status_name}}</td>
+                        <td>
+                            <a @click="show_point_detail_modal(item.id)">积分明细</a>&nbsp;&nbsp;
+                            <a @click="show_balance_detail_modal(item.id)">余额明细</a><br>
+                            <a @click="show_recharge_point_modal(item)">积分调整</a>&nbsp;&nbsp;
+                            <a @click="show_recharge_balance_modal(item)">余额调整</a><br>
+                            <a @click="show_order_list_modal(item.id)">查看订单&nbsp;&nbsp;&nbsp;</a>
+                            <a @click="change_status(item.id,item.status)">{{item.status==1?"置无效":"置有效"}}</a><br>
+
+                    </tr>
+                    <tr style="background-color: #fff;">
+                        <td colspan="9" id="pagelist" style="text-align: center;"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </article>
+    <div style="width:800px;margin-left: -400px;" class="modal fade hide"
+         id="point_detail_modal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h3>积分明细</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>会员登录手机号</th>
+                                <th>类别</th>
+                                <th>数量</th>
+                                <th>描述</th>
+                                <th>时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="item in point_detail_info.list">
+                                <td>{{item.login_phone}}</td>
+                                <td>{{item.type_name}}</td>
+                                <td>{{item.number}}</td>
+                                <td>{{item.remark}}</td>
+                                <td>{{item.create_time}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" v-if="point_detail_info.list.length==0" style="text-align: center;">
+                                    暂无提现信息
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;background-color: #fff;"
+                                    id="point_detail_page"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 积分调整 -->
+    <div class="modal fade hide" id="recharge_point_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>调整积分</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table>
+                            <tr>
+                                <td>当前积分</td>
+                                <td colspan='3' id="current_point" class="input-common">{{recharge_point_info.point}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>调整积分</td>
+                                <td colspan='3'><input type="number" id="point" v-model="recharge_point_info.num"
+                                                       class="input-common" style="width:100px;">正数为增，负数为减
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>备注</td>
+                                <td colspan='3' id="time"><textarea id="remark_point" v-model="recharge_point_info.text"
+                                                                    class="input-common"></textarea></td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="point_id"/>
+                    <button class="btn btn-primary" @click="recharge_point()">保存</button>
+                    <button class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--余额详细-->
+    <div style="width:800px;margin-left: -400px;" class="modal fade hide"
+         id="balance_detail_modal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h3>余额明细</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>会员登录手机号</th>
+                                <th>类别</th>
+                                <th>数量</th>
+                                <th>描述</th>
+                                <th>时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="item in balance_detail_info.list">
+                                <td>{{item.login_phone}}</td>
+                                <td>{{item.type_name}}</td>
+                                <td>{{item.number}}</td>
+                                <td>{{item.remark}}</td>
+                                <td>{{item.create_time}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" v-if="balance_detail_info.list.length==0" style="text-align: center;">
+                                    暂无余额信息
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;background-color: #fff;"
+                                    id="balance_detail_page"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 余额调整 -->
+    <div class="modal fade hide" id="recharge_balance_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>调整余额</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table>
+                            <tr>
+                                <td>当前余额</td>
+                                <td colspan='3'  class="input-common">{{recharge_balance_info.balance}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>调整余额</td>
+                                <td colspan='3'><input type="number"  v-model="recharge_balance_info.num"
+                                                       class="input-common" style="width:100px;">正数为增，负数为减
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>备注</td>
+                                <td colspan='3' ><textarea  v-model="recharge_balance_info.text"
+                                                                    class="input-common"></textarea></td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @click="recharge_balance()">保存</button>
+                    <button class="btn" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--订单列表-->
+    <div style="width:1000px;margin-left: -400px;" class="modal fade hide"
+         id="order_list_modal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h3>会员订单</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-infp-style">
+                        <table class="table table-striped" id="order-list-table">
+                            <thead>
+                            <tr>
+                                <th>订单编号</th>
+                                <th>下单时间</th>
+                                <th>状态</th>
+                                <th>会员用户</th>
+                                <th>订单金额</th>
+                                <th>支付金额</th>
+                                <th>结算金额</th>
+                                <th>订单详情</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="item in order_list_info.list">
+                                <td>{{item.order_no}}</td>
+                                <td>{{item.create_time}}</td>
+                                <td>{{item.status_name}}</td>
+                                <td>{{item.user_name}}</td>
+                                <td>¥{{item.order_money}}</td>
+                                <td>¥{{item.pay_money}}</td>
+                                <td>¥{{item.real_account_money}}</td>
+                                <td><a :href="'{:url('orderdetail')}'+'&order_id='+item.id" target="_blank" class="btn btn-xs btn-info" style="font-size:10px;padding: 2px;">&nbsp;&nbsp;查看&nbsp;&nbsp;</a></td>
+                            </tr>
+                            <tr><td colspan="8" v-if="order_list_info.list.length==0" style="text-align: center;">暂无会员订单</td></tr>
+                            <tr>
+                                <td colspan="8" style="text-align: center;background-color: #fff;"
+                                    id="order_list_page"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<div id="dialog"></div>
+<script type="text/javascript">
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                memberList: {},
+                pageData: {},
+                totalPage: '',
+                totalCount: '',
+                page_size: 10,
+                levelList: {},
+                nowLevel: '',
+                search_text: '',
+                point_detail_info: {
+                    member_id: '',
+                    page_size: 10,
+                    list: []
+                },
+                order_list_info: {
+                    member_id: '',
+                    page_size: 10,
+                    list: []
+                },
+
+                balance_detail_info: {
+                    member_id: '',
+                    page_size: 10,
+                    start_date:"",
+                    end_date:"",
+                    list: []
+                },
+                recharge_point_info: {},//积分调整信息
+                recharge_balance_info: {},//积分调整信息,
+                memberCountInfo:{}//会员统计信息
+
+            },
+            mounted: function () {
+                this.$http.post("{:url('platform/Member/getMemberLevelList')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.levelList = res.data.data.data;
+                    }
+                });
+                this.$http.post("{:url('platform/Member/getMemeberCount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.memberCountInfo=res.data.data;
+                        // this.levelList = res.data.data.data;
+                    }
+                });
+
+
+
+                this.pageData = {
+                    page_index: 1,
+                    page_size: this.page_size,
+                };
+                this.getMemberInfo();
+            },
+            methods: {
+                getMemberInfo: function () {
+                    this.memberList=[];
+
+                    this.$http.post("{:url('platform/Member/memberList')}", this.pageData,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.memberList = res.data.data.data;
+                            this.totalPage = res.data.data.page_count;
+                            this.totalCount = res.data.data.total_count;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage
+                                    , layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: vueMain.totalCount,
+                                    limit: vueMain.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: vueMain.pageData.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.pageData.page_index = obj.curr;
+                                            vueMain.getMemberInfo();
+                                            console.log(obj);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                changeLevel: function () {
+                    this.search_text = '';
+                    this.pageData = {
+                        page_index: 1,
+                        page_size: this.page_size,
+                        level_id: this.nowLevel
+                    }
+                    this.getMemberInfo();
+                },
+                searchData: function () {
+                    this.pageData.page_index = 1;
+                    this.pageData.search_text = this.search_text;
+                    this.getMemberInfo();
+                },
+                //积分明细
+                show_point_detail_modal: function (id) {
+                    this.point_detail_info.member_id = id;
+                    this.get_point_detail_info(1);
+                    $("#point_detail_modal").modal("show");
+                },
+                get_point_detail_info: function (page_index) {
+                    this.$http.post("{:url('platform/member/pointDetail')}", {
+                            page_index: page_index,
+                            page_size: this.point_detail_info.page_size,
+                            member_id: this.point_detail_info.member_id
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.point_detail_info.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'point_detail_page',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.point_detail_info.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.get_point_detail_info(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                //积分调整
+                show_recharge_point_modal: function (info) {
+                    this.recharge_point_info = info
+                    $("#recharge_point_modal").modal("show");
+                },
+                recharge_point: function () {
+                    if (this.recharge_point_info.num == false) {
+                        layer.msg("请填写正确的积分调整数");
+                        return;
+                    }
+                    if (parseInt(this.recharge_point_info.num) != this.recharge_point_info.num) {
+                        layer.msg("积分调整数必须为整数，且不能为0...");
+                        return;
+                    }
+                    this.$http.post("{:url('platform/member/adjustMemberAccount')}", {
+                            type: 1,
+                            user_id: this.recharge_point_info.id,
+                            num: this.recharge_point_info.num,
+                            text: this.recharge_point_info.text
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg, {icon: 6}, function () {
+                                $("#recharge_point_modal").modal("hide");
+                                layer.closeAll();
+                            });
+                        } else {
+                            layer.alert(res.data.msg, {icon: 5});
+                        }
+                    });
+                },
+                //余额
+                show_balance_detail_modal: function (id) {
+                    this.balance_detail_info.member_id = id;
+                    this.balance_detail_info.start_date = '';
+                    this.balance_detail_info.end_date = '';
+                    $("#balance_start_time").val();
+                    $("#balance_end_time").val();
+                    this.get_balance_detail_info(1);
+                    $("#balance_detail_modal").modal("show");
+                },
+                get_balance_detail_info: function (page_index) {
+                    this.$http.post("{:url('platform/member/balanceDetail')}", {
+                            page_index: page_index,
+                            page_size: this.balance_detail_info.page_size,
+                            member_id: this.balance_detail_info.member_id,
+                            start_date: this.balance_detail_info.start_date,
+                            end_date: this.balance_detail_info.end_date
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.balance_detail_info.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'point_detail_page',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.balance_detail_info.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.get_balance_detail_info(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                //余额调整
+                show_recharge_balance_modal: function (info) {
+                    this.recharge_balance_info = info
+                    $("#recharge_balance_modal").modal("show");
+                },
+                recharge_balance: function () {
+                    if (this.recharge_balance_info.num == false) {
+                        layer.msg("请填写正确的余额调整数");
+                        return;
+                    }
+                    if (parseInt(this.recharge_balance_info.num) != this.recharge_balance_info.num) {
+                        layer.msg("余额调整数必须为整数，且不能为0...");
+                        return;
+                    }
+                    this.$http.post("{:url('platform/member/adjustMemberAccount')}", {
+                            type: 2,
+                            user_id: this.recharge_balance_info.id,
+                            num: this.recharge_balance_info.num,
+                            text: this.recharge_balance_info.text
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg, {icon: 6}, function () {
+                                $("#recharge_balance_modal").modal("hide");
+                                layer.closeAll();
+                            });
+                        } else {
+                            layer.alert(res.data.msg, {icon: 5});
+                        }
+                    });
+                },
+                change_status:function (id,status) {
+                    if(status==1){
+                        msg="你确定要把该会员设置成无效吗?";
+                        url="{:url('platform/member/memberInvalid')}";
+                    }else{
+                        msg="你确定要把该会员设置成有效吗?";
+                        url="{:url('platform/member/memberValid')}";
+                    }
+                    layer.msg(msg, {
+                        time: 20000, //20s后自动关闭
+                        btn: ['确定', '取消'],
+                        yes:function () {
+                            vueMain.$http.post(url, {user_id:id},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg,{icon:6},function () {
+                                        vueMain.getMemberInfo()
+                                        layer.closeAll();
+                                    });
+                                }else{
+                                    layer.alert(res.data.msg,{icon:5});
+
+                                }
+                            });
+                        },
+                        btn2:function () {
+                            layer.closeAll();
+                        }
+                    });
+                },
+                //会员订单
+                show_order_list_modal: function (id) {
+                    this.order_list_info.member_id = id;
+                    this.get_order_list_info(1);
+                    $("#order_list_modal").modal("show");
+                },
+                get_order_list_info: function (page_index) {
+                    this.$http.post("{:url('platform/member/getOrderListByMember')}", {
+                            page_index: page_index,
+                            page_size: this.order_list_info.page_size,
+                            member_id: this.order_list_info.member_id
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.order_list_info.list = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'order_list_page',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.order_list_info.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.get_order_list_info(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+            }
+        });
+    });
+</script>
+</body>
+</html>

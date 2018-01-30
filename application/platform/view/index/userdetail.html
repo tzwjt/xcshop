@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script>
+        UPLOADPATH="UPLOAD_AVATOR";
+    </script>
+</head>
+<body>
+{include file='index/head'/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file='index/nav_left'/}
+
+        <nav>
+            <ul>
+                {foreach item="vo" name="module_second"}
+                <li {if condition="$vo['selected'] eq true" }
+                    class='selected'
+                    {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                {/foreach}
+            </ul>
+        </nav>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt">
+            <div class="alert alert-info">
+                <button type="button" class="close">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    个人资料
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">个人资料</li>
+                </ul>
+            </nav>
+        </div>
+        <div class="ns-main">
+
+            <div class="set-style">
+                <dl>
+                    <dt>头像:</dt>
+                    <dd>
+                        <div class="class-logo">
+                            <p>
+                                <img :src="userInfo.user_headimg" id="imglogo" style="max-height: 120px;">
+                            </p>
+                        </div>
+                        <div class="upload-btn">
+				<span>
+					<input class="input-file" onchange="imgUpload(this)" name="file_upload" id="uploadImg" type="file">
+				</span>
+                            <p><i class="fa fa-cloud-upload"></i>上传图片</p>
+                        </div>
+                        <p class="hint"><span style="color:orange;">建议使用宽100像素-高100像素内的GIF或PNG透明图片；点击下方"提交"按钮后生效。</span>
+                        </p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>用户名:</dt>
+                    <dd>
+                        <span class="js-user-name">{{userInfo.user_name}}</span>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>状态:</dt>
+                    <dd>
+                        <span class="js-user-name">{{userInfo.user_status_name}}</span>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>所属用户组:</dt>
+                    <dd>
+                        <span class="js-user-name">{{userInfo.user_group_name}}</span>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>昵称:</dt>
+                    <dd>
+                        <span class="js-user-name" v-if="is_show_nick">{{userInfo.nick_name}}
+                        <a href="javascript:;" @click="is_show_nick=false" style=''>修改</a>
+                        </span>
+                        <span class="js-user-tel-input" v-if="!is_show_nick">
+                            <input class="input-common" v-model="nick_name" placeholder="你填写新的昵称" type="text"/>
+                            &nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="updateNickName()">确定</a>
+                            &nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="is_show_nick=true;">取消</a>
+                        </span>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>真实姓名:</dt>
+                    <dd>
+                        <span class="js-user-name" v-if="is_show_real_name">{{userInfo.real_name}}
+                                                <a href="javascript:;" @click="is_show_real_name=false" style=''>修改</a>
+
+                        </span>
+                        <span class="js-user-tel-input" v-if="!is_show_real_name">
+                            <input class="input-common" v-model="real_name" placeholder="你填写新的真实姓名" type="text"/>
+                            &nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="updateRealName()">确定</a>
+                            &nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="is_show_real_name=true;">取消</a>
+                        </span>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd>
+                        <button class="btn-common btn-big" @click="setHeadImg();">提交</button>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </section>
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script src="__STATIC__/js/ajax_file_upload.js" type="text/javascript"></script>
+<script src="__STATIC__/js/file_upload.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                userInfo: {},
+                nick_name:'',
+                is_show_nick:true,
+                real_name:'',
+                is_show_real_name:true
+            },
+            mounted: function () {
+                this.$http.post("{:url('platform/User/currentUserDetails')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.userInfo = res.data.data;
+                    }
+                });
+            },
+            methods: {
+                updateNickName:function () {
+                    if(this.nick_name==''){
+                        layer.alert("请填写新的昵称",{icon:5});
+                        return;
+                    }
+                    this.$http.post("{:url('platform/User/modifyCurrentUserNickName')}", {nick_name:this.nick_name},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                location.reload();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                updateRealName:function () {
+                    if(this.real_name==''){
+                        layer.alert("请填写真实姓名",{icon:5});
+                        return;
+                    }
+                    this.$http.post("{:url('platform/User/modifyCurrentUserRealName')}", {real_name:this.real_name},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                location.reload();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                setHeadImg:function () {
+                    this.$http.post("{:url('platform/User/updateCurrentUserDetails')}", {user_headimg:this.userInfo.user_headimg},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                location.reload();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                }
+            }
+        });
+    });
+    //图片上传
+    function imgUpload(event) {
+        var fileid = $(event).attr("id");
+        var data = {'file_path': UPLOADPATH};
+        uploadFile(fileid, data, function (res) {
+            if(res.code == 0) {
+                vueMain.userInfo.user_headimg=res.data;
+                layer.alert(res.msg, {icon: 6, title: '提示'});
+            } else {
+                vueMain.userInfo.user_headimg='';
+                layer.alert("图片上传失败", {icon: 5, title: '提示'});
+            }
+        }, "{:url('util/img_upload/uploadFile')}");
+    }
+
+</script>
+
+</body>
+</html>

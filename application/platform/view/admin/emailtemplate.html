@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+
+
+    <script type="text/javascript" charset="utf-8" src="__STATIC__/admin/js/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="__STATIC__/admin/js/ueditor/ueditor.all.common.js"></script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="__STATIC__/admin/js/ueditor/zh-cn.js"></script>
+    <!--<script type="text/javascript" charset="utf-8" src="__STATIC__/admin/js/message_template.js"></script>-->
+    <style>
+        .Switch_FlatCircular {
+            line-height: 30px;
+        }
+
+        .left_main {
+            width: 23%;
+            float: left;
+            border: 1px solid #E3E3E3;
+            height: 524px;
+        }
+
+        .left_main ul {
+            margin: 10px;
+        }
+
+        .leftcheckbox {
+            float: right;
+        }
+
+        .left_main li {
+            line-height: 30px;
+            padding: 2px 6px;
+            border: 1px dotted #E3E3E3;
+            margin-bottom: 10px;
+        }
+
+        .left_main ul a {
+            color: #666;
+        }
+
+        .left_main a:hover {
+            color: #11B9ED;
+        }
+
+        .right_main {
+            width: 75%;
+            float: right;
+            border: 1px solid #E3E3E3;
+        }
+
+        .main-top {
+            height: 30px;
+            line-height: 30px;
+            padding: 0 10px;
+            color: #666;
+        }
+
+        .email_title {
+            width: 90px;
+            line-height: 40px;
+            float: left;
+            padding-left: 10px;
+        }
+
+        .edit_bat {
+            width: 400px;
+            float: left;
+            margin-left: 20px;
+            line-height: 40px;
+        }
+
+        .save {
+            clear: both;
+            text-align: center;
+            margin-top: 10px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        input[type="submit"], input.submit, a.submit {
+            display: inline-block;
+        }
+
+        .back {
+            background: #e5e5e5;
+            border: 0;
+            height: 30px;
+            width: 66px;
+        }
+
+        .rightlist {
+            clear: both;
+            content: '';
+            display: inline-block;
+            color: #fff;
+        }
+
+        .right-item {
+            width: 12%;
+        }
+
+        .itemlist {
+            padding: 2px 5px;
+            margin: 5px;
+            background: rgb(0, 192, 255);
+            border-radius: 8px;
+            float: left;
+            text-align: center;
+        }
+
+        .title-item {
+            height: 40px;
+            border-top: 1px solid #E3E3E3;
+            border-bottom: 1px solid #E3E3E3;
+            color: #666;
+        }
+
+        .tab-pane {
+            clear: both;
+            content: '';
+        }
+
+        .template-message {
+            height: 40px;
+            line-height: 40px;
+            border: 1px solid #e5e5e5;
+            border-bottom: none;
+        }
+
+        h1 {
+            width: 2px;
+            height: 20px;
+            float: left;
+            background-color: #0072D2;
+        }
+
+        .active {
+            color: #11B9ED !important;
+        }
+        .is_btn {
+            display: inline-block;
+            height: 30px;
+            width: 44px;
+            text-align: center;
+            background-color: #ECF0F1;
+            border-color: #BEC3C7;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .is_btn_yes {
+            border-radius: 4px 0 0 4px;
+            border-width: 1px 0 1px 1px;
+        }
+
+        .is_btn_no {
+            border-radius: 0 4px 4px 0;
+            border-width: 1px 1px 1px 0;
+        }
+
+        .is_btn_yes.active {
+            background-color: #0072D2;
+            border-color: #0072D2;
+            color: #fff!important;
+        }
+
+        .is_btn_no.active {
+            color: #FFF!important;
+            background-color: #96A6A6;
+            border-color: #808B8D;
+        }
+        .niu-li {
+            color: #666;
+        }
+        .left_main li.active {
+            border-color: #0e80e1;
+        }
+        a.active .niu-title{
+            color:#11B9ED !important;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+{include file='index/head'/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file='index/nav_left'/}
+
+        <nav>
+            <ul>
+                <li onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                <li onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+                <li onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                <li class="selected" onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+            </ul>
+        </nav>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt">
+            <div class="alert alert-info">
+                <button type="button" class="close">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    {if condition="$type eq ''"}
+                    邮件系统
+                    {else/}
+                    邮件通知系统
+                    {/if}
+                </div>
+            </div>
+        </div>
+
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">
+                        {if condition="$type eq ''"}
+                        邮件系统
+                        {else/}
+                        邮件通知系统
+                        {/if}
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="ns-main">
+            <!-- 邮箱设置 -->
+            <input type="hidden" id="curr_selectid" value="after_register"/>
+            <div class="set-style">
+                <div class="template-message"><h1></h1>
+                    <p style="width:90%;margin-left: 7px;">邮件通知模板</p></div>
+                <div class="tab-pane active">
+                    <div class="left_main">
+                        <ul>
+                            <a v-for="(item,index) in notifyInfo" href="javascript:void(0);"
+                               :class="{active:index==selectIndex}" @click="item_select(index)" id="after_register">
+                                <li class="niu-li">
+                                    <span class="niu-title">{{item.template_name}}</span>
+                                    <span class="leftcheckbox">
+									<span class="is_btn is_btn_yes" :class="{active:item.is_enable==1}"
+                                          @click="checkUse(item)">是</span><span class="is_btn is_btn_no"
+                                                                                :class="{active:item.is_enable==0}"
+                                                                                @click="checkUse(item)">否</span>
+														</span>
+                                </li>
+                            </a>
+                        </ul>
+                    </div>
+                    <div class="right_main" style="display: none;">
+                        <div class="main-top">您正在编辑<a href="javascript:;" id="update_nameid">注册成功</a>通知模板</div>
+                        <div class="title-item">
+                            <div class="email_title">邮件标题：</div>
+                            <input type="text" style="float:left;margin:5px !important;" id="template_titleid"
+                                   v-model="selectItem.template_title" class="input-common"/>
+                            <a href="javascript:;">
+                                <div class="edit_bat">标题支持标签请从编辑器中复制</div>
+                            </a>
+                        </div>
+                        {if condition="$type neq ''"}
+                        <div class="title-item">
+                            <div class="email_title">通知人邮箱：</div>
+                            <input type="text" style="float:left;margin:5px !important;"
+                                   v-model="selectItem.notification_mode" class="input-common"/>
+                            <a href="javascript:;">
+                                <div class="edit_bat">请输入通知人邮箱，多个邮箱之间用英文逗号“,”隔开</div>
+                            </a>
+                        </div>
+
+
+                        {/if}
+                        <div class="rightlist" id="user_variable" style="float: left;">
+                            <a @click='item_onclick(item)' style="color: white;" v-for="item in templateItem"><p class="itemlist">{{item.item_name}}</p></a>
+                        </div>
+                        <div id="editor" type="text/plain" style="clear: both;"></div>
+                    </div>
+                </div>
+                <div class="save">
+                    <input type="submit" value="保存" style="margin-right: 20px;" @click="ajaxSubmit();"
+                           class="btn-common"/>
+                    <a>
+                        <input type="button" value="返回" class="btn-common-cancle"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformName}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    //初始化编辑器
+    var ue = UE.getEditor('editor', {
+        initialFrameHeight: 320,
+        initialFrameWidth: 730,
+        toolbars : [ [
+            // 'source', // 源代码
+            'bold', // 加粗
+            'italic', // 斜体
+            'underline', // 下划线
+            'strikethrough', // 删除线
+            'forecolor', // 字体颜色
+            'backcolor', // 背景色
+            'undo', // 撤销
+            'redo', // 重做
+            'indent', // 首行缩进
+            'fontfamily', // 字体
+            'fontsize', // 字号
+            'paragraph', // 段落格式
+            'justifyleft', // 居左对齐
+            'justifycenter', // 居中对齐
+            'justifyright', // 居右对齐
+            'justifyjustify', // 两端对齐
+            'subscript', // 下标
+            'superscript', // 上标
+            'formatmatch', // 格式刷
+            // 'blockquote', // 引用
+            'selectall', // 全选
+            'preview', // 预览
+            'horizontal', // 分隔线
+            'removeformat', // 清除格式
+            // 'inserttable', // 插入表格
+            // 'unlink', // 取消链接
+            // 'insertrow', // 前插入行
+            // 'insertcol', // 前插入列
+            // 'mergeright', // 右合并单元格
+            // 'mergedown', // 下合并单元格
+            // 'deleterow', // 删除行
+            // 'deletecol', // 删除列
+            // 'splittorows', // 拆分成行
+            // 'splittocols', // 拆分成列
+            // 'splittocells', // 完全拆分单元格
+            // 'deletecaption', // 删除表格标题
+            // 'inserttitle', // 插入标题
+            // 'mergecells', // 合并多个单元格
+            // 'deletetable', // 删除表格
+            'cleardoc', // 清空文档
+            'link', // 超链接
+            'emotion', // 表情
+            'spechars', // 特殊字符
+            'insertorderedlist', // 有序列表
+            'insertunorderedlist', // 无序列表
+            'fullscreen', // 全屏
+            'directionalityltr', // 从左向右输入
+            'directionalityrtl', // 从右向左输入
+            'rowspacingtop', // 段前距
+            'rowspacingbottom', // 段后距
+            'imagenone', // 默认
+            'imageleft', // 左浮动
+            'imageright', // 右浮动
+            'imagecenter', // 居中
+            'lineheight', // 行间距
+            'customstyle', // 自定义标题
+        ] ]
+    });
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                notifyInfo: {},
+                selectIndex: 0,
+                templateItem: [],
+                selectItem: {}
+            },
+            mounted: function () {
+                if("{$type}"==''){
+                    this.$http.post("{:url('platform/Config/notifyTemplate')}", {type: 'email'},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.notifyInfo = res.data.data.template_type_list;
+                            this.item_select(0);
+                        }
+                    });
+                }else{
+                    this.$http.post("{:url('platform/Config/businessNotifyTemplate')}", {type: 'email'},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.notifyInfo = res.data.data.template_type_list;
+                            this.item_select(0);
+                        }
+                    });
+                }
+            },
+            methods: {
+                ajaxSubmit: function () {
+                    this.selectItem.template_content=ue.getContent();
+
+                    var template_array = [];
+                    for (i = 0; i < this.notifyInfo.length; i++) {
+                        template_array.push({
+                            "type_id": this.notifyInfo[i].id,
+                            "template_name": this.notifyInfo[i].template_name,
+                            "template_code": this.notifyInfo[i].template_code,
+                            "template_type": this.notifyInfo[i].template_type,
+                            "notify_type": this.notifyInfo[i].notify_type,
+                            "is_enable": this.notifyInfo[i].is_enable,
+                            "template_title": this.notifyInfo[i].template_title,
+                            "template_content": this.notifyInfo[i].template_content,
+                            "sign_name": this.notifyInfo[i].sign_name,
+                            'notification_mode':"{$type}"==''?'':this.notifyInfo[i].notification_mode
+                        });
+                    }
+                    if("{$type}"==''){
+                        this.$http.post("{:url('platform/Config/updateNotifyTemplate')}", {
+                                type: 'email',
+                                template_data: JSON.stringify(template_array),
+                                notify_type: 'user'
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6}, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.alert(res.data.msg, {icon: 5});
+                            }
+                        });
+                    }else{
+                        this.$http.post("{:url('platform/Config/updateNotifyTemplate')}", {
+                                type: 'email',
+                                template_data: JSON.stringify(template_array),
+                                notify_type: 'business'
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6}, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.alert(res.data.msg, {icon: 5});
+                            }
+                        });
+                    }
+                },
+                checkUse: function (item) {
+                    item.is_enable = item.is_enable == 1 ? 0 : 1;
+                },
+                item_select: function (index) {
+                    if(this.selectItem!=''){
+                        this.selectItem.template_content=ue.getContent();
+                    }
+                    $(".right_main").hide();
+                    this.$http.post("{:url('platform/Config/getTemplateItem')}", {template_code: this.notifyInfo[index].template_code},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.selectItem = this.notifyInfo[index];
+                            this.templateItem = res.data.data;
+                            this.selectIndex = index;
+                            ue.setContent(this.notifyInfo[index].template_content);
+                            $(".right_main").show();
+                        }
+                    });
+                    console.log(this.notifyInfo);
+                },
+                item_onclick:function(item) {
+                    ue.setContent(item.show_name, true);
+                }
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

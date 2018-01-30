@@ -1,0 +1,90 @@
+
+<style>
+    #niu-footer{
+        font-size:10px;position: fixed;bottom: 0;left: 0;width:100%;
+        background-color: #fff;
+    }
+    #niu-footer>div{
+        padding-top: 0.5em;
+        width:25%;
+        height:6em;
+        float: left;
+        text-align: center;
+
+    }
+    #niu-footer *{
+        -moz-box-sizing: border-box;  /*Firefox3.5+*/
+        -webkit-box-sizing: border-box; /*Safari3.2+*/
+        -o-box-sizing: border-box; /*Opera9.6*/
+        -ms-box-sizing: border-box; /*IE8*/
+        box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
+    }
+    #niu-footer>div img{
+        max-width: 80%;
+        max-height:3.5em;
+    }
+    #niu-footer>div p{
+        font-size:1em;
+        padding-top: 0.2em;
+        line-height:1.5em;
+        margin: 0!important;
+        color:#8f8f94;
+    }
+    #niu-footer>div a{
+        text-decoration: none;
+        color:#333;
+    }
+</style>
+<div id="niu-footer">
+    <div id="foot-home" onclick="location.href='{:url('index')}'">
+
+        <img src="__STATIC__/wap/images/home-2.png"/>
+        <p>首页</p>
+    </div>
+    <div id="foot-goods" onclick="location.href='{:url('salelist')}'">
+
+        <img src="__STATIC__/wap/images/goods-2.png"/>
+        <p>商品</p>
+    </div>
+    <div id="foot-shopcart" onclick="location.href='{:url('shopcart')}'" style="position: relative;">
+        <img src="__STATIC__/wap/images/shopcart-2.png"/>
+        <p>购物车</p>
+        <div id="shopcart-num" style="display:none;position: absolute;top:0.1em;right:0.6em;font-size:1.2em;background-color: #e92076;color:#fff;width:1.3em;height:1.3em;line-height:1.3em;border-radius: 50%;"></div>
+    </div>
+    <div id="foot-self" onclick="location.href='{:url('self')}'">
+        <img src="__STATIC__/wap/images/self-2.png"/>
+        <p>会员中心</p>
+    </div>
+</div>
+
+<script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+<script src="__STATIC__/web/js/jquery.cookie.js"></script>
+<script>
+    $(function(){
+        $.ajax({
+            url:"{:url('shop/goods/getCartNum')}",
+            type:"post",
+            data:{},
+            datatype:"json",
+            success:function(res){
+                if(res.code==0 && res.data!=0){
+                    $("#my-shopchart span").html(res.data);
+                }
+            }
+        });
+        $.ajax({
+            url:"{:url('shop/goods/getCartNum')}",
+            type:"post",
+            data:{},
+            datatype:"json",
+            success:function(res){
+                if(res.code==0 && res.data!='0'){
+                    $("#shopcart-num").html(res.data);
+                    $("#shopcart-num").show();
+                }
+            }
+        });
+
+
+    });
+</script>

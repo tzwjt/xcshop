@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css" />
+    <style>
+        .Switch_FlatRadius.On span.switch-open{background-color: #0072D2;border-color: #0072D2;}
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script src="__STATIC__/admin/js/highcharts.js"></script>
+    <script src="__STATIC__/admin/js/exporting.js"></script>
+    <style  type="text/css">
+        .w210{width:210px;}
+        .h30{height: 30px !important;}
+        .mt5 li{font-size: 12px;}
+        .alert-info{border-radius: 0;}
+        .tabmenu{margin:10px 0 0 20px;border-bottom: 1px solid #e5e5e5;background-color: #FFF;width: 100%;height: 37px;display: block;position: relative;z-index: 90;}
+        .tabmenu .tab .ui-tabs-selected a{color: #FFFFFF;background-color: #FFF;display: inline-block;padding: 0px 10px;border: 0px;background-color: #0072D2;}
+        .tabmenu .tab a, .tabmenu .tab .active a{font-size: 14px;display: inline-block;padding: 0 30px;text-align: center;height: 36px;line-height:36px;cursor:pointer;}
+        .tabmenu .tab li:FIRST-CHILD{border-left: 1px solid #E3E3E3;}
+        .tabmenu .tab li{float: left;border-top: 1px solid #E3E3E3;border-right: 1px solid #E3E3E3;}
+    </style>
+
+</head>
+<body>
+{include file="index/head"/}
+<article class="ns-base-article">
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+        <nav>
+            <ul>
+                <li class="" onclick="location.href='{:url('shopsalesaccount')}';" title="销售概况">销售概况</li>
+                <li onclick="location.href='{:url('shopgoodssaleslist')}';" title="商品分析">商品分析</li>
+                <li class="selected" onclick="location.href='{:url('shopreport')}';" title="运营报告">运营报告</li>
+                <li onclick="location.href='{:url('shopgoodssalesrank')}';" title="销售排行">销售排行</li>
+            </ul>
+        </nav>
+
+    </aside>
+    <section class="ns-base-section">
+
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    运营报告
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">运营报告</li>
+                </ul>
+            </nav>
+        </div>
+        <div class="ns-main">
+
+            <div class="alert">
+                <ul class="mt5">
+                    <li>1、符合以下任何一种条件的订单即为有效订单：1）采用在线支付方式支付并且已付款；2）采用货到付款方式支付并且交易已完成</li>
+                    <li>2、统计图展示了符合搜索条件的有效订单中的下单总金额和下单数量在时间段内的走势情况及与前一个时间段的趋势对比</li>
+                </ul>
+            </div>
+            <table class="mytable">
+                <tr>
+                    <td>
+                        <select name="search_type" id="search_type" class="select-common" onchange="search();">
+                            <option value="1">按照天统计</option>
+                            <option value="3">按照周统计</option>
+                            <option value="4">按照月统计</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div class="alert alert-info">
+                <ul class="mt5">
+                    <li>
+			<span class="w210 fl h30" style="display:block;">
+				<i title="店铺符合搜索条件的订单总金额" class="tip icon-question-sign"></i>
+				总下单金额：<strong id="money">0元</strong>
+			</span>
+                        <span class="w210 fl h30" style="display:block;">
+				<i title="店铺符合搜索条件的订单数量" class="tip icon-question-sign"></i>
+				总下单量：<strong id="num">0</strong>
+			</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="stat_tabs" class="ui-tabs ui-tabs-nav" style="min-height:500px;padding-top:10px;">
+                <div class="tabmenu">
+                    <ul class="tab pngFix">
+                        <li class="ui-tabs-selected">
+                            <a class="a-nav"onclick="getGoodsSalesCharts(1)">下单金额</a>
+                        </li>
+                        <li>
+                            <a class="a-nav" onclick="getGoodsSalesCharts(2)">下单量</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 下单金额 -->
+                <div id="money_div" class="ui-tabs-panel" data-highcharts-chart="1">
+                    <div class="highcharts-container" id="highcharts-2" style="width:99%;position:relative;overflow:hidden;height:400px;font-size:12px;"></div>
+                </div>
+                <!-- 下单量 -->
+                <div id="num_div" class="ui-tabs-panel ui-tabs-hide hide">
+                    <div class="highcharts-container" id="highcharts-3" style="width:99%;position:relative;overflow:hidden;height:400px;font-size:12px;"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+</article>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname= '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+
+<script type="text/javascript">
+    var saleNumChart,saleNumStatistical,saleNumStatistical, saleUnit,saleTitle,saleMoneyChart,saleMoneyStatistical,saleTimeStatistical,saleMoneyTimeStatistical;
+    var saleTimeStatistical = [ '00:00', '01:00', '02:00', '03:00', '04:00',
+        '05:00', '06:00', '07:00', '08:00', '09:00',
+        '10:00', '11:00', '12:00', '13:00', '14:00',
+        '15:00', '16:00', '17:00', '18:00', '19:00',
+        '20:00', '21:00', '22:00', '23:00' ];
+    var saleMoneyTimeStatistical = [ '00:00', '01:00', '02:00', '03:00', '04:00',
+        '05:00', '06:00', '07:00', '08:00', '09:00',
+        '10:00', '11:00', '12:00', '13:00', '14:00',
+        '15:00', '16:00', '17:00', '18:00', '19:00',
+        '20:00', '21:00', '22:00', '23:00' ];
+    var saleNumStatistical = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    var saleMoneyStatistical = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    $(function() {
+
+        saleNumChart = new Highcharts.Chart("highcharts-2",{
+            title : {
+                text : "下单金额统计",
+                align : "center",
+                useHTML : true
+            },
+            xAxis : {
+                categories : saleTimeStatistical
+            },
+            lang : {
+                printChart : "打印",
+                downloadPNG : "导出PNG格式图片",
+                downloadJPEG : "导出JPEG格式图片",
+                downloadPDF : "导出PDF格式图片",
+                downloadSVG : "导出SVG格式图片"
+            },
+            yAxis : {
+                title : {
+                    text :saleUnit
+                },
+                plotLines : [ {
+                    value : 0,
+                    width : 1,
+                    color : '#808080'
+                } ]
+            },
+            tooltip : {
+                valueSuffix : saleUnit
+            },
+            legend : {
+                enabled : false
+            },
+            credits : {
+                enabled : false,// 默认值，如果想去掉版权信息，设置为false即可
+                text : '{$platformInfo.platform_site_name}', // 显示的文字
+                href : '#', // 链接地址
+            },
+            exporting : {
+                allowHTML : true,
+                buttons : {
+                    contextButton : {
+                        // text : '导出'
+                    }
+                }
+            },
+            series : [ {
+                name : '今日',
+                data : saleNumStatistical
+            }]
+        });
+
+        saleMoneyChart = new Highcharts.Chart("highcharts-3",{
+            title : {
+                text : "订单量统计",
+                align : "center",
+                useHTML : true
+            },
+            xAxis : {
+                categories : saleMoneyTimeStatistical
+            },
+            lang : {
+                printChart : "打印",
+                downloadPNG : "导出PNG格式图片",
+                downloadJPEG : "导出JPEG格式图片",
+                downloadPDF : "导出PDF格式图片",
+                downloadSVG : "导出SVG格式图片"
+            },
+            yAxis : {
+                title : {
+                    text :saleUnit
+                },
+                plotLines : [ {
+                    value : 0,
+                    width : 1,
+                    color : '#808080'
+                } ]
+            },
+            tooltip : {
+                valueSuffix : saleUnit
+            },
+            legend : {
+                enabled : false
+            },
+            credits : {
+                enabled : false,// 默认值，如果想去掉版权信息，设置为false即可
+                text : '{$platformInfo.platform_site_name}', // 显示的文字
+                href : '#', // 链接地址
+            },
+            exporting : {
+                allowHTML : true,
+                buttons : {
+                    contextButton : {
+                        // text : '导出'
+                    }
+                }
+            },
+            series : [ {
+                name : '今日',
+                data : saleMoneyStatistical
+            }]
+        });
+        search(1);
+    });
+    var var_type = 1;
+    //走势图数据
+    function getGoodsSalesCharts(type){
+        $(".a-nav").css("background-color","#ffffff");
+        $(".a-nav").css("color","#0072D2");
+        var num = type-1;
+        $(".a-nav:eq("+num+")").css("background-color","#0072D2");
+        $(".a-nav:eq("+num+")").css("color","#ffffff");
+        var date = $("#search_type").val();
+        var_type = type;//type 走势图类型 1 金额 2 数量
+        $.ajax({
+            type : "post",
+            url : "{:url('platform/DataAnalysis/getOrderChartCount')}",
+            data:{ "type":type, "date":date},
+            success : function(res) {
+                if(res.code!=0){
+                    return;
+                }
+                var data=res.data;
+                if(type == 1){
+                    saleUnit = "元";
+                    saleNumStatistical = data[0];
+                    saleNumChart.update({
+                        xAxis : {
+                            categories : saleNumStatistical
+                        },
+                        tooltip : {
+                            valueSuffix : saleUnit
+                        },
+                        series : [ {
+                            name : "订单金额",
+                            data : data[1]
+                        }],
+                        yAxis : {
+                            title : {
+                                text :saleUnit
+                            },
+                            plotLines : [ {
+                                value : 0,
+                                width : 1,
+                                color : '#808080'
+                            } ]
+                        },
+                    })
+
+                    $("#num_div").hide();
+                    $("#money_div").show();
+                }else{
+                    saleUnit = "笔";
+                    saleTimeStatistical = data[0];
+                    saleMoneyChart.update({
+                        xAxis : {
+                            categories : saleTimeStatistical
+                        },
+                        tooltip : {
+                            valueSuffix : saleUnit
+                        },
+                        series : [ {
+                            name : "订单量",
+                            data : data[1]
+                        }],
+                        yAxis : {
+                            title : {
+                                text :saleUnit
+                            },
+                            plotLines : [ {
+                                value : 0,
+                                width : 1,
+                                color : '#808080'
+                            } ]
+                        },
+                    })
+                    $("#num_div").show();
+                    $("#money_div").hide();
+                }
+
+            }
+        });
+    }
+
+    //下单量级下单金额统计
+    function getShopSaleInfo(){
+        var date = $("#search_type").val();
+        $.ajax({
+            type : "post",
+            url : "{:url('platform/DataAnalysis/getOrderSaleCount')}",
+            data:{"date":date},
+            success : function(res) {
+                if(res.code!=0){
+                    return;
+                }
+                var data=res.data;
+                $("#money").text(data["count_money"]+"元");
+                $("#num").text(data["count_num"]);
+            }
+        })
+    }
+    //时间筛选
+    function search(){
+        getGoodsSalesCharts(var_type);
+        getShopSaleInfo();
+    }
+</script>
+
+</body>
+</html>

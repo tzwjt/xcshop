@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css" />
+    <style>
+        .Switch_FlatRadius.On span.switch-open{background-color: #0072D2;border-color: #0072D2;}
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <style>
+        .text{color: #fb6b5b;}
+    </style>
+</head>
+<body>
+{include file='index/head'/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file='index/nav_left'/}
+        <nav>
+            <ul>
+                <li onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                <li onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+
+                <li onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                <li class="selected" onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+
+            </ul>
+        </nav>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    通知系统
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">通知系统</li>
+                </ul>
+            </nav>
+        </div>
+        <div class="ns-main">
+            <table class="table-class" style="display: none;">
+                <colgroup>
+                    <col width="33%">
+                    <col width="33%">
+                    <col width="34%">
+                </colgroup>
+                <tbody>
+                <tr class="table-title" style="background: white;z-index: 10;border: 1px solid #E3E3E3;">
+                    <th style="text-align: center;">通知类型</th>
+                    <th style="text-align: center;border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5;">状态</th>
+                    <th style="text-align: center;">操作</th>
+                </tr>
+                </tbody>
+                <tbody>
+                <tr style="border:1px solid #e5e5e5;border-top:0;background:none;">
+                    <td style="background:none;text-align:center;">短信通知</td>
+                    <td style="text-align: center;background:none;" class="is_use_136">
+                        <i @click="setStatus('sms',1)" style="cursor: pointer;" class="fa fa-times text-danger text" v-if="info.mobile.is_use!=1"></i>
+                        <i @click="setStatus('sms',0)" style="cursor: pointer;" class="fa fa-check text-success text-active" v-if="info.mobile.is_use==1"></i>
+                        <!--<i @click="setStatus('sms')" class="fa" :class="{'fa-check':info.mobile==1,'text-success':info.mobile==1,'text-active':info.mobile==1,'fa-times':info.mobile!=1,'text-danger':info.mobile!=1,'text':info.mobile!=1}"></i>-->
+
+                    </td>
+                    <td style="text-align: center;background:none;">
+                        <span><a href="{:url('admin/mobilemessage')}">配置</a></span>
+                        <span><a href="{:url('notifytemplate')}">模板</a></span>
+                        <span><a href="{:url('smstemplate')}">通知模板</a></span>
+                        <!--<span class="is_close_136"><a href="javascript:;" onclick="setIsUse(136,0);">关闭</a></span>-->
+                    </td>
+                </tr>
+                <tr style="border:1px solid #e5e5e5;border-top:0;background:none;">
+                    <td style="background:none;text-align:center;">邮件通知</td>
+                    <td style="text-align: center;background:none;" class="is_use_136">
+                        <i @click="setStatus('email',1)" style="cursor: pointer;" class="fa fa-times text-danger text" v-if="info.email.is_use!=1"></i>
+                        <i @click="setStatus('email',0)" style="cursor: pointer;" class="fa fa-check text-success text-active" v-if="info.email.is_use==1"></i>
+                        <!--<i @click="setStatus('email')" class="fa" :class="{'fa-check':info.email==1,'text-success':info.email==1,'text-active':info.email==1,'fa-times':info.email!=1,'text-danger':info.email!=1,'text':info.email!=1}"></i>-->
+                    </td>
+                    <td style="text-align: center;background:none;">
+                        <span><a href="{:url('admin/emailmessage')}">配置</a></span>
+                        <span><a href="{:url('emailtemplate')}">模板</a></span>
+                        <span><a href="{:url('emailtemplate',array('type'=>'notice'))}">通知模板</a></span>
+                        <!--<span class="is_close_136"><a href="javascript:;" onclick="setIsUse(136,0);">关闭</a></span>-->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname= '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                info:{email:{is_use:'',id:''},mobile:{is_use:'',id:''}},
+                configInfo:{}
+            },
+            mounted:function () {
+                this.$http.post("{:url('platform/Config/notifyIndex')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        // this.info={
+                        //     email:res.data.data.email_message.is_use,
+                        //     mobile:res.data.data.mobile_message.is_use,
+                        // };
+                        for(i=0;i<res.data.data.length;i++){
+                            if(res.data.data[i].key=="MOBILEMESSAGE"){
+                                this.info.mobile.is_use=res.data.data[i].is_use;
+                                this.info.mobile.id=res.data.data[i].id;
+                            }
+                            if(res.data.data[i].key=="EMAILMESSAGE"){
+                                this.info.email.is_use=res.data.data[i].is_use;
+                                this.info.email.id=res.data.data[i].id;
+                            }
+                        }
+                        $(".table-class").show();
+
+                    }
+                });
+            },
+            methods: {
+                setStatus:function (type,val) {
+                    var str="你确定要";
+                    var id;
+                    if(val==1){
+                        str+='打开';
+                    }else{
+                        str+='关闭';
+                    }
+                    if(type=='email'){
+                        str+='邮件通知吗？';
+                        id=this.info.email.id;
+                    }else{
+                        str+='短信通知吗？';
+                        id=this.info.mobile.id;
+
+                    }
+                    layer.confirm(str, {
+                        btn: ['确定','取消'] //按钮
+                    }, function(){
+                        // platform/Config/updateNotifyEnable
+                        vueMain.$http.post("{:url('platform/Config/updateNotifyEnable')}", {
+                            id:id,is_use:val
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6},function () {
+                                    location.reload();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    });
+
+
+
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

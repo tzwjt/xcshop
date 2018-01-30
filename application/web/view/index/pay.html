@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>{$siteInfo.web_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <!--<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">-->
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_v0629.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_header.css">
+    <link rel="stylesheet" href="__STATIC__/web/css/shopcart0922.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="__STATIC__/web/js/address.js" type="text/javascript"></script>
+
+    <style>
+        .tr-select {
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            background-size: 25px 25px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            /*border:1px solid #000000;*/
+        }
+
+        .goods-wrap {
+            width: 80px;
+            height: 80px;
+        }
+
+        .goods-descri-wrap {
+            padding-top: 15px;
+        }
+        .order-detail .order-info{
+            font-size:18px;
+        }
+        .totalPrice{
+            font-size:12px;
+        }
+    </style>
+    <script>
+        var nexturl = "orderlist";
+    </script>
+    {include file="index/auto_login"}
+</head>
+<body>
+{include file='index/nav_bar'}
+
+<div class="m-body">
+    <h1 style="font-size:18px;margin: 0.5em 0;font-weight: normal;">订单提交成功，请尽快付款！订单编号：{{orderInfo.order_no}}</h1>
+    <p style="font-size:14px;margin-bottom: 10px;">收货地址:<span style="padding-left: 1em;" v-html="orderInfo.address"></span></p>
+
+    <!--<p style="font-size:16px;color:red;">应付金额:¥{{orderInfo.pay_money}}</p>-->
+
+
+    <!--<p style="font-size:18px;">商品信息:</p>-->
+    <!--<p v-for="item in orderInfo.order_goods" style="font-size:18px;padding-left: 5em;">-->
+        <!--&nbsp;{{item.goods_name}}&nbsp;&nbsp;&nbsp;&nbsp;<span v-if="item.sku_id!=''">规格：{{item.sku_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;数量:{{item.num}}-->
+    <!--</p>-->
+    <form id="myOrderfrm">
+        <!-- 这里单件商品 -->
+        <table id="normal-table">
+            <tbody>
+            <tr class="tr-header">
+                <th style="width:850px;text-align: left;padding-left: 10px;">商品<span class="float_r">|</span></th>
+                <th style="width:86px;text-align: center;">单价<span class="float_r">|</span></th>
+                <th style="width:160px;text-align: center;">数量<span class="float_r">|</span></th>
+                <th style="width:76px;text-align: center;">小计<span class="float_r">|</span></th>
+
+            </tr>
+            <!-- 这里预约商品 Start -->
+            <!-- 这里预约商品 End -->
+            <tr type="1" goods_id="107" class="gooodstr" v-for="(item,index) in orderInfo.order_goods">
+                <td>
+                    <div class="goods-wrap float_l">
+                        <img :src="item.picture_info.pic_cover_small" style="width:80px;height:80px;"/>
+                    </div>
+                    <div class="goods-descri-wrap">
+                        <p class="goods-descri-title">
+                            {{item.goods_name}} </p>
+                        <p class="goods-descri-brief" v-if="item.sku_id!=0">规格：{{item.sku_name}}</p>
+                    </div>
+                </td>
+                <td>
+                    <span data-price="1499.00" class="goods-price">{{item.price}}</span>
+                </td>
+                <td style="text-align: center;">
+
+                        {{item.num}}
+
+                </td>
+                <td>
+                    <span class="singlePrice">¥{{item.price*item.num}}</span>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+        <div>
+            <h1 style="font-size:22px;margin: 0.5em 0;font-weight: normal;display: inline-block;">请选择支付方式</h1>
+            <div>
+                <label><input name="paytype" type="radio" v-model="payType" value="alipay" style="position: relative;bottom: 25px;margin-left: 2em;"/><img src="__STATIC__/web/images/alipay.jpg" style="height:60px;"/></label>
+                <label><input name="paytype" type="radio" v-model="payType" value="wchat" style="position: relative;bottom: 25px;margin-left: 5em;" /><img src="__STATIC__/web/images/weixinpay.jpg" style="height:60px;"/></label>
+            </div>
+        </div>
+        <div class="float_r" style="margin-top:10px;">商品总额:<span class="totalPrice">¥{{orderInfo.goods_money}}</span></div>
+        <div style="clear:both;"></div>
+        <div class="float_r" style="margin-top:10px;">运费:<span class="totalPrice">+¥{{orderInfo.shipping_money}}</span></div>
+        <div style="clear:both;"></div>
+
+        <div class="float_r" style="margin-top:10px;">积分抵:<span class="totalPrice">-¥{{orderInfo.point_money}}</span></div>
+        <div style="clear:both;"></div>
+
+        <div class="float_r" style="margin-top:10px;">抵用券抵:<span class="totalPrice">-¥{{orderInfo.coupon_money}}</span></div>
+        <div style="clear:both;"></div>
+
+        <div class="float_r" style="margin-top:10px;">优惠减:<span class="totalPrice">-¥{{orderInfo.promotion_money}}</span></div>
+        <div style="clear:both;"></div>
+        <div class="float_r" style="margin-top:10px;">余额支付:<span class="totalPrice">-¥{{orderInfo.user_platform_money}}</span></div>
+        <div style="clear:both;"></div>
+        <div class="float_r" style="margin-top:10px;font-size:1.5em;">还需支付:<span id="goods_total_price" class="totalPrice" style="font-size:1.5em;">¥{{orderInfo.pay_money}}</span></div>
+        <div style="clear:both;"></div>
+        <input type="button" value="去付款" class="order-que" @click="payAlert()" style="margin-top:1em;width:180px;height:50px;background-color: #e92076;color:#fff;font-size:22px;border:none;border-radius: 5px;float: right;">
+
+
+    </form>
+</div>
+<!--end中间栏-->
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var main;
+    $(function () {
+        main = new Vue({
+            el: '.m-body',
+            data: {
+                orderInfo: {},
+                cartInfo: [],
+                address: {
+                    id: '',
+                    consigner: '',
+                    mobile: '',
+                    phone: '',
+                    province: '',
+                    city: '',
+                    district: '',
+                    address: '',
+                    zip_code: ''
+                },
+                addressInfo: {
+                    province: [],
+                    city: [],
+                    district: []
+                },
+                addressList: [],
+                payType:"alipay"
+            },
+            mounted: function () {
+                this.$http.post("{:url('shop/order/orderDetail')}", {order_id: "{$order_id}"}, {
+                    headers: {
+                        authKey: $.cookie('authKey'),
+                        sessionId: $.cookie('sessionId')
+                    }
+                }, {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.orderInfo = res.data.data.order_details;
+                    } else {
+                        layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                    }
+                });
+
+            },
+            methods: {
+                payAlert:function () {
+                    this.$http.post("{:url('shop/pay/getPayValue')}", {'out_trade_no': this.orderInfo.out_trade_no}, {
+                            headers: {
+                                authKey: $.cookie('authKey'),
+                                sessionId: $.cookie('sessionId')
+                            }
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            if(this.payType=='alipay'){
+                                // alert(this.orderInfo.out_trade_no);
+                                this.$http.post("{:url('shop/pay/aliPay')}", {'out_trade_no': this.orderInfo.out_trade_no}, {
+                                        headers: {
+                                            authKey: $.cookie('authKey'),
+                                            sessionId: $.cookie('sessionId')
+                                        }
+                                    },
+                                    {emulateJSON: true}).then(function (res) {
+                                    if (res.data.code == 0) {
+                                        if(res.data.data.status==1){
+                                            location.href=res.data.data.res;
+                                        }else{
+                                            layer.msg("支付失败",{shade:[0.2,"#333"]});
+                                        }
+                                    }
+                                });
+                            }
+                            if(this.payType=='wchat'){
+                                // alert(this.orderInfo.out_trade_no);
+                                location.href="{:url('weChatPay')}&out_trade_no="+this.orderInfo.out_trade_no;
+
+                                // this.$http.post("{:url('shop/Pay/wchatPay')}", {'out_trade_no': this.orderInfo.out_trade_no}, {
+                                //         headers: {
+                                //             authKey: $.cookie('authKey'),
+                                //             sessionId: $.cookie('sessionId')
+                                //         }
+                                //     },
+                                //     {emulateJSON: true}).then(function (res) {
+                                //     if (res.data.code == 0) {
+                                //         window.open(res.data.data.path);
+                                //     }
+                                // });
+                            }
+                        }else{
+                            layer.msg(res.data.msg,{shade:[0.2,"#333"]});
+                        }
+                    });
+                }
+            },
+            computed: {}
+        });
+    });
+    function payAlert(){
+        layer.msg("相关支付未申请", {shade: [0.2, '#393D49']});
+
+    }
+
+</script>
+</body>
+</html>

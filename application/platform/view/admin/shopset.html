@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css" />
+    <style>
+        .Switch_FlatRadius.On span.switch-open{background-color: #0072D2;border-color: #0072D2;}
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/defau.css">
+    <script src="__STATIC__/admin/js/art_dialog.source.js"></script>
+    <script src="__STATIC__/admin/js/iframe_tools.source.js"></script>
+    <script src="__STATIC__/admin/js/material_managedialog.js"></script>
+</head>
+<body>
+{include file='index/head'/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+       {include file='index/nav_left'/}
+        <nav>
+            <ul>
+                <li onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                <li onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+
+                <li class="selected" onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                <li onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+
+                    基础设置
+                </div>
+            </div>
+        </div>
+
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+
+            <nav class="ns-third-menu">
+                <ul>
+                    <li onclick="location.href='{:url('webconfig')}';">网站设置</li>
+                    <li onclick="location.href='{:url('seoconfig')}';">SEO设置</li>
+                    <li class="selected" onclick="location.href='{:url('shopset')}';">购物设置</li>
+                    <li onclick="location.href='{:url('expressmessage')}';">物流跟踪设置</li>
+                    <li onclick="location.href='{:url('copyrightinfo')}';">版权设置</li>
+                </ul>
+            </nav>
+
+
+            <div class="right-side-operation">
+                <ul>
+
+
+                    <li style="display:none;"><a class="js-open-warmp-prompt"><i class="fa fa-bell"></i>提示</a></li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main">
+
+            <div class="set-style">
+                <dl>
+                    <dt>自动收货时间:</dt>
+                    <dd>
+                        <input id="order_auto_delinery" type="number" v-model="shopInfo.order_auto_delinery" min="0.00" step="1.00" @keyup="checkNum()" value="14" class="input-common" />
+                        <p class="hint">订单多长时间后自动收货，单位为/天(注：若为0，则默认7天自动收货)</p>
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>订单自动关闭时间:</dt>
+                    <dd>
+                        <input id="order_buy_close_time" v-model="shopInfo.order_buy_close_time" type="number" min="0.00" step="1.00" onkeyup="value=value.replace(/[^\d+(\.\d+)?]/g,'')" value="60" class="input-common" />
+                        <p class="hint">订单开始后多长时间未付款自动关闭，单位为/分钟(注：不填写或0默认关闭时间为60分钟)</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>是否开启积分支付</dt>
+                    <dd>
+                        <div class="controls">
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_point_pay" name="order_point_pay" value="1">启用</label>
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_point_pay" name="order_point_pay" value="0">禁用</label>
+                        </div>
+                        <p class="hint">是否启用积分支付</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>是否开启余额支付</dt>
+                    <dd>
+                        <div class="controls">
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_balance_pay" name="order_balance_pay" value="1">启用</label>
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_balance_pay" name="order_balance_pay" value="0">禁用</label>
+                        </div>
+                        <p class="hint">是否启用余额支付</p>
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>是否开启货到付款</dt>
+                    <dd>
+                        <div class="controls">
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_delivery_pay" name="order_delivery_pay" value="1" >启用</label>
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_delivery_pay" name="order_delivery_pay" value="0">禁用</label>
+                        </div>
+                        <p class="hint">是否支持货到付款</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>订单完成时间:</dt>
+                    <dd>
+                        <p>
+                            <select id="order_delivery_complete_time" v-model="shopInfo.order_delivery_complete_time" class="select-common">
+                                <option id = 'closeday0' value="0">&nbsp;&nbsp;立即</option>
+                                <option id = 'closeday1' value="1">&nbsp;&nbsp;1天</option>
+                                <option id = 'closeday2' value="2" >&nbsp;&nbsp;2天</option>
+                                <option id = 'closeday3' value="3" >&nbsp;&nbsp;3天</option>
+                                <option id = 'closeday4' value="4" >&nbsp;&nbsp;4天</option>
+                                <option id = 'closeday5' value="5" >&nbsp;&nbsp;5天</option>
+                                <option id = 'closeday6' value="6" >&nbsp;&nbsp;6天</option>
+                                <option id = 'closeday7' value="7" >&nbsp;&nbsp;7天</option>
+                            </select>
+                        </p>
+                        <p class="hint">收货后，多少时间订单自动完成，单位为/天</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>是否显示购买记录</dt>
+                    <dd>
+                        <div class="controls">
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_show_buy_record" name="order_show_buy_record" value="1">启用</label>
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.order_show_buy_record" name="order_show_buy_record" value="0">禁用</label>
+                        </div>
+                        <p class="hint">是否显示购买记录</p>
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>是否开启买家自提</dt>
+                    <dd>
+                        <div class="controls">
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.buyer_self_lifting" name="buyer_self_lifting" value="1">启用</label>
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.buyer_self_lifting" name="buyer_self_lifting" value="0">禁用</label>
+                        </div>
+                        <p class="hint">是否启用买家自提</p>
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>是否开启商家配送</dt>
+                    <dd>
+                        <div class="controls">
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.seller_dispatching" name="seller_dispatching" value="1">启用</label>
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.seller_dispatching" name="seller_dispatching" value="0">禁用</label>
+                            <input type="hidden" id="is_dispatching" value="1">
+                        </div>
+                        <p class="hint">是否启用商家配送</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>是否允许选择物流</dt>
+                    <dd>
+                        <div class="controls">
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.is_logistics" name="is_logistics" value="1" checked="checked" id="logisticsYes">启用</label>
+                            <label class="label-radio"><input type="radio" v-model="shopInfo.is_logistics" name="is_logistics" value="0" id="logisticsNo">禁用</label>
+                        </div>
+                        <p class="hint">是否允许用户选择物流</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>购物返积分设置:</dt>
+                    <dd>
+                        <p>
+                            <select id="shopping_back_points" class="select-common" v-model="shopInfo.shopping_back_points">
+                                <option value="1" >&nbsp;&nbsp;订单已完成</option>
+                                <option value="2" >&nbsp;&nbsp;已收货</option>
+                                <option value="3" selected>&nbsp;&nbsp;支付完成</option>
+                            </select>
+                        </p>
+                        <p class="hint">购物返积分设置</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>发票税率:</dt>
+                    <dd>
+                        <input id="order_invoice_tax" type="number" v-model="shopInfo.order_invoice_tax" min="0.00" step="0.01" value="0" class="select-common" />
+                        <p class="hint">设置开发票的税率，单位为%</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>发票内容:</dt>
+                    <dd>
+                        <textarea  rows="2" id="order_invoice_content" v-model="shopInfo.order_invoice_content" class="textarea input-common" maxlength="50"></textarea>
+                        <p class="hint">客户要求开发票时可以选择的内容，逗号分格代表一个选项，例如：办公用品,明细</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd><button class="btn-common btn-big" @click="ajaxSubmit();">提交</button></dd>
+                </dl>
+            </div>
+          
+        </div>
+    </section>
+</article>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname= '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                shopInfo:{}
+            },
+            mounted:function () {
+                this.$http.post("{:url('platform/Config/getShopSet')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.shopInfo=res.data.data;
+                    }
+                });
+            },
+            methods: {
+                ajaxSubmit:function () {
+                    this.$http.post("{:url('platform/Config/setShopSet')}", this.shopInfo,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                location.reload();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                checkNum:function () {
+                    this.shopInfo.order_auto_delinery=this.shopInfo.order_auto_delinery.replace(/[^\d+(\.\d+)?]/g,'')
+                }
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

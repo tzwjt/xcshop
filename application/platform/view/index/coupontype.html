@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script src="__STATIC__/admin/js/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+    <style type="text/css">
+        input[type="radio"] {
+            margin-top: 6px;
+        }
+        .total {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .total label {
+            float: left;
+            text-align: left;
+            font-size: 15px;
+            width: 10%;
+            overflow: hidden;
+            color: #666;
+            font-weight: normal;
+            line-height: 32px;
+            margin-bottom: 0px
+        }
+
+        .total label input {
+            margin: 0 5px 0 0;
+        }
+
+        .table-div table tr td {
+            border: 1px solid #e5e5e5;
+            padding: 10px;
+        }
+
+        .goodlist-table tr td {
+            border: 1px solid #e5e5e5;
+            padding: 10px;
+        }
+
+        .help-inline {
+            height: 30px;
+            line-height: 30px;
+        }
+
+        input[type="radio"] {
+            vertical-align: middle;
+            margin-top: -2px;
+        }
+
+        .controls table tr td input[type="radio"] {
+            margin: 0px;
+        }
+
+        .ump-select-search select {
+            margin-bottom: 0px
+        }
+
+        .ump-select-tab {
+            min-width: 750px;
+            margin-bottom: -1px;
+            background: #f2f2f2;
+            border: 1px solid #ddd;
+            border-bottom: 0;
+        }
+
+        .ui-nav-tab {
+            margin: 0;
+        }
+
+        .ui-nav-tab > li {
+            position: relative;
+            display: block;
+            float: left;
+            text-align: center;
+            margin-bottom: -1px;
+        }
+
+        .ui-nav-tab:after {
+            content: "";
+            display: table;
+        }
+
+        .ump-select-tab .ui-nav-tab li.active a, .ump-select-tab .ui-nav-tab li.active a:hover {
+            height: 24px;
+            line-height: 24px;
+            border-bottom: 2px solid #f60;
+        }
+
+        .ump-select-tab .ui-nav-tab li:first-child a {
+            border-left: 0;
+        }
+
+        .ump-select-tab .ui-nav-tab li a {
+            width: 120px;
+            border-top: 0;
+            height: 25px;
+            line-height: 25px;
+            padding: 8px 20px;
+        }
+
+        .ui-nav-tab > li.active > a, .ui-nav-tab > li.active > a:hover, .ui-nav-tab > li.active > a:focus {
+            color: #333;
+            background-color: #fff;
+            border-bottom-color: transparent;
+            cursor: default;
+        }
+
+        .ui-nav-tab > li > a {
+            position: relative;
+            display: block;
+            padding: 9px 15px;
+            margin-right: -1px;
+            line-height: 1.42857143;
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        .ump-select-box {
+            width: 100%;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        .ump-select-search {
+            padding: 10px 20px 10px;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+
+        .ump-select-goods .ui-table {
+            background: #fff;
+        }
+
+        .ui-table.ui-table-list {
+            border: none;
+        }
+
+        .ui-table {
+            width: 100%;
+            font-size: 12px;
+            text-align: left;
+            margin-bottom: 0;
+            border: 1px solid #e5e5e5;
+        }
+
+        .ui-table th.checkbox, .ui-table td.checkbox {
+            width: 18px;
+            padding: 10px 0 10px 10px;
+        }
+
+        .ui-table th, .ui-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e5e5;
+            vertical-align: top;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .ui-table th {
+            background: #f8f8f8;
+        }
+
+        .ui-table .cell-20 {
+            width: 20%;
+        }
+
+        .center, .text-center {
+            text-align: center;
+        }
+
+        .ump-select-goods .ui-table tr td {
+            padding: 6px 4px;
+            border-bottom: 1px dashed #ddd;
+            vertical-align: middle;
+        }
+
+        .ump-select-goods .goods-image-td, .ump-select-goods .goods-image-td .goods-image, .ump-select-goods .goods-image-td img {
+            width: 30px;
+        }
+
+        .ui-box {
+            margin-bottom: 15px;
+        }
+
+        .ump-select-footer {
+            padding: 0 20px 0 10px;
+        }
+
+        .ump-select-footer .pull-left {
+            padding-bottom: 20px;
+        }
+
+        .pull-left {
+            float: left;
+        }
+
+        .pagenavi {
+            font-size: 12px;
+            line-height: 16px;
+            text-align: right;
+        }
+
+        .ui-btn {
+            display: inline-block;
+            border-radius: 2px;
+            height: 26px;
+            line-height: 26px;
+            padding: 0 12px;
+            cursor: pointer;
+            color: #333;
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 12px;
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+        }
+
+        .ui-toolt {
+            position: relative;
+        }
+
+        .pagenavi .total, .pagenavi .prev, .pagenavi .next, .pagenavi .num, .pagenavi .goto-input, .pagenavi .goto-btn {
+            display: inline-block;
+            color: #333;
+        }
+
+        .pagenavi .total {
+            padding: 6px 0;
+            font-weight: normal !important;
+        }
+
+        .ui-table tr td {
+            line-height: normal;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        button {
+            outline: none;
+        }
+
+        li.active a {
+            border-bottom: 2px solid #f60 !important;
+        }
+        #pagelist input{
+            width: 40px !important;
+            height: 30px!important;
+        }
+    </style>
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+
+            <nav>
+                <ul>
+                    <li class="selected" onclick="location.href='{:url('coupontypelist')}';" title="优惠券">优惠券</li>
+                    <li onclick="location.href='{:url('pointconfig')}';" title="积分管理">积分管理</li>
+                    <li onclick="location.href='{:url('mansonglist')}';" title="满减送">满减送</li>
+                    <li onclick="location.href='{:url('getdiscountlist')}';" title="限时折扣">限时折扣</li>
+                    <li onclick="location.href='{:url('fullshipping')}';" title="满额包邮">满额包邮</li>
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_desc"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_meta"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!--操作提示-->
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    {if condition="$coupon_type_id eq ''"}
+                    添加优惠券
+                    {else/}
+                    编辑优惠券
+                    {/if}
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">
+                            {if condition="$coupon_type_id eq ''"}
+                            添加优惠券
+                            {else/}
+                            编辑优惠券
+                            {/if}
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main">
+                <div class="set-style">
+                    <dl>
+                        <dt><span class="required" style="color:red;">*</span>&nbsp;&nbsp;名称:</dt>
+                        <dd>
+                            <input type="text" id="coupon_name" maxlength="10" class="input-common"
+                                   v-model="coupontypeInfo.coupon_name">
+                            <p class="hint">10个字以内</p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;面额:</dt>
+                        <dd><input class="input-mini w70 input-common" v-model="coupontypeInfo.money"
+                                   onkeyup="value=value.replace(/[^\d+(\.\d+)?]/g,'')" type="text" id="money"><span
+                                class="help-inline">元</span></dd>
+                    </dl>
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;发放数量:</dt>
+                        <dd><input class="input-mini w70 input-common" v-model="coupontypeInfo.count"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")' type="text" id="count"><span
+                                class="help-inline">份</span></dd>
+                    </dl>
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;每人最大领取数:<br/>(0无限制)</dt>
+                        <dd><input class="input-mini w70 input-common" v-model="coupontypeInfo.max_fetch"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")' type="text" id="max_fetch"><span
+                                class="help-inline">份</span></dd>
+                    </dl>
+                    <dl>
+                        <dt>满多少元使用:</dt>
+                        <dd><input class="input-mini w70 input-common" v-model="coupontypeInfo.at_least"
+                                   onkeyup="value=value.replace(/[^\d+(\.\d+)?]/g,'')" type="text" id="at_least"><span
+                                class="help-inline">元</span></dd>
+                    </dl>
+                    <!--<dl style="display:none;">-->
+                    <!--<dt>领取人等级:</dt>-->
+                    <!--<dd><input class="input-mini w70 input-common" onkeyup='this.value=this.value.replace(/\D/gi,"")' type="text" id="need_user_level"><span class="help-inline">级</span></dd>-->
+                    <!--</dl>-->
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;有效时间:</dt>
+                        <dd>
+                            <input class="input-medium input-common" v-model="coupontypeInfo.start_time" type="text"
+                                   id="start_time" style="width:250px;"
+                                   onclick="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss'})" onchange="setTimeIn('start_time',this)">
+                            <span class="mlr5">-</span>
+                            <input class="input-medium input-common" v-model="coupontypeInfo.end_time" size="15"
+                                   type="text" id="end_time" style="width:250px;"
+                                   onclick="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss'})" onchange="setTimeIn('end_time',this)">
+                            <p class="hint">生效前买家可以领取但不能使用</p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>是否允许首页显示:</dt>
+                        <dd>
+                            <div class="total">
+                                <label for="navigationtype1" class="in"><input type="radio" value="1"
+                                                                               name="navigationtype"
+                                                                               id="navigationtype1"
+                                                                               v-model="coupontypeInfo.is_show"/>开启</label>
+                                <label for="navigationtype2" class="out"><input type="radio" value="0"
+                                                                                name="navigationtype"
+                                                                                id="navigationtype2"
+                                                                                v-model="coupontypeInfo.is_show"/>关闭</label>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="type_dl">
+                        <!-- <dt>选择商品:</dt> -->
+                        <dt style="text-align: right;width: 310px;"><span class="error" id="notSelect">请至少选择一件商品</span>
+                        </dt>
+                        <dd>
+                            <label style="vertical-align: middle; font-weight: normal; display: inline-block;margin-right:5px;">
+                                <input type="radio" value="1" name="range_type" v-model="coupontypeInfo.range_type"/>
+                                <span style="font-size: 15px; cursor: pointer;">所有商品</span>
+                            </label>
+                            <label style="vertical-align: middle; font-weight: normal; display: inline-block;">
+                                <input type="radio" name="range_type" value="0" v-model="coupontypeInfo.range_type">
+                                <span style="cursor: pointer; font-size: 15px;">部分商品</span>
+                            </label>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dd id="some_pro" style="width: 99%;" v-if="coupontypeInfo.range_type==0">
+                            <div class="js-goods-box">
+                                <div class="ump-select-tab">
+                                    <ul class="ui-nav-tab">
+                                        <li class="js-tab" :class="{active:show_good_type==1}"><a
+                                                href="javascript:void(0);" @click="show_good_type=1">选择商品</a></li>
+                                        <li class="js-tab" :class="{active:show_good_type==0}"><a
+                                                href="javascript:void(0);" @click="show_good_type=0">已选商品</a></li>
+                                    </ul>
+                                </div>
+                                <div class="goods-list-wrap">
+                                    <div class="js-goods-list-region js-goods-list-tab select-one"
+                                         v-if="show_good_type==1">
+                                        <div class="widget-list">
+                                            <div class="ump-select-box js-select-goods-list">
+                                                <div class="ump-goods-wrap">
+                                                    <div class="ump-waitting-select ump-goods-list">
+                                                        <div class="ump-select-goods">
+                                                            <table class="ui-table ui-table-list" style="padding: 0px;">
+                                                                <thead
+                                                                        class="js-list-header-region tableFloatingHeaderOriginal">
+                                                                <tr class="widget-list-header">
+                                                                    <th colspan="2">商品信息</th>
+                                                                    <th class="text-center cell-20 kucun">库存</th>
+                                                                    <th class="text-center cell-20">操作</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody class="js-list-body-region goods-list">
+                                                                <tr class="widget-list-item" v-for="(item,index) in goodsList">
+                                                                    <td class="goods-image-td text-center">
+                                                                        <div class="goods-image js-goods-image"><img
+                                                                                :src="item.pic_cover_micro">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="goods-meta"><p class="goods-title"><a
+                                                                            :href="'{:url('web/index/detail')}'+'&list='+item.id"
+                                                                            target="_blank" class="new-window">
+                                                                        {{item.title}}
+                                                                    </a></p>
+                                                                        <p class="goods-price">{{item.price}}</p></td>
+                                                                    <td class="text-center">{{item.total}}</td>
+                                                                    <td class="text-center goods-opt">
+                                                                        <a href="javascript:;" class="btn btn-primary js-add-reward" @click="selectGood(item)" v-if="showGoodBtn(item.id)">参加活动</a>
+                                                                        <a href="javascript:;" class="btn btn-default js-remove-reward" @click="delGood(item.id)" v-if="!showGoodBtn(item.id)">取消参加</a>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="js-selected-goods-list-region js-goods-list-tab select-two"
+                                         v-if="show_good_type==0">
+                                        <div>
+                                            <div class="widget-list-item">
+                                                <div class="ump-select-box js-select-goods-list">
+                                                    <div class="ump-goods-wrap">
+                                                        <div class="ump-already-select ump-goods-list">
+                                                            <div class="ump-select-goods">
+                                                                <table class="ui-table ui-table-list js-table">
+                                                                    <thead class="js-list-header-region">
+                                                                    <tr>
+                                                                        <th colspan="2">商品信息</th>
+                                                                        <th class="cell-20 text-center kucun">库存</th>
+                                                                        <th class="cell-20 text-center">操作</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody class="js-list-body-region">
+                                                                    <tr class="widget-list-item" v-for="(item,index) in selectGoods">
+                                                                        <td class="goods-image-td text-center">
+                                                                            <div class="goods-image js-goods-image"><img
+                                                                                    :src="item.pic_cover_micro">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="goods-meta"><p class="goods-title"><a
+                                                                                :href="'{:url('web/index/detail')}'+'&list='+item.id"
+                                                                                target="_blank" class="new-window">
+                                                                            {{item.title}}
+                                                                        </a></p>
+                                                                            <p class="goods-price">{{item.price}}</p></td>
+                                                                        <td class="text-center">{{item.total}}</td>
+                                                                        <td class="text-center goods-opt">
+                                                                            <a href="javascript:;" class="btn btn-default js-remove-reward" @click="delGood(item.id)">取消参加</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl :style="{display:pageshow}">
+                        <dt></dt>
+                        <dd id="pagelist"></dd>
+                    </dl>
+                    <dl>
+                        <dt></dt>
+                        <dd>
+                            <button class="btn-common btn-big" @click="couponType();">提交</button>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+    </article>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                coupontypeInfo: {
+                    coupon_type_id: '',
+                    coupon_name: '',
+                    money: '',
+                    count: '',
+                    max_fetch: '',
+                    at_least: '',
+                    need_user_level: 0,
+                    range_type: 1,
+                    start_time: '',
+                    end_time: '',
+                    is_show: 0,
+                    goods_list: '',
+                },
+                goodsList: [],
+                show_good_type: 1,
+                selectGoods:[]
+            },
+            mounted: function () {
+                this.getGoodsList(1);
+                if("{$coupon_type_id}"!=''){
+                    this.$http.post("{:url('platform/Promotion/getCouponTypeDetail')}", {coupon_type_id:"{$coupon_type_id}"},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.coupontypeInfo=res.data.data;
+                            this.coupontypeInfo.coupon_type_id=res.data.data.id;
+                            for(i=0;i<res.data.data.goods_list.length;i++){
+                                this.selectGoods.push({
+                                    id:res.data.data.goods_list[i].goods_id,
+                                    pic_cover_micro:res.data.data.goods_list[i].picture_info.pic_cover_micro,
+                                    title:res.data.data.goods_list[i].title,
+                                    price:res.data.data.goods_list[i].price,
+                                    total:res.data.data.goods_list[i].total
+                                });
+                            }
+                        }
+                    });
+                }
+            },
+            methods: {
+                couponType: function () {
+                    if(this.coupontypeInfo.coupon_name==''){
+                        layer.alert("请填写优惠券名称");
+                        return;
+                    }
+                    if(this.coupontypeInfo.money==''){
+                        layer.alert("请填写优惠券面额");
+                        return;
+                    }
+                    if(this.coupontypeInfo.count==''){
+                        layer.alert("请填写优惠券发放数量");
+                        return;
+                    }
+                    if(this.coupontypeInfo.max_fetch==''){
+                        layer.alert("请填写每人最大领取数");
+                        return;
+                    }
+                    if(this.coupontypeInfo.max_fetch==''){
+                        layer.alert("请填写每人最大领取数");
+                        return;
+                    }
+                    this.coupontypeInfo.start_time=$("#start_time").val();
+                    this.coupontypeInfo.end_time=$("#end_time").val();
+                    if(this.coupontypeInfo.start_time=='' || this.coupontypeInfo.end_time==''){
+                        layer.alert("请选择有效期时间");
+                        return;
+                    }
+                    this.coupontypeInfo.goods_list='';
+                    if(this.coupontypeInfo.range_type!=1){
+                        if(this.selectGoods.length==0){
+                            layer.alert("当前优惠券使用于部分商品，至少需要选择一个商品");
+                            return;
+                        }else{
+                            for(i=0;i<this.selectGoods.length;i++){
+                                if(i==this.selectGoods.length-1){
+                                    this.coupontypeInfo.goods_list+=this.selectGoods[i].id;
+                                }else{
+                                    this.coupontypeInfo.goods_list+=this.selectGoods[i].id+',';
+                                }
+                            }
+                        }
+                    }
+                    if("{$coupon_type_id}"!=''){
+                        this.$http.post("{:url('platform/Promotion/updateCouponType')}", this.coupontypeInfo,
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{title:"提示"},function(){
+                                    location.href="{:url('coupontypelist')}";
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{title:"提示"});
+                            }
+                        });
+                    }else{
+                        this.$http.post("{:url('platform/Promotion/addCouponType')}", this.coupontypeInfo,
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{title:"提示"},function(){
+                                    location.href="{:url('coupontypelist')}";
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{title:"提示"});
+                            }
+                        });
+                    }
+
+                },
+                getGoodsList: function (page) {
+                    this.$http.post("{:url('platform/Goods/goodsList')}", {page_index: page, page_size: 10, status: 1},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.goodsList = res.data.data.data;
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage,layer= layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: res.data.data.total_count,
+                                    limit:10,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: page,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.getGoodsList(obj.curr);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                selectGood:function(info){
+                    for(i=0;i<this.selectGoods.length;i++){
+                        if(this.selectGoods[i].id==info.id){
+                            layer.alert("该商品已经添加，无需重复添加",{title:"提示"});
+                            return;
+                        }
+                    }
+                    this.selectGoods.push(info);
+                    layer.alert("该商品添加成功",{title:"提示"});
+
+                },
+                delGood:function(id){
+                    for(i=0;i<this.selectGoods.length;i++){
+                        if(this.selectGoods[i].id==id){
+                            this.selectGoods.splice(i,1);
+                            layer.alert("该商品删除成功",{title:"提示"});
+                            return;
+                        }
+                    }
+                    layer.alert("很抱歉删除失败...",{title:"提示"});
+                },
+                showGoodBtn:function(id){
+                    for(i=0;i<this.selectGoods.length;i++){
+                        if(id==this.selectGoods[i].id){
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            },
+            computed:{
+                pageshow:function(){
+                    if(this.coupontypeInfo.range_type==0 && this.show_good_type==1){
+                        return "block";
+                    }else{
+                        return "none";
+                    }
+                }
+            }
+        });
+    });
+    function setTimeIn(type,obj) {
+        // alert($(obj).val());
+
+        vueMain.coupontypeInfo[type]=$(obj).val();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <style>
+        .table-class input {
+            color: #666;
+            width: 206px;
+            margin-bottom: 0px;
+            border: 1px solid #ccc;
+        }
+
+        .table-class input.sort {
+            width: auto;
+            text-align: center;
+        }
+        #table-module tr td{
+            padding: 15px 0;
+        }
+    </style>
+</head>
+<body>
+{include file="index/head"/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+        <nav>
+            <ul>
+                <li class="selected" onclick="location.href='{:url('admin/modulelist')}';" title="模块列表">模块列表</li>
+
+            </ul>
+        </nav>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt">
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    模块列表
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">模块列表</li>
+                </ul>
+            </nav>
+            <div class="right-side-operation">
+                <ul>
+                    <li><a href="{:url('addmodule')}"><i class="fa fa-plus-circle"></i>&nbsp;添加模块列表</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main">
+
+            <table class="table-class" id="table-module">
+                <colgroup>
+                    <col style="width: 5%;">
+                    <col style="width: 10%;">
+                    <col style="width: 40%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                </colgroup>
+                <thead>
+                <tr align="center">
+                    <th></th>
+                    <th>排序</th>
+                    <th>模块名</th>
+                    <th>是否是菜单</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <colgroup>
+                    <col style="width: 5%;">
+                    <col style="width: 10%;">
+                    <col style="width: 40%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                </colgroup>
+                <tbody>
+                <template v-for="(item,index) in moduleList">
+                    <tr class="pid_0" style="height: 30px;">
+                        <td style="text-align: center;">
+                            <template v-if="item.sub_menu.length!=0">
+                                <a
+                                        href="javascript:;"
+                                        @click="tab_switch(item.id)"
+                                        :class="['tab_jia_'+item.id]"
+                                        style="display: block;"><i class="fa fa-plus-circle"></i></a>
+                                <a href="javascript:;"
+                                   @click="tab_switch(item.id)"
+                                   :class="['tab_jian_'+item.id]"
+                                   style="display: none;"><i class="fa fa-minus-circle"></i></a>
+                            </template>
+                        </td>
+                        <td style="text-align: center;">{{item.sort}}
+                        </td>
+                        <td>{{item.module_name}}</td>
+                        <td style="text-align: center;">{{item.is_menu==1?'是':'否'}}</td>
+                        <td style="text-align: center;">
+                            <a :href="'{:url('editmodule')}&module_id='+item.id">修改</a>
+                            <a @click="delModule(item.id)">删除</a>
+                        </td>
+                    </tr>
+                    <template v-for="(item1,index1) in item.sub_menu">
+                        <tr :class="['pid_'+item.id]" style="height: 30px;display: none;">
+                            <td style="padding-left: 2em;text-align: center;">
+                                <template v-if="item1.sub_menu.length!=0">
+                                    <a href="javascript:;"
+                                       @click="tab_switch(item1.id)"
+                                       :class="['tab_jian_'+item1.id]"
+                                       style="display: block;"><i class="fa fa-minus-circle"></i></a>
+                                    <a href="javascript:;"
+                                       @click="tab_switch(item1.id)"
+                                       :class="['tab_jia_'+item1.id]"
+                                       style="display: none;"><i class="fa fa-plus-circle"></i></a>
+                                </template>
+                            </td>
+                            <td style="text-align: center;">{{item1.sort}}</td>
+                            <td><span style="color:#acacac;">|——</span>{{item1.module_name}}</td>
+                            <td style="text-align: center;">{{item1.is_menu==1?'是':'否'}}</td>
+                            <td style="text-align: center;">
+                                <a :href="'{:url('editmodule')}&module_id='+item1.id">修改</a>
+                                <a @click="delModule(item1.id)">删除</a>
+                            </td>
+                        </tr>
+                        <template v-for="(item2,index2) in item1.sub_menu">
+                            <tr :class="['pid_'+item1.id,'pid_'+item.id]" style="height: 30px;display:none;">
+                                <td></td>
+                                <td style="text-align: center;">{{item2.sort}}</td>
+                                <td style="padding-left: 2em;"><span style="color:#acacac;">|——</span>{{item2.module_name}}</td>
+                                <td style="text-align: center;">{{item2.is_menu==1?'是':'否'}}</td>
+                                <td style="text-align: center;">
+                                    <a :href="'{:url('editmodule')}&module_id='+item2.id">修改</a>
+                                    <a @click="delModule(item2.id)">删除</a>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                moduleList: []
+
+            },
+            mounted: function () {
+                this.$http.post("{:url('platform/System/moduleList')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.moduleList = res.data.data;
+                    }
+                });
+            },
+            methods: {
+                tab_switch:function (module_id) {
+                    if ($(".pid_" + module_id).css('display') != 'none') {
+                        $(".tab_jian_" + module_id).hide();
+                        $(".tab_jia_" + module_id).show();
+                        $(".pid_" + module_id).hide(300);
+                    } else {
+                        $(".tab_jian_" + module_id).show();
+                        $(".tab_jia_" + module_id).hide();
+                        $(".pid_" + module_id).show(500);
+                    }
+                },
+                delModule:function (module_id) {
+                    layer.confirm('你确定要删除此菜单吗？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(){
+                        vueMain.$http.post("{:url('platform/System/delModule')}", {module_id:module_id},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6},function () {
+                                    location.reload();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+
+                    });
+
+
+                }
+            }
+        });
+    });
+
+
+    function tab_switch(module_id) {
+        if ($(".pid_" + module_id).css('display') != 'none') {
+            $(".tab_jian_" + module_id).hide();
+            $(".tab_jia_" + module_id).show();
+            $(".pid_" + module_id).hide(300);
+        } else {
+            $(".tab_jian_" + module_id).show();
+            $(".tab_jia_" + module_id).hide();
+            $(".pid_" + module_id).show(500);
+        }
+    }
+</script>
+</body>
+</html>

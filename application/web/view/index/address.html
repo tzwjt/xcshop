@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>{$siteInfo.web_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <!--<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">-->
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+   <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_v0629.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_header.css">
+    <link rel="stylesheet" href="__STATIC__/web/css/shopcart0922.css">
+
+    <link type="text/css" rel="stylesheet" href="__STATIC__/bootstrap-3/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/ns_common.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/css/user.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/common.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="__STATIC__/bootstrap-3/js/bootstrap.js" type="text/javascript"></script>
+
+    <script>
+        var nexturl='self';
+    </script>
+    <style>
+        .con_list a:hover{
+            color:#f74672;
+        }
+        [v-cloak]{
+            display: none;
+        }
+        .panel{
+            width:30%;
+            margin: 5px;
+            float: left;
+        }
+        .panel .panel-body{
+            height:150px;
+        }
+        .panel-default p{
+            color:#5d9cec;
+        }
+        .panel-warning p{
+            color:#F15050;
+        }
+        .panel-default .panel-footer{
+            background-color: #5d9cec;
+        }
+        .panel-warning .panel-footer{
+            background-color: #F15050;
+        }
+        .panel .panel-footer a{
+            color: #ffffff !important;
+
+        }
+        .panel-warning .panel-footer a{
+            color: #ffffff !important;
+        }
+
+    </style>
+    {include file="index/auto_login"/}
+</head>
+<body>
+{include file="index/nav_bar"/}
+<div class="content cf" id="main" v-cloak>
+    {include file="index/member_nav"/}
+    <div class="con_r member-main">
+        <div class="person" style="height: auto;">
+            <div class="person_info" style="height: auto;margin-left: 0;margin-top: 0;background-color: #fff;">
+                <div class="tabmenu" style="width: 100%;">
+                    <ul class="tab">
+                        <li class="active">收货地址管理</li>
+                    </ul>
+                </div>
+
+                <div style="min-height: 600px;">
+                    <div class="panel" :class="{'panel-warning':item.is_default==1,'panel-default':item.is_default!=1}" v-for="(item,index) in info">
+                        <div class="panel-body" style="height: 120px;position: relative;">
+                            <p v-html="item.address_info"></p>
+                            <p class="text-right">{{item.consigner}}&nbsp;&nbsp;{{item.mobile}}</p>
+                            <p class="text-right" v-if="item.zip_code!=''">邮编:{{item.zip_code}}</p>
+                            <span v-if="item.is_default==1" style="position: absolute;bottom: 0.5em;left: 0.5em;color:#F15050;">默认</span>
+                        </div>
+                        <div class="panel-footer" style="font-size:13px;text-align: right;height: 40px;">
+                            <a style="color:red;" @click="address_delete(index);">删除</a>
+                            <a style="color:#6ec1e5;margin-left: 1em;" @click="show_address_modal('edit',index)">修改</a>
+                            <a style="color:#6ec1e5;margin-left: 1em;"  v-if="item.is_default!=1" @click="checkDefault(index)">设为默认</a>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" @click="show_address_modal('add')">
+                        <div class="panel-body" style="height: 160px;">
+                            <p style="text-align: center;padding-top: 25px;"><img src="__STATIC__/images/add-info.png" style="width:50px;height:50px;float: none;cursor: pointer;"/></p>
+                            <p style="text-align: center;color:#8a8a8a;font-size:14px;">添加新的地址</p>
+                        </div>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---begin地址弹框-->
+    <div class="address-box box" id="address-box" style="display: none;z-index:1010;">
+        <div class="address-content">
+            <div class="adderss-item mt0"><input type="text" value="" id="address_name" placeholder="收货人姓名" v-model="address.consigner"></div>
+            <div class="adderss-item"><input type="text" value="" placeholder="手机号" id="address_mobile" v-model="address.mobile"></div>
+            <div class="adderss-item"><input type="text" value="" placeholder="固定电话(选填)" id="address_phone" v-model="address.phone"></div>
+            <div class="adderss-item">
+                <select id="province" class="address-province" data-rel="3" v-model="address.province" @change="getCity()">
+                    <option value="">省份</option>
+                    <option v-for="item in addressInfo.province" :value="item.id">{{item.province_name}}</option>
+                </select>
+                <select id="city" class="address-city" data-rel="37" style="margin-left: 0;" v-model="address.city" @change="getDistrict()">
+                    <option value="">城市</option>
+                    <option v-for="item in addressInfo.city" :value="item.id">{{item.city_name}}</option>
+                </select>
+            </div>
+            <div class="adderss-item">
+                <select id="district" class="address-district"  v-model="address.district" data-rel="409">
+                    <option value="">县/区</option>
+                    <option v-for="item in addressInfo.district" :value="item.id">{{item.district_name}}</option>
+                </select>
+            </div>
+            <div class="adderss-item"><input id="address" type="text" value="" placeholder="路名、街道地址、门牌号" v-model="address.address"></div>
+            <div class="adderss-item"><input id="zipcode" type="text" value="" placeholder="邮政编码(选填)" v-model="address.zip_code"></div>
+        </div>
+        <div class="address-foot"><input type="button" onclick="hideAddress()" value="关闭" id="choose_again"><input type="button" value="确认地址" id="address_certain" @click="saveAddress()"></div>
+    </div>
+    <!--end地址弹框-->
+</div>
+<div class="clear"></div>
+<div class="dialogBackground" id="dialogBackground" style="display: none;"></div>
+<link type="text/css" rel="stylesheet" href="__STATIC__/web/css/logistics.css">
+{include file="index/footer"}
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var main;
+    $(function () {
+        main=new Vue({
+            el:"#main",
+            data:{
+                selfInfo:{member_info:{last_login_time:''}},
+
+                info:[],
+                address:{
+                    id: '',
+                    consigner: '',
+                    mobile: '',
+                    phone: '',
+                    province: '',
+                    city: '',
+                    district: '',
+                    address: '',
+                    zip_code: ''
+                },
+                addressInfo:{
+                    province: [],
+                    city: [],
+                    district: []
+                }
+            },
+            mounted:function(){
+                this.getSelfInfo();
+               this.getInfo();
+                this.$http.post("{:url('shop/member/getProvince')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.addressInfo.province = res.data.data;
+                    }
+                });
+
+
+            },
+            methods:{
+                getSelfInfo:function () {
+                    this.$http.post("{:url('shop/member/memberIndex')}", {},{
+                            headers: {
+                                authKey: $.cookie('authKey'),
+                                sessionId: $.cookie('sessionId')
+                            }
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.selfInfo=res.data.data;
+                        }
+                    });
+
+                },
+                getInfo:function () {
+                    this.$http.post("{:url('shop/member/memberAddress')}", {
+                            page_size:1,page_index:0
+                        },{
+                            headers: {
+                                authKey: $.cookie('authKey'),
+                                sessionId: $.cookie('sessionId')
+                            }
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.info=res.data.data.data;
+                        }
+                    });
+                },
+                saveAddress: function () {
+                    if (this.address.consigner == '') {
+                        layer.msg("收货人不能为空", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if (this.address.mobile == '') {
+                        layer.msg("手机号码不能为空", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if (!(/^1[34578]\d{9}$/.test(this.address.mobile))) {
+                        layer.msg("请输入正确的手机号码", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    if (this.address.province == '' || this.address.city == '' || this.address.district == '' || this.address.address == '') {
+                        layer.msg("请输入完整的地址", {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    var url;
+                    if(this.address.id==''){
+                        url="{:url('shop/member/addMemberAddress')}";
+                    }else{
+                        url="{:url('shop/member/updateMemberAddress')}";
+                    }
+
+                    this.$http.post(url, this.address, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.msg("地址保存成功", {shade: [0.2, '#393D49']});
+                            this.getInfo();
+                            hideAddress();
+                            this.addressList=res.data.data.data;
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("地址保存失败", {shade: [0.2, '#393D49']});
+                    });
+                },
+                address_delete:function (index) {
+                    if(this.info[index].is_default==1){
+                        layer.msg('默认地址不能删除',{shade:[0.4,"#000"]});
+                        return;
+                    }
+                    layer.msg('你确定要删除这个地址吗', {
+                        time: 20000, //20s后自动关闭
+                        btn: ['确定', '取消'],
+                        yes:function () {
+                            main.$http.post("{:url('shop/member/memberAddressDelete')}", {
+                                id:main.info[index].id
+                            }, {
+                                headers: {
+                                    authKey: $.cookie('authKey'),
+                                    sessionId: $.cookie('sessionId')
+                                }
+                            }, {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.msg('删除成功',{shade:[0.4,"#000"]});
+                                    this.getInfo();
+                                }else{
+                                    layer.msg(res.data.msg,{shade:[0.4,"#000"]});
+                                }
+                            });
+                        }
+                    });
+                },
+                show_address_modal:function (type,index) {
+                    if(type=="add"){
+                        this.address={id:'', consigner:'', mobile:'', phone:'', province:'', city:'', district:'', address:'', zip_code:''};
+                    }else{
+                        this.$http.post("{:url('shop/member/getCity')}", {province_id: this.info[index].province},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                this.addressInfo.city = res.data.data;
+                                this.$http.post("{:url('shop/member/getDistrict')}", {city_id: this.info[index].city},
+                                    {emulateJSON: true}).then(function (res) {
+                                    if (res.data.code == 0) {
+                                        this.addressInfo.district = res.data.data;
+                                        this.address={
+                                            id:this.info[index].id,
+                                            consigner:this.info[index].consigner,
+                                            mobile:this.info[index].mobile,
+                                            phone:this.info[index].phone,
+                                            province:this.info[index].province,
+                                            city:this.info[index].city,
+                                            district:this.info[index].district,
+                                            address:this.info[index].address,
+                                            zip_code:this.info[index].zip_code
+                                        };
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    var screenHeight =  $(window).height();
+                    var objTop = (screenHeight - $("#address-box").height()) / 2 ;
+                    $("div.address-box").css({"top": objTop});
+                    $("div.address-box").show();
+                    $("#dialogBackground").show();
+                },
+                getCity: function () {
+                    if (this.address.province == '') {
+                        this.addressInfo.city = this.addressInfo.district = [];
+
+                    }
+                    this.$http.post("{:url('shop/member/getCity')}", {province_id: this.address.province},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressInfo.city = res.data.data;
+                        }
+                    });
+                },
+                getDistrict: function () {
+                    if (this.address.city == '') {
+                        this.addressInfo.district = [];
+                    }
+                    this.$http.post("{:url('shop/member/getDistrict')}", {city_id: this.address.city},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressInfo.district = res.data.data;
+                        }
+                    });
+                },
+                checkDefault:function(index){
+                    this.$http.post("{:url('shop/member/updateAddressDefault')}", {id:this.addressList[index].id}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.addressList=res.data.data.data;
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("获取地址信息失败...", {shade: [0.2, '#393D49']});
+                    });
+                },
+                checkDefault:function (index) {
+                    this.$http.post("{:url('shop/member/updateAddressDefault')}", {id:this.info[index].id}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    }, {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.msg("默认地址设置成功",{shade:[0.2,"#333"]});
+                            this.info=res.data.data.data;
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("获取地址信息失败...", {shade: [0.2, '#393D49']});
+                    });
+        }
+
+            }
+        });
+
+    });
+    function hideAddress(){
+        $("div.address-box").hide();
+        $("#dialogBackground").hide();
+    }
+</script>
+</body>
+</html>

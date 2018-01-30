@@ -1,0 +1,94 @@
+<header class="ns-base-header">
+    <div class="ns-logo" onclick="location.href='{:url('index')}'">
+        <img src="__STATIC__/blue/img/top_logo.png"/>
+    </div>
+    <nav>
+        <ul>
+            <li onclick="location.href='{:url('index/index')}'">
+                <span>首页</span>
+            </li>
+            {foreach item="vo" name="module_first"}
+            <li onclick="location.href='{:url($vo['url'])}'">
+                <span>{$vo['module_name']}</span>
+            </li>
+            {/foreach}
+            {if condition='$is_admin eq 1'}
+            <li onclick="location.href='{:url('admin/shopindexlist')}'">
+                <span>网站</span>
+            </li>
+            <li onclick="location.href='{:url('admin/expresscompany')}'">
+                <span>设置</span>
+            </li>
+            <li onclick="location.href='{:url('admin/modulelist')}'">
+            <span>系统</span>
+            </li>
+            {/if}
+            <!--<li onclick="location.href='{:url('index')}'">-->
+            <!--<span>首页</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('goodslist')}'">-->
+            <!--<span>商品</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('orderlist')}'">-->
+            <!--<span>订单</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('coupontypelist')}'">-->
+            <!--<span>营销</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('member')}'">-->
+            <!--<span>会员</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('agency')}'">-->
+            <!--<span>代理商</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('userlist')}'">-->
+            <!--<span>用户</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('agentWithdrawList')}'">-->
+            <!--<span>财务</span>-->
+            <!--</li>-->
+            <!--<li onclick="location.href='{:url('shopsalesaccount')}'">-->
+            <!--<span>数据</span>-->
+            <!--</li>-->
+
+        </ul>
+    </nav>
+</header>
+<style>
+    .modal{
+        max-height:95%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    [v-cloak]{
+        display: none;
+    }
+</style>
+
+<script>
+    $(function () {
+        $.ajax({
+            url: "{:url('platform/AutoTask/loadAutoTask')}",
+            data: {},
+            type: 'post',
+            success: function () {
+
+            }
+        });
+        $.ajax({
+            url: "{:url('platform/IndexInfo/getLoginUserInfo')}",
+            data: {},
+            type: 'post',
+            success: function (res) {
+                if (res.code == 0) {
+                    $("#admin-userName").html("欢迎您:" + res.data.nick_name);
+                    $("#admin-userReal").html("角色类型:" + res.data.user_group_name);
+                }
+            }
+        });
+        $(".ns-warm-prompt .close").click(function () {
+            $(".ns-warm-prompt").hide();
+        });
+    });
+
+</script>

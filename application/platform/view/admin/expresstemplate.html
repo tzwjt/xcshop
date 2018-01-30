@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script src="__STATIC__/admin/js/easydrag.js" type="text/javascript"></script>
+    <script src="__STATIC__/admin/js/ajax_file_upload.js" type="text/javascript"></script>
+    <script src="__STATIC__/js/file_upload.js" type="text/javascript"></script>
+    <script src="__STATIC__/admin/js/image_common.js" type="text/javascript"></script>
+    <style>
+        .movefield {
+            width: 145px;
+            height: 26px;
+            line-height: 26px;
+            margin: 5px 0 0 5px;
+            padding: 0 0 0 5px;
+            border: 1px solid #ff4200;
+            cursor: move;
+            background-color: #fef5e6;
+            color: #000;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 25px;
+        }
+
+        .btn p {
+            font-size: 12px;
+            line-height: 20px;
+            background-color: #F5F5F5;
+            color: #999;
+            text-align: center;
+            color: #666;
+            width: 78px;
+            height: 20px;
+            padding: 4px 0;
+            border: solid 1px;
+            border-color: #DCDCDC #DCDCDC #B3B3B3 #DCDCDC;
+            position: absolute;
+            left: 12px;
+            top: 9px;
+            z-index: 1;
+        }
+
+        .style0page {
+            padding: 20px;
+        }
+
+        .width-margin {
+            width: 880px;
+            margin: 0 auto;
+        }
+
+        .niu-li {
+            float: left;
+            width: 140px;
+            margin-bottom: 5px;
+        }
+
+        .niu-li input {
+            float: left;
+            margin: 4px 4px 0 0;
+        }
+    </style>
+    <script>
+        var UPLOADEXPRESS="UPLOAD_EXPRESS";
+        var img_url="{$express_shipping_detail.image}"
+    </script>
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+
+            <nav>
+                <ul>
+                    <li class="selected" onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                    <li class="" onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+                    <li onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                    <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                    <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                    <li onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                    <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                    <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                    <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        模板编辑
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">模板编辑</li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main">
+                <div class="style0page">
+                    <ul class="width-margin" id="sysTemplate" style="display: block;">
+                        <li class="list-li" style="content: '';clear: both;display: inline-block;">
+                            <div class="float-l w130" style="width: 100px;float: left;">
+                                <span class="star" style="float:left;">*&nbsp;&nbsp;&nbsp;</span>
+                                <label>快递公司:</label>
+                            </div>
+                            <div class="float-l" style="float:left;">
+                                <label>{$express_shipping_detail.template_name}</label>
+                            </div>
+                            <div class="float-l">
+                                <span class="prompt"></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="width-margin">
+
+                        <li class="list-li">
+                            <div class="float-l w130" style="width:200px;">
+                                <span class="star" style="float:left;">*&nbsp;&nbsp;&nbsp;</span>
+                                <label>选择打印项</label>
+                            </div>
+                            <div class="overflow width-margin">
+                                <ul class="overflow" id="Template_All" style="overflow:hidden;">
+                                    <!--<li class="niu-li" v-for="(item,index) in info">-->
+                                        <!--<input :id="'ckb_'+index" type="checkbox" v-model="show[index]"/>-->
+                                        <!--<label :for="'ckb_'+index">{{item.field_display_name}}</label>-->
+                                    <!--</li>-->
+                                    {foreach name="info" item="vo" key="k"}
+                                    <li class="niu-li">
+                                    <input id="ckb_{$k+1}" type="checkbox" {$vo.is_print==1?"checked":""} onchange="changeShow('{$k+1}')"/>
+                                    <label for="ckb_{$k+1}">{$vo.field_display_name}</label>
+                                    </li>
+                                    {/foreach}
+                                </ul>
+                                <div class="clear"></div>
+                                <!--设置快递单 begin-->
+                                <div class="templet" style="position: relative;z-index:0;">
+                                    <div class="file01 w800 t10">
+                                        <img id="imgLogo" {if condition="$express_shipping_detail.image neq ''"}src="{$express_shipping_detail.image}"{/if} style="width: 100%; height: 480px;">
+                                        <input type="hidden" id="Logo" value="">
+                                        <div class="upload-btn">
+							<span>
+								<input class="input-file" name="file_upload" id="fileUploadImg" type="file" onchange="btnUploadFile()">
+							</span>
+                                            <p><i class="fa fa-cloud-upload"></i>上传图片</p>
+                                        </div>
+                                    </div>
+                                    <div class="templet-label" style="padding:-5px;margin:-5px;">
+                                        <div class="col01 drag-box-4">
+                                            <!--<div style="display: block;width:300px;height:300px;background-color: #0e80e1;position:absolute;top:22px;right: 33px"-->
+                                                 <!--id="good">ffffff-->
+                                            <!--</div>-->
+                                          {foreach name="info" item="vo" key="k"}
+                                                <div id="AB_{$k+1}" class="field movefield" field_name="{$vo.field_name}" style="{$vo.style}" field_display_name="{$vo.field_display_name}">
+                                                    <span class="field-name">{$vo.field_display_name}</span>
+                                                    <a style="float:right;position:absolute;width:20px;height:26px;" onclick="downChecked({$k+1})">X</a>
+                                                </div>
+                                            {/foreach}
+                                            <!---->
+                                            <!--<template v-for="(item,index) in info">-->
+                                                <!--<div :id="'AB_'+index" class="field movefield" :style="item.style" v-if="show[index]" @mousedown="drapDiv($event,index)">-->
+                                                    <!--<span class="field-name">{{item.field_display_name}}</span>-->
+                                                    <!--<a style="float:right;position:absolute;width:20px;height:26px;"-->
+                                                       <!--@click.stop="changeCheck(index)">X</a>-->
+                                                <!--</div>-->
+                                            <!--</template>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </li>
+                    </ul>
+                    <!--自定义模版 end-->
+                    <div class="l156 t30 b20" style="margin:0 0 10px 0px; text-align: center;z-index:100">
+                        <input type="button" id="btnSave" class="btn-common btn-big" value="保存" onclick="ajaxSubmit()">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/drag.js"></script>
+<script>
+    $(function () {
+        $( ".field" ).draggable({ containment: ".templet", scroll: false });
+
+
+
+    });
+    function changeShow(index) {
+        if($("#ckb_"+index).is(':checked')){
+            $("#AB_"+index).show();
+        }else{
+            $("#AB_"+index).hide();
+        }
+    }
+    function ajaxSubmit() {
+        var data='';
+        for(i=0;i<{$length};i++){
+//            data[i]={
+//                field_name:$("#AB_"+(i+1)).attr("field_name"),
+//                field_display_name:$("#AB_"+(i+1)).attr("field_display_name"),
+//                is_print:$("#AB_"+(i+1)).css("display")=="block"?1:0,
+//                x:$("#AB_"+(i+1)).css("left").replace("px",''),
+//                y:$("#AB_"+(i+1)).css("top").replace("px",'')
+//            };
+            field_name=$("#AB_"+(i+1)).attr("field_name");
+                field_display_name=$("#AB_"+(i+1)).attr("field_display_name");
+                is_print=$("#AB_"+(i+1)).css("display")=="block"?1:0;
+                x=$("#AB_"+(i+1)).css("left").replace("px",'');
+                y=$("#AB_"+(i+1)).css("top").replace("px",'');
+                if(data==''){
+                    data=field_name+","+field_display_name+","+is_print+","+x+","+y;
+                }else{
+                    data+=";"+field_name+","+field_display_name+","+is_print+","+x+","+y;
+                }
+        }
+        $.ajax({
+            url:"{:url('platform/express/setPrintTemplate')}",
+            type:"post",
+            data:{
+                template_id:"{$express_shipping_detail.sid}",
+                express_id:"{$co_id}",
+                width_length:"{$express_shipping_detail.width}",
+                img_url:img_url,
+                send_datas:data
+            },
+            datatype:"json",
+            success:function (res) {
+                if(res.code==0)
+                layer.alert(res.msg,{icon:6});
+                else
+                    layer.alert(res.msg,{icon:5});
+
+            }
+        });
+
+
+
+
+
+        console.log(data);
+
+    }
+    function btnUploadFile() {
+        // 在上传图片之前一定要先让用户设置宽和高
+//        if ($("#sysTemplateWidth").val() == "" || $("#sysTemplateHeight").val() == "") {
+//            validataPrompt($("#sysTemplateHeight"), "上传文件之前请先设置模版的宽或者高");
+//            $("#sysTemplateHeight").focus();
+//            $("#fileUploadImg").val(''); // 如果不清空文件内容，下次将无法上传图片
+//            return false;
+//        } else {
+//            $(".prompt").text('');
+//        }
+        var fileid = "fileUploadImg";
+        var data = { 'file_path' : UPLOADEXPRESS };
+        uploadFile(fileid,data,function(res){
+            if(res.code==0){
+                                $("#imgLogo").attr("src",res.data);
+                                img_url=res.data;
+            }
+//                $("#imgLogo").attr("src",__IMG(res.data));
+//                $("#Logo").val(res.data);
+//                showTip(res.message,"success");
+//            }else{
+//                showTip(res.message,"error");
+//            }
+        },"{:url('util/img_upload/uploadFile')}");
+    }
+    function downChecked(index) {
+        $("#AB_"+index).css("display","none");
+        $("#ckb_"+index).attr("checked",false);
+    }
+
+</script>
+<!--<script>-->
+    <!--var vueMain;-->
+    <!--var picWidth;-->
+    <!--var picHeight;-->
+    <!--$(function () {-->
+        <!--vueMain = new Vue({-->
+            <!--el: "#vue-main",-->
+            <!--data: {-->
+                <!--info: [],-->
+                <!--show: []-->
+            <!--},-->
+            <!--mounted: function () {-->
+                <!--this.$http.post("{:url('platform/express/expressTemplate')}", {co_id: "{$co_id}"},-->
+                    <!--{emulateJSON: true}).then(function (res) {-->
+                    <!--if (res.data.code == 0) {-->
+                        <!--this.info = res.data.data.print_express_shipping_items;-->
+                        <!--for (i = 0; i < this.info.length; i++) {-->
+<!--//                            this.info[i].check = this.info[i].is_print==1?true:false;-->
+                            <!--this.show[i] = this.info[i].is_print == 1 ? true : false;-->
+                            <!--this.info[i].style = {-->
+                                <!--position: 'absolute',-->
+                                <!--display: 'block',-->
+                                <!--top: this.info[i].y + 'px',-->
+                                <!--left: this.info[i].x + 'px',-->
+                                <!--cursor: 'move'-->
+                            <!--};-->
+                        <!--}-->
+                        <!--$("#AB_0").draggable();-->
+                        <!--$('.field').easydrag();-->
+                    <!--}-->
+                <!--});-->
+            <!--},-->
+            <!--methods: {-->
+                <!--changeCheck: function (index) {-->
+                    <!--Vue.set(this.show, index, false);-->
+                <!--},-->
+                <!--drapDiv:function (e,index) {-->
+                    <!--var mouseX= e.screenX;-->
+                    <!--var mouseY = e.screenY;-->
+                    <!--alert(mouseX);-->
+
+<!--//                    setInterval(function () {-->
+<!--////                        console.log(mouseX);-->
+<!--//                    },1000)-->
+                <!--}-->
+            <!--}-->
+        <!--});-->
+    <!--});-->
+    <!--$(function () {-->
+<!--//        $('.drag-box-4 .field').each(function(index){-->
+<!--//            $(this).myDrag({-->
+<!--//                randomPosition:true,-->
+<!--//                direction:'all',-->
+<!--//                handler:'.handler'-->
+<!--//            });-->
+<!--//        });-->
+        <!--// 要实现拖拽的DIV标签-->
+        <!--// 第一次加载图片-->
+
+        <!--$("#good").draggable();-->
+        <!--onLoadPic();-->
+
+    <!--});-->
+
+
+    <!--// 默认加载快递公司图片-->
+    <!--function onLoadPic() {-->
+        <!--var width = $("#firstPicWidth").val();-->
+        <!--var height = $("#firstPicHeight").val();-->
+        <!--$("#TemplatePic").css("width", width + "px");-->
+        <!--$("#TemplatePic").css("height", height + "px");-->
+        <!--picWidth = width;-->
+        <!--picHeight = height;-->
+    <!--}-->
+
+
+    <!--// 监控tips不能出了范围-->
+    <!--function DragRule(event) {-->
+        <!--event = event ? event : window.event;-->
+        <!--var eventSrc = event.srcElement ? event.srcElement : event.target;-->
+        <!--// 判断当前拖动的对象是谁 必须是 div 不是就装换成 div (防止点击的是<span>)-->
+        <!--if ($(eventSrc).attr("class") == "field-name") {-->
+            <!--eventSrc = $(eventSrc).parent();-->
+        <!--}-->
+        <!--var Left = $(eventSrc).css("left");-->
+        <!--var Top = $(eventSrc).css("top");-->
+        <!--Left = Left.substring(0, Left.indexOf('p'));-->
+        <!--Top = Top.substring(0, Top.indexOf('p'));-->
+        <!--if (Left < 0) {-->
+            <!--$(eventSrc).css("left", "0px");-->
+        <!--}-->
+        <!--if (Top < 0) {-->
+            <!--$(eventSrc).css("top", "0px");-->
+        <!--}-->
+        <!--if (Top > picHeight - 30) {-->
+            <!--$(eventSrc).css("top", picHeight - 30 + "px");  // picHeight-30-->
+        <!--}-->
+        <!--if (Left > picWidth - 126) {-->
+            <!--$(eventSrc).css("left", picWidth - 126 + "px");  // picWidth-126-->
+        <!--}-->
+    <!--}-->
+
+
+<!--</script>-->
+
+
+</body>
+</html>

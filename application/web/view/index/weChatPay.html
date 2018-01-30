@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$siteInfo.web_shop_title}{$seoInfo.seo_title}-微信支付</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/pay/pay_main.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+
+    <style>
+    </style>
+</head>
+<body>
+<article class="ns-pay" id="vue-main" v-cloak>
+    <div class="order clearfix order-noQrcode">
+        <!-- 订单信息 -->
+        <div class="o-left">
+            <h3 class="o-title">订单提交成功，请尽快付款！支付流水号：{{payInfo.pay_value.out_trade_no}}</h3>
+            <p class="o-tips"></p>
+        </div>
+        <!-- 订单信息 end -->
+        <!-- 订单金额 -->
+        <div class="o-right">
+            <div class="o-price">
+                <em>应付金额</em><strong>{{payInfo.pay_value.pay_money}}</strong><em>元</em>
+            </div>
+        </div>
+        <!-- 订单金额 end -->
+        <div class="o-list j_orderList" id="listPayOrderInfo">
+            <!-- 单笔订单 -->
+            <!-- 多笔订单 end -->
+        </div>
+    </div>
+
+    <div class="payment">
+        <!-- 微信支付 -->
+        <div class="pay-weixin">
+            <div class="p-w-hd">微信支付</div>
+            <div class="p-w-bd" style="position: relative">
+                <div class="js-weixinInfo"
+                     style="position: absolute; top: -36px; left: 130px;">
+                    <template v-if="time>=0">
+                    距离二维码过期还剩<span class="js-qrcode-time font-bold font-red">{{time}}</span>秒，过期后请刷新页面重新获取二维码。
+                    </template>
+                    <template v-else>
+                    <span class='font-red'>二维码已过期</span>，过期后请刷新页面重新获取二维码。
+                    </template>
+                </div>
+                <div class="p-w-box">
+                    <div class="pw-box-hd">
+                        <!-- __UPLOAD__/qrcode/pay/1493169273641.png -->
+                        <img id="weixinImageURL"
+                             :src="time>=0?payInfo.path:'__STATIC__/images/overtime.jpg'"
+                             width="298" height="298">
+                    </div>
+                    <div class="pw-box-ft">
+                        <p>请使用微信扫一扫</p>
+                        <p>扫描二维码支付</p>
+                    </div>
+                </div>
+                <div class="p-w-sidebar"></div>
+            </div>
+        </div>
+        <!-- 微信支付 end -->
+    </div>
+</article>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                payInfo:{pay_value:{out_trade_no:'',pay_money:''}},
+                time:45
+            },
+            mounted:function () {
+                this.$http.get("{:url('shop/Pay/wchatPay')}", {out_trade_no: "{$out_trade_no}"}, {
+                    headers: {
+                        authKey: $.cookie('authKey'),
+                        sessionId: $.cookie('sessionId')
+                    }
+                }, {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.payInfo = res.data.data;
+                        setInterval(function () {
+                            vueMain.time--;
+                        },1000);
+                    } else if(res.data.code==1) {
+                        layer.msg(res.data.msg, {shade: [0.2, '#393D49']},function () {
+                            location.href="{:url('index')}";
+                        });
+                    }else{
+                        layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                    }
+                });
+            },
+            methods:{
+
+            }
+        });
+        var payStatus = window.setInterval("payStatu()", 2000);
+    });
+    function payStatu(){
+        $.ajax({
+            type : "post",
+            url : "{:url('shop/pay/wchatQrcodePay')}",
+            data : {
+                out_trade_no : "{$out_trade_no}"
+            },
+            success : function(res){
+                if(res.data.code > 0){
+                    location.href="{:url('shop/Pay/wchatPayResult')}&out_trade_no={$out_trade_no}&msg=1";
+                    clearInterval(payStatus);
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

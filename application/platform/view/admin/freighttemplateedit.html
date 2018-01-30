@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link href="__STATIC__/admin/css/express/freight_edit.css" rel="stylesheet" type="text/css"/>
+    <style>
+        .is_btn {
+            display: inline-block;
+            height: 30px;
+            width: 44px;
+            text-align: center;
+            background-color: #ECF0F1;
+            border-color: #BEC3C7;
+            color: #777;
+            cursor: pointer;
+            line-height: 30px;
+            vertical-align: middle;
+        }
+
+        .is_btn_yes {
+            border-radius: 4px 0 0 4px;
+            border-width: 1px 0 1px 1px;
+        }
+
+        .is_btn_no {
+            border-radius: 0 4px 4px 0;
+            border-width: 1px 1px 1px 0;
+        }
+
+        .is_btn_yes.active {
+            background-color: #0072D2;
+            border-color: #0072D2;
+            color: #fff;
+        }
+
+        .is_btn_no.active {
+            color: #FFF;
+            background-color: #96A6A6;
+            border-color: #808B8D;
+        }
+
+        label.font-color-1 {
+            color: #888;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+
+            <nav>
+                <ul>
+                    <li class="selected" onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                    <li class="" onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+                    <li onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                    <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                    <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                    <li onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                    <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                    <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                    <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt">
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        {if condition="$shipping_fee_id eq 0"}
+                        添加运费模板
+                        {else/}
+                        编辑运费模板
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">
+                            {if condition="$shipping_fee_id eq 0"}
+                            添加运费模板
+                            {else/}
+                            编辑运费模板
+                            {/if}
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main">
+
+                <div class="freight-template">
+                    <div class='table-div'>
+                        <table>
+                            <tr>
+                                <td colspan='2' class='bg-f5f5f5'>
+                                    <div class='table-title-font'>
+                                        <span>运费信息</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='table-first-td'>
+                                    <label for="shipping_fee_name"><span class="star">*</span>模板名称</label>
+                                </td>
+                                <td>
+                                    <input id="shipping_fee_name" v-model="info.shipping_fee_name" type="text"/>
+                                </td>
+                            </tr>
+
+                            <!--<tr v-if="info.is_default==1">-->
+                                <!--<td class='table-first-td'>-->
+                                    <!--<label>模板地区类型</label>-->
+                                <!--</td>-->
+                                <!--<td>-->
+                                    <!---->
+                                    <!--<select id="is_default" v-model="info.is_default" disabled>-->
+                                        <!--<option value="1">默认地区</option>-->
+                                        <!--<option value="0">指定地区</option>-->
+                                    <!--</select>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                            <tr v-if="info.is_default==1">
+                                <td class="table-first-td">
+                                    <label><span class="star">*</span>选择地区</label>
+                                </td>
+                                <td>
+                                    <!-- 添加 -->
+                                    <span class="js-region-info region-info"></span>
+                                    <a class="js-select-city btn-gradient-default" data-flag="1" href="javascript:;">默认地区(全国)</a>
+                                </td>
+                            </tr>
+                            <tr v-if="info.is_default==0">
+                                <td class="table-first-td">
+                                    <label><span class="star">*</span>选择地区</label>
+                                </td>
+                                <td>
+                                    <!-- 添加 -->
+                                    <span class="js-region-info region-info"></span>
+                                    <a class="js-select-city btn-gradient-blue" data-flag="0"
+                                       href="javascript:;" @click="show_address=true">指定地区城市</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='table-first-td'>
+                                    <label>按件数</label>
+                                </td>
+                                <td>
+
+                                    <table class="input-info-table">
+                                        <tr>
+                                            <td width="20%" align="center">首件(件)</td>
+                                            <td width="20%" align="center">首件运费(元)</td>
+                                            <td width="20%" align="center">续件(件)</td>
+                                            <td width="20%" align="center">续件运费(元)</td>
+                                            <td width="20%" align="center">是否启用计件方式运费</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center"><input type="text" v-model="info.bynum_snum"/></td>
+                                            <td align="center"><input type="text" v-model="info.bynum_sprice"/></td>
+                                            <td align="center"><input type="text" v-model="info.bynum_xnum"/></td>
+                                            <td align="center"><input type="text" v-model="info.bynum_xprice"/></td>
+                                            <td align="center">
+                                                <span class="is_btn is_btn_yes" :class="{active:info.bynum_is_use==1}"
+                                                      @click="changeBtn('bynum_is_use')">是</span><span
+                                                    class="is_btn is_btn_no" :class="{active:info.bynum_is_use==0}"
+                                                    @click="changeBtn('bynum_is_use')">否</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='table-first-td'>
+                                    <label>按重量</label>
+                                </td>
+                                <td>
+                                    <table class="input-info-table">
+                                        <tr>
+                                            <td width="20%" align="center">首重(kg)</td>
+                                            <td width="20%" align="center">首重运费(元)</td>
+                                            <td width="20%" align="center">续重(kg)</td>
+                                            <td width="20%" align="center">续重运费(元)</td>
+                                            <td width="20%" align="center">是否启用重量运费</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center"><input type="text" v-model="info.weight_snum"/></td>
+                                            <td align="center"><input type="text" v-model="info.weight_sprice"/></td>
+                                            <td align="center"><input type="text" v-model="info.weight_xnum"/></td>
+                                            <td align="center"><input type="text" v-model="info.weight_xprice"/></td>
+                                            <td align="center">
+                                                <span class="is_btn is_btn_yes" :class="{active:info.weight_is_use==1}"
+                                                      @click="changeBtn('weight_is_use')">是</span><span
+                                                    class="is_btn is_btn_no" :class="{active:info.weight_is_use==0}"
+                                                    @click="changeBtn('weight_is_use')">否</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='table-first-td'>
+                                    <label>按体积</label>
+                                </td>
+                                <td>
+
+                                    <table class="input-info-table">
+                                        <tr>
+                                            <td width="20%" align="center">首体积量(m³)</td>
+                                            <td width="20%" align="center">首体积运费(元)</td>
+                                            <td width="20%" align="center">续体积量(m³)</td>
+                                            <td width="20%" align="center">续体积运费(元)</td>
+                                            <td width="20%" align="center">是否启用体积计算运费</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center"><input type="text" v-model="info.volume_snum"/></td>
+                                            <td align="center"><input type="text" v-model="info.volume_sprice"/></td>
+                                            <td align="center"><input type="text" v-model="info.volume_xnum"/></td>
+                                            <td align="center"><input type="text" v-model="info.volume_xprice"/></td>
+                                            <td align="center">
+                                                <span class="is_btn is_btn_yes" :class="{active:info.volume_is_use==1}"
+                                                      @click="changeBtn('volume_is_use')">是</span><span
+                                                    class="is_btn is_btn_no" :class="{active:info.volume_is_use==0}"
+                                                    @click="changeBtn('volume_is_use')">否</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <div class="freight-template-footer">
+                        <button type="button" class="btn-common btn-big" @click="submitInfo()">保存</button>
+                    </div>
+                </div>
+                <div class="mask-layer" style="display: block;" v-show="show_address"></div>
+                <div id="select-region" style="left: 50%; margin-left: -346px; top: 138.5px; display: block;"
+                     class="modal hide ui-draggable ui-draggable-handle in" tabindex="-1" role="dialog"
+                     v-show="show_address">
+                    <div class="title">
+                        <h2>选择地区</h2>
+                        <span class="confirm js-confirm" @click="show_address=false">[关闭]</span>
+                    </div>
+                    <div class="cont">
+                        <div class="selectSub dialog-areas">
+                            <ul class="js-regions">
+                                <li v-for="item in address">
+                                    <div class="dcity clearfix">
+                                        <!-- 大类 -->
+                                        <div class="ecity gcity">
+                                            <span class="group-label">
+                                                <input type="checkbox" :id="'area'+item.id" v-model="item.check"
+                                                       @click="changeArea(item)" :disabled="item.is_disabled!=0">
+                                                <label :for="'area'+item.id"
+                                                       :class="{'font-color-1':item.is_disabled!=0}">{{item.area_name}}</label>
+                                            </span>
+                                        </div>
+                                        <!-- 省 -->
+                                        <div class="province-list">
+                                            <div class="ecity" :class="{open:show_city==item1.id}"
+                                                 v-for="(item1,index1) in item.province_list">
+                                                <span class="gareas">
+                                                    <input v-model="item1.check" :id="'province'+item1.id"
+                                                           :disabled="item1.is_disabled!=0" type="checkbox"
+                                                           @click="changeProvince(item,index1)">
+                                                    <label :for="'province'+item1.id"
+                                                           :class="{'font-color-1':item1.is_disabled!=0}">{{item1.province_name}}</label>
+                                                    <img class="drop-down"
+                                                         src="__STATIC__/admin/images/freight_city_drop_down.gif"
+                                                         @click="show_city=(show_city==item1.id?0:item1.id)">
+                                                    <!-- 市 -->
+                                                    <div class="citys"
+                                                         :style="{display:show_city==item1.id?'block':'none'}">
+                                                        <span class="areas" v-for="(item2,index2) in item1.city_list">
+                                                            <input v-model="item2.check"
+                                                                   @click="changeCity(item,index1,index2)"
+                                                                   :id="'city'+item2.id"
+                                                                   :disabled="item2.is_disabled!=0" type="checkbox">
+                                                            <label :for="'city'+item2.id"
+                                                                   :class="{'font-color-1':item2.is_disabled!=0}">{{item2.city_name}}</label>
+                                                            <img class="drop-down"
+                                                                 src="__STATIC__/admin/images/freight_city_drop_down.gif"
+                                                                 @click="show_district=(show_district==item2.id?0:item2.id)">
+                                                            <div class="district"
+                                                                 :style="{display:show_district==item2.id?'block':'none'}">
+                                                                <span class="areas"
+                                                                      v-for="(item3,index3) in item2.district_list">
+                                                                    <input :id="'district'+item3.id"
+                                                                           @click="changeDistrict(item,index1,index2,index3)"
+                                                                           v-model="item3.check"
+                                                                           :disabled="item3.is_disabled!=0"
+                                                                           type="checkbox">
+                                                                    <label :for="'district'+item3.id"
+                                                                           :class="{'font-color-1':item3.is_disabled!=0}">{{item3.district_name}}</label>
+                                                                </span>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--<script src="__STATIC__/admin/js/express/freight_edit.js"></script>-->
+            </div>
+        </section>
+    </article>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                info: {
+                    shipping_fee_id: "{$shipping_fee_id}",
+                    co_id: "{$co_id}",
+                    is_default: 1,
+                    shipping_fee_name: '',
+                    province_id_array: '',
+                    city_id_array: '',
+                    district_id_array: '',
+                    weight_is_use: 1,
+                    weight_snum: 0,
+                    weight_sprice: 0,
+                    weight_xnum: 0,
+                    weight_xprice: 0,
+                    volume_is_use: 1,
+                    volume_snum: 0,
+                    volume_sprice: 0,
+                    volume_xnum: 0,
+                    volume_xprice: 0,
+                    bynum_is_use: 1,
+                    bynum_snum: 0,
+                    bynum_sprice: 0,
+                    bynum_xnum: 0,
+                    bynum_xprice: 0,
+                },
+                address: [],
+                show_address: false,
+                show_city: 0,
+                show_district: 0,
+                // is_default:1
+            },
+            mounted: function () {
+                // this.info = {
+                //
+                // };
+                this.$http.post("{:url('platform/express/getFreightTemplate')}", {
+                        co_id: "{$co_id}",
+                        shipping_fee_id: "{$shipping_fee_id}"
+                    },
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        // this.info = res.data.data.shipping_fee_detail;
+                        for(var key in res.data.data.shipping_fee_detail){
+                            this.info[key]=res.data.data.shipping_fee_detail[key];
+                        }
+                        this.info.is_default=res.data.data.is_default==1?0:1;
+
+                        // console.log(res.data.data);
+                        // this.info.shipping_fee_id = "{$shipping_fee_id}";
+                        // this.info.co_id = "{$co_id}";
+                        var povince_id_array = this.info.province_id_array.split(",");
+                        var city_id_array = this.info.city_id_array.split(",");
+                        var district_id_array = this.info.district_id_array.split(",");
+                        this.address = res.data.data.address_list;
+                        for (i = 0; i < this.address.length; i++) {
+                            for (j = 0; j < this.address[i].province_list.length; j++) {
+                                //检验省
+                                for (num = 0; num < povince_id_array.length; num++) {
+                                    if (this.address[i].province_list[j].id == povince_id_array[num]) {
+                                        this.address[i].province_list[j].check = true;
+                                        this.address[i].check = true;
+                                        for (k = 0; k < this.address[i].province_list[j].city_list.length; k++) {
+                                            for (num = 0; num < city_id_array.length; num++) {
+                                                if (this.address[i].province_list[j].city_list[k].id == city_id_array[num]) {
+                                                    this.address[i].province_list[j].city_list[k].check = true;
+                                                    for (m = 0; m < this.address[i].province_list[j].city_list[k].district_list.length; m++) {
+                                                        var checkResult = false;
+                                                        for (num = 0; num < district_id_array.length; num++) {
+                                                            if (this.address[i].province_list[j].city_list[k].district_list[m].id == district_id_array[num]) {
+                                                                this.address[i].province_list[j].city_list[k].district_list[m].check = true;
+                                                                checkResult = true;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            },
+            methods: {
+                changeBtn: function (type) {
+                    if (this.info[type] == 1)
+                        this.info[type] = 0;
+                    else
+                        this.info[type] = 1;
+                },
+                submitInfo: function () {
+                    this.info.province_id_array = '';
+                    this.info.city_id_array = '';
+                    this.info.district_id_array = '';
+                    if (this.info.is_default != 1) {
+                        for (i = 0; i < this.address.length; i++) {
+                            if (this.address[i].check == true) {
+                                for (j = 0; j < this.address[i].province_list.length; j++) {
+                                    if (this.address[i].province_list[j].check == true) {
+                                        if (this.info.province_id_array == '') {
+                                            this.info.province_id_array = this.address[i].province_list[j].id;
+                                        } else {
+                                            this.info.province_id_array += "," + this.address[i].province_list[j].id;
+                                        }
+                                        for (k = 0; k < this.address[i].province_list[j].city_list.length; k++) {
+                                            if (this.address[i].province_list[j].city_list[k].check == true) {
+                                                if (this.info.city_id_array == '') {
+                                                    this.info.city_id_array = this.address[i].province_list[j].city_list[k].id;
+                                                } else {
+                                                    this.info.city_id_array += "," + this.address[i].province_list[j].city_list[k].id;
+                                                }
+                                                for (m = 0; m < this.address[i].province_list[j].city_list[k].district_list.length; m++) {
+                                                    if (this.address[i].province_list[j].city_list[k].district_list[m].check == true) {
+                                                        if (this.info.district_id_array == '') {
+                                                            this.info.district_id_array = this.address[i].province_list[j].city_list[k].district_list[m].id;
+                                                        } else {
+                                                            this.info.district_id_array += "," + this.address[i].province_list[j].city_list[k].district_list[m].id;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (this.info.province_id_array == '' || this.info.city_id_array == '' || this.info.district_id_array == '') {
+                            layer.alert("你至少选择一个地区", {icon: 5});
+                            return
+                        }
+                    }
+                    this.$http.post("{:url('platform/express/freightTemplateEdit')}", {data: JSON.stringify(this.info)},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg, {icon: 6},function () {
+                                location.href="{:url('freighttemplatelist',array('co_id'=>$co_id))}";
+                            });
+                        } else {
+                            layer.alert(res.data.msg, {icon: 5});
+                        }
+                    });
+                },
+                changeArea: function (are) {
+                    for (i = 0; i < are.province_list.length; i++) {
+                        for (j = 0; j < are.province_list[i].city_list.length; j++) {
+                            for (k = 0; k < are.province_list[i].city_list[j].district_list.length; k++) {
+                                if (are.province_list[i].city_list[j].district_list[k].is_disabled == 0)
+                                    are.province_list[i].city_list[j].district_list[k].check = are.check;
+                            }
+                            if (are.province_list[i].city_list[j].is_disabled == 0)
+                                are.province_list[i].city_list[j].check = are.check;
+                        }
+                        if (are.province_list[i].is_disabled == 0)
+                            are.province_list[i].check = are.check;
+                    }
+
+                    this.show_city = are.province_list[0].id;
+                    setTimeout(function () {
+                        vueMain.show_city = 0;
+                    }, 10);
+                },
+                changeProvince: function (are, index) {
+                    for (i = 0; i < are.province_list[index].city_list.length; i++) {
+                        for (j = 0; j < are.province_list[index].city_list[i].district_list.length; j++) {
+                            if (are.province_list[index].city_list[i].district_list[j].is_disabled == 0)
+                                are.province_list[index].city_list[i].district_list[j].check = are.province_list[index].check;
+                        }
+                        if (are.province_list[index].city_list[i].is_disabled == 0)
+                            are.province_list[index].city_list[i].check = are.province_list[index].check;
+                    }
+                    are.check = false;
+                    for (i = 0; i < are.province_list.length; i++) {
+                        if (are.province_list[i].check == true) {
+                            are.check = true;
+                            break;
+                        }
+                    }
+                    if (this.show_city == are.province_list[index].id) {
+                        this.show_city = 0;
+                        setTimeout(function () {
+                            vueMain.show_city = are.province_list[index].id;
+                        }, 10);
+                    } else {
+                        this.show_city = are.province_list[index].id;
+                        setTimeout(function () {
+                            vueMain.show_city = 0;
+                        }, 10);
+                    }
+
+                },
+                changeCity: function (are, index1, index2) {
+                    for (i = 0; i < are.province_list[index1].city_list[index2].district_list.length; i++) {
+                        if (are.province_list[index1].city_list[index2].district_list[i].is_disabled == 0)
+                            are.province_list[index1].city_list[index2].district_list[i].check = are.province_list[index1].city_list[index2].check;
+                    }
+
+                    are.province_list[index1].check = false;
+                    for (i = 0; i < are.province_list[index1].city_list.length; i++) {
+                        if (are.province_list[index1].city_list[i].check == true) {
+                            are.province_list[index1].check = true;
+                            break;
+                        }
+                    }
+                    are.check = false;
+                    for (i = 0; i < are.province_list.length; i++) {
+                        if (are.province_list[i].check == true) {
+                            are.check = true;
+                            break;
+                        }
+                    }
+                    if (this.show_district == are.province_list[index1].city_list[index2].id) {
+                        this.show_district = 0;
+                        setTimeout(function () {
+                            vueMain.show_district = are.province_list[index1].city_list[index2].id
+                        }, 10);
+                    } else {
+                        this.show_district = are.province_list[index1].city_list[index2].id;
+                        setTimeout(function () {
+                            vueMain.show_district = 0;
+                        }, 10);
+                    }
+                },
+                changeDistrict: function (are, index1, index2, index3) {
+                    are.province_list[index1].city_list[index2].check = false;
+                    for (i = 0; i < are.province_list[index1].city_list[index2].length; i++) {
+                        if (are.province_list[index1].city_list[index2].district_list[i]) {
+                            are.province_list[index1].city_list[index2].check = true;
+                            return;
+                        }
+                    }
+                    are.province_list[index1].city_list[index2].check = false;
+                    for (i = 0; i < are.province_list[index1].city_list[index2].district_list.length; i++) {
+                        if (are.province_list[index1].city_list[index2].district_list[i].check == true) {
+                            are.province_list[index1].city_list[index2].check = true;
+                            break;
+                        }
+                    }
+                    are.province_list[index1].check = false;
+                    for (i = 0; i < are.province_list[index1].city_list.length; i++) {
+                        if (are.province_list[index1].city_list[i].check == true) {
+                            are.province_list[index1].check = true;
+                            break;
+                        }
+                    }
+                    are.check = false;
+                    for (i = 0; i < are.province_list.length; i++) {
+                        if (are.province_list[i].check == true) {
+                            are.check = true;
+                            break;
+                        }
+                    }
+                    this.show_district = 0;
+                    setTimeout(function () {
+                        vueMain.show_district = are.province_list[index1].city_list[index2].id
+                    }, 10);
+                },
+                checkAre: function (index) {
+
+
+                }
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

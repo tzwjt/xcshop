@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css" />
+    <style>
+        .Switch_FlatRadius.On span.switch-open{background-color: #0072D2;border-color: #0072D2;}
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/order/ns_order_refund_detail.css">
+    <style>
+        .info-table th, .info-table td{
+            padding: 0;
+        }
+        .info-table th{
+            width: 80px;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+<article class="ns-base-article">
+    <aside class="ns-base-aside">
+       {include file="index/nav_left"/}
+        <nav>
+            <ul>
+                <li class="selected" onclick="location.href='{:url('orderlist')}';" title="订单列表">订单列表</li>
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    退款/退货详情
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected" onclick="location.href='{:url('orderlist')}'">
+                        退款/退货详情
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="ns-main">
+            <div class="mod-table">
+                <div class="step-region">
+                    <ul class="ui-step ui-step-4">
+                        <li class="ui-step-done">
+                            <div class="ui-step-title">买家申请退款</div>
+                            <div class="ui-step-number">1</div>
+                            <div class="ui-step-meta">{{info.refund_time}}</div>
+                        </li>
+                        <li :class="{'ui-step-done':info.refund_status>=2||info.refund_status<0}">
+                            <div class="ui-step-title">商家退款处理</div>
+                            <div class="ui-step-number">2</div>
+                            <div class="ui-step-meta"></div>
+                        </li>
+                        <li :class="{'ui-step-done':info.refund_status>=5||info.refund_status<0}">
+                            <div class="ui-step-title">退款完成</div>
+                            <div class="ui-step-number">3</div>
+                            <div class="ui-step-meta"></div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="step-region clearfix">
+                    <div class="info-region">
+                        <div class="info-div">退款信息</div>
+                        <div>
+                            <div class="info-goods">
+                                <div class="ui-centered-image">
+                                    <img :src="info.picture_info.pic_cover_micro">
+                                </div>
+                                <div class="info-goods-content">
+                                    <div>{{info.goods_name}}<span v-if="info.sku_name!=''">-{{info.sku_name}}</span></div>
+                                </div>
+                            </div>
+                            <div class="dashed-line"></div>
+                        </div>
+                        <table class="info-table">
+                            <tbody>
+                            <tr>
+                                <th>退款方式：</th>
+                                <td colspan="3">
+                                    <span class="color-orange">{{info.refund_type==1?"仅退款":"退款并退货"}}</span>
+                                </td>
+                            </tr>
+                            <!--<tr>-->
+                                <!--<th>申请退款：</th>-->
+                                <!--<td><span class="color-orange">{{info.refund_require_money}}</span>元</td>-->
+                            <!--</tr>-->
+                            <!--<tr>-->
+                                <!--<th style="color:red;">订单金额：</th>-->
+                                <!--<td style="color:red;"><span class="color-orange">{{orderInfo.pay_money}}</span>元</td>-->
+                            <!--</tr>-->
+                            <tr>
+                                <th>商品总金额：</th>
+                                <td><span class="color-orange">{{orderInfo.goods_money}}</span>元</td>
+                            </tr>
+                            <tr>
+                                <th>运费：</th>
+                                <td><span class="color-orange">{{orderInfo.shipping_money}}</span>元</td>
+
+                                <th>开票税金：</th>
+                                <td><span class="color-orange">{{orderInfo.tax_money}}</span>元</td>
+                            </tr>
+                            <tr>
+                                <th>优惠抵扣：</th>
+                                <td><span class="color-orange">{{orderInfo.promotion_money}}</span>元</td>
+
+                                <th>积分抵扣：</th>
+                                <td><span class="color-orange">{{orderInfo.point_money}}</span>元</td>
+                            </tr>
+                            <tr>
+                                <th>抵用券抵扣：</th>
+                                <td><span class="color-orange">{{orderInfo.coupon_money}}</span>元</td>
+
+                                <th>余额支付：</th>
+                                <td><span class="color-orange">{{orderInfo.user_platform_money}}</span>元</td>
+                            </tr>
+                            <tr>
+                                <th>余额支付：</th>
+                                <td><span class="color-orange">{{orderInfo.user_platform_money}}</span>元</td>
+
+                                <th>支付金额：</th>
+                                <td><span class="color-orange">{{orderInfo.pay_money}}</span>元</td>
+                            </tr>
+                            <tr>
+                                <th style="color:red;">实际退款：</th>
+                                <td style="color:red;"><span class="color-orange">{{info.refund_real_money}}</span>元</td>
+                            </tr>
+                            <tr>
+                                <th>退款原因：</th>
+                                <td colspan="3">{{info.refund_reason}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="state-region">
+                        <div style="padding: 0px 0px 30px 40px;">
+                            <div class="state-title"><span class="icon info">!</span>订单状态：{{info.status_name}}</div>
+                            <div class="state-action">
+
+                                <button v-for="item in info.refund_operation" class="zent-btn zent-btn-primary test-send-goods" @click="refundOperation(item.no)" style="margin-left: 5px;">{{item.name}}</button>
+                            </div>
+
+                        </div>
+                        <div class="state-remind-region">
+                            <div class="dashed-line"></div>
+                            <div class="state-remind"><div class="tixing">商城提醒：</div>
+                                <ul><li>如果无法发货，请及时与买家联系并说明情况后进行退款；</li>
+                                    <li>买家申请退款后，须征得买家同意后再发货，否则买家有权拒收货物；</li>
+                                    <li>买家付款后超过7天仍未发货，将有权申请客服介入发起退款维权；</li></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="safeguard-log">
+                    <div class="info-div">协商记录</div>
+                    <table>
+                        <tbody>
+                        <template v-for="item in info.refund_info">
+                        <tr class="tr-title">
+                            <td>{{item.action_way==1?"买家":"卖家"}}</td>
+                            <!--<td class="td-time">{{item.create_time}}</td>-->
+                        </tr>
+                        <tr><td>{{item.create_time}}&nbsp;&nbsp;{{item.action}}</tr>
+                        </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+    <!--确认退款modal-->
+    <div class="modal fade hide" id="confirmRefund" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 650px; overflow: overlay; display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">确认退款</h4>
+                </div>
+                <div class="modal-body" style="max-height: none;height:180px;">
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label style="float: left;line-height: 32px;">退款金额：</label>
+                        <input type="text" id="refund_money_input" v-model="refund_money" class="form-control" placeholder="请填写退款金额">
+                    </div>
+                    <div class="form-group" style="width: 100%;float: left;">
+                        <label style="float: left;line-height: 32px;">退款方式：</label>
+                        <select id="refund_way_select" class="form-control" v-model="refundAjaxInfo.refund_way">
+                            <option :value="item.type_id" v-for="item in refundInfo.payMent">{{item.type_name}}</option>
+                            <!--<option value="10">线下</option>-->
+                        </select>
+                    </div>
+                    <div class="form-group" style="width: 100%;float: left;margin: 5px 0;">
+                        <label style="font-weight: normal;">实际可退款金额：&nbsp;&nbsp;¥<span id="apply_money">{{refundInfo.refundMoney}}(单商品信息，不包含运费)</span></label>
+                    </div>
+                    <div class="form-group" style="width: 100%;float: left;margin: 5px 0;">
+                        <label style="font-weight: normal;">实际可退款余额：&nbsp;&nbsp;¥<span id="pay_money">{{refundInfo.refundBalance}}(单商品信息，不包含运费)</span></label>
+                    </div>
+                    <div class="form-group" style="width: 100%;float: left;margin: 5px 0;">
+                        <label style="font-weight: normal;">订单支付金额：&nbsp;&nbsp;¥<span id="order_money">{{orderInfo.pay_money}}</span></label>
+                    </div>
+
+
+                    <!--<div class="form-group" style="width: 100%;float: left;margin: 5px 0;">-->
+                        <!--<label style="font-weight: normal;">买家申请退款金额：&nbsp;&nbsp;¥<span id="apply_money">{{info.refund_require_money}}</span></label>-->
+                    <!--</div>-->
+                    <!--<div class="form-group" style="width: 100%;float: left;margin: 5px 0;">-->
+                        <!--<label style="font-weight: normal;">买家实际付款金额：&nbsp;&nbsp;¥<span id="pay_money">{{info.price}}</span></label>-->
+                    <!--</div>-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" @click="confirmRefundOk(1)">确认</button>
+                    <button type="button" class="btn" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--确认退款modal-->
+    <div class="modal fade hide" id="confirmRefund-2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 650px; overflow: overlay; display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">退款操作提醒</h4>
+                </div>
+                <div class="modal-body" style="max-height: none;height:180px;">
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label>当前退款方式为<span style="color:red;">{{this.refundAjaxInfo.refund_way==10?'线下':(this.refundAjaxInfo.refund_way==1?'微信':'支付宝')}}退款</span></label>
+                    </div>
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label>备注：</label>
+                        <textarea v-model="refundAjaxInfo.remark" style="width:95%;height:80px;" class="form-control" placeholder="退款备注，最多可输入200个字符。(如果不填，系统将会自动添加默认退款备注，格式为：订单编号:201710180000031，退款方式为:[微信支付]，退款金额:0.00元，退款余额:0.00元)"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" @click="confirmRefundOk(2)">确认</button>
+                    <button type="button" class="btn" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--确认退款-->
+    <div class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="confirm_receipt" style="width:400px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3>确认收货</h3>
+                </div>
+                <div class="modal-body">
+                    <div style="height: 35px;line-height: 35px;">
+                        物流公司：<span id="logistics_company">{{info.refund_shipping_company}}</span>
+                    </div>
+                    <div style="height: 35px;line-height: 35px;">
+                        物流单号：<span id="logistics_number">{{info.refund_shipping_code}}</span>
+                    </div>
+                    <div style="height: 35px;line-height: 35px;">
+                        是否入库：
+                        <label for="no" style="display: inline-block;font-weight: normal;" >否</label>
+                        <input type="radio" name="isStorage" id="no" style="margin-top: -2px;" value="0" v-model="confirm_receipt_info.isStorage">
+                        <label for="yes" style="display: inline-block;font-weight: normal;margin-left: 15px;">是</label><input type="radio" name="isStorage" id="yes" style="margin-top: -2px;margin-left: 5px;" value="1" v-model="confirm_receipt_info.isStorage">
+                    </div>
+                    <div id="storage_num" v-show="confirm_receipt_info.isStorage==1">
+                        入库件数：<input type="number" v-model="confirm_receipt_info.num">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" @click="confirm_receipt()">同意</button>
+                    <button class="btn" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname= '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                info:{
+                    picture_info:{pic_cover_micre:''}
+                },
+                refund_money:'',
+                confirm_receipt_info:{
+                    isStorage:0,
+                    num:1
+                },
+                refundInfo:{
+                    refundMoney:0,
+                    refundBalance:0,
+                    payMent:[],
+                },
+                refundAjaxInfo:{
+                    order_id:'',
+                    order_goods_id:'',
+                    refund_real_money:'',
+                    refund_balance_money:'',
+                    refund_way:'',
+                    refund_remark:''
+                },
+                orderInfo:{}
+            },
+            mounted:function () {
+                this.$http.post("{:url('platform/order/getOrderGoodsRefundDetail')}", {order_goods_id:"{$order_goods_id}"},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.info=res.data.data.refund_detail;
+                        this.orderInfo=res.data.data.order_info;
+                    }
+                });
+
+
+            },
+            methods:{
+                refundOperation:function (item_no) {
+                    if(item_no=="agree"){
+                        //同意退款
+                        this.showAgreeRefund();
+                    }
+
+                    if(item_no=="refuse"){
+                        //拒绝退款
+                        this.refuseRefund();
+                    }
+                    if(item_no=="confirm_receipt"){
+                        //确认收货
+                        this.orderGoodsConfirmRecieve();
+                    }
+
+                    if(item_no=='confirm_refund'){
+                        //确认退款
+                        this.confirmRefund();
+                    }
+                },
+                //同意退款
+                showAgreeRefund:function () {
+                    layer.confirm("确定要同意退款吗?",{title:"同意退款",icon:3},function () {
+                        layer.closeAll();
+                        vueMain.$http.post("{:url('platform/order/orderGoodsRefundAgree')}", {order_id:vueMain.info.order_id,order_goods_id:"{$order_goods_id}"},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6},function () {
+                                    location.reload();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+
+
+                    });
+                },
+                //拒绝退款
+                refuseRefund:function () {
+                    layer.confirm("你可以拒绝本次退款或永久拒绝",{title:"拒绝退款",icon:3,btn:["拒绝本次","永久拒绝"],
+                    yes:function () {
+                        layer.closeAll();
+                        vueMain.$http.post("{:url('platform/order/orderGoodsRefuseOnce')}", {order_id:vueMain.info.order_id,order_goods_id:"{$order_goods_id}"},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6},function () {
+                                    location.reload();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    },
+                        btn2:function () {
+                            layer.closeAll();
+                            vueMain.$http.post("{:url('platform/order/orderGoodsRefuseForever')}", {order_id:vueMain.info.order_id,order_goods_id:"{$order_goods_id}"},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.alert(res.data.msg,{icon:6},function () {
+                                        location.reload();
+                                    });
+                                }else{
+                                    layer.alert(res.data.msg,{icon:5});
+                                }
+                            });
+                        }
+                    });
+                },
+                //确认收货
+                orderGoodsConfirmRecieve:function () {
+                    $("#confirm_receipt").modal("show");
+                },
+                confirm_receipt:function () {
+                    this.$http.post("{:url('platform/order/orderGoodsConfirmRecieve')}", {
+                        order_id:this.info.order_id,order_goods_id:"{$order_goods_id}",isStorage:this.confirm_receipt_info.isStorage,
+                            goods_id:this.info.goods_id,sku_id:this.info.sku_id,storage_num:this.confirm_receipt_info.num
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                location.reload();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+
+
+                },
+                //确认退款
+                confirmRefund:function () {
+                    //请求可退款金额
+                    this.$http.post("{:url('platform/Order/orderGoodsRefundMoney')}", {order_goods_id:"{$order_goods_id}"},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.refundInfo.refundMoney=res.data.data;
+                            //请求可退款余额
+                            this.$http.post("{:url('platform/Order/getOrderGoodsRefundBalance')}", {order_goods_id:"{$order_goods_id}"},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    this.refundInfo.balanceMoney=res.data.data;
+                                    //退款方式
+                                    this.$http.post("{:url('platform/Order/getOrderTermsOfPayment')}", {order_id:this.info.order_id},
+                                        {emulateJSON: true}).then(function (res) {
+                                        if (res.data.code == 0) {
+                                            this.refundInfo.payMent=res.data.data;
+                                            if(this.refundInfo.payMent==''){
+                                                this.refundAjaxInfo.refund_way='';
+
+                                            }else{
+                                                this.refundAjaxInfo.refund_way=this.refundInfo.payMent[0].type_id;
+
+                                            }
+                                            $("#confirmRefund").modal('show');
+                                        }else{
+                                            layer.alert(res.data.msg,{icon:5});
+                                        }
+                                    });
+                                }else{
+                                    layer.alert(res.data.msg,{icon:5});
+                                }
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                confirmRefundOk:function (type) {
+                    if(type==1){
+                        if(this.refund_money==''){
+                            layer.msg("请输入退款金额",{shade:[0.2,"#333"]});
+                            return;
+                        }
+                        if(isNaN(this.refund_money)){
+                            layer.msg("请输入数字",{shade:[0.2,"#333"]});
+                            return;
+                        }
+                        // if(parseFloat(this.refund_money)<0 || parseFloat(this.refund_money)>parseFloat(this.info.price)){
+                        //     layer.msg("退款金额必须大于等于0元小于等于"+this.info.price+"元");
+                        //     return;
+                        // }
+                        if(parseFloat(this.refund_money)<0){
+                            layer.msg("退款金额必须大于等于0元");
+                            return;
+                        }
+
+
+
+                        if(this.refundAjaxInfo.refund_way==''){
+                            layer.msg("请选择退款方式");
+                            return;
+                        }
+                        if(this.refundAjaxInfo.refund_way!=10){
+                            this.$http.post("{:url('platform/Order/checkPayConfigEnabled')}", {type:this.refundAjaxInfo.refund_way==1?'wechat':'alipay'},
+                                {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    $("#confirmRefund").modal('hide');
+                                    $("#confirmRefund-2").modal('show');
+                                }else{
+                                    layer.alert(res.data.msg,{icon:5});
+                                }
+                            });
+                        }else{
+                            $("#confirmRefund").modal('hide');
+                            $("#confirmRefund-2").modal('show');
+                        }
+
+                    }else{
+                        this.refundAjaxInfo.order_id = this.info.order_id;
+                        this.refundAjaxInfo.order_goods_id = "{$order_goods_id}";
+                        if (this.refundAjaxInfo.refund_way == 10) {
+                            this.refundAjaxInfo.refund_real_money = 0;
+                            this.refundAjaxInfo.refund_balance_money = this.refund_money;
+                        } else {
+                            this.refundAjaxInfo.refund_real_money = this.refund_money;
+                            this.refundAjaxInfo.refund_balance_money = 0;
+                        }
+                        this.$http.post("{:url('platform/order/orderGoodsConfirmRefund')}", this.refundAjaxInfo,
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6},function () {
+                                    location.reload();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    }
+                }
+            }
+
+
+        });
+
+    });
+
+</script>
+
+
+
+</body>
+</html>

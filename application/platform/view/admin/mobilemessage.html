@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css" />
+    <style>
+        .Switch_FlatRadius.On span.switch-open{background-color: #0072D2;border-color: #0072D2;}
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+
+    <style>
+        .user_type label{
+            vertical-align: middle;
+            margin: 0 5px 0 0;
+            display: inline-block;
+            font-weight: normal
+        }
+        .user_type input{
+            margin:0;
+        }
+        .is_btn {
+            display: inline-block;
+            height: 30px;
+            width: 44px;
+            text-align: center;
+            background-color: #ECF0F1;
+            border-color: #BEC3C7;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .is_btn_yes {
+            border-radius: 4px 0 0 4px;
+            border-width: 1px 0 1px 1px;
+        }
+
+        .is_btn_no {
+            border-radius: 0 4px 4px 0;
+            border-width: 1px 1px 1px 0;
+        }
+
+        .is_btn_yes.active {
+            background-color: #0072D2;
+            border-color: #0072D2;
+            color: #fff;
+        }
+
+        .is_btn_no.active {
+            color: #FFF;
+            background-color: #96A6A6;
+            border-color: #808B8D;
+        }
+    </style>
+</head>
+<body>
+{include file='index/head'/}
+<article class="ns-base-article" id="vue-main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file='index/nav_left'/}
+
+        <nav>
+            <ul>
+                <li onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                <li onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+
+                <li onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                <li class="selected" onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    短信通知系统
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">短信通知设置</li>
+                </ul>
+            </nav>
+
+        </div>
+        <div class="ns-main">
+
+            <div class="set-style">
+                <dl>
+                    <dt>是否开启：</dt>
+                    <dd style="width:15%;">
+                        <span class="is_btn is_btn_yes" :class="{active:info.is_use==1}" @click="checkUse()">是</span><span class="is_btn is_btn_no" :class="{active:info.is_use==0}" @click="checkUse()">否</span>
+                    </dd>
+                    <dd style="width:20%;color:#666;margin-left: 60px;" class="showmessage">当前使用阿里大于短信配置</dd>
+                </dl>
+                <dl>
+                    <dt>APP_KEY：</dt>
+                    <dd>
+                        <input id="app_key" type="text" v-model="info.app_key" class="input-common" />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>SECRET_KEY：</dt>
+                    <dd>
+                        <input id="secret_key" type="text" v-model="info.secret_key" class="input-common" />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>短信内容签名：</dt>
+                    <dd>
+                        <input id="free_sign_name" type="text" v-model="info.free_sign_name" class="input-common" />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>阿里大于用户：</dt>
+                    <dd class="user_type">
+
+                        <input type="radio" value="0" name="user_type" id="user_type_old" v-model="info.user_type"/>
+                        <label for="user_type_old">旧用户</label>
+
+                        <input type="radio" value="1" name="user_type" id="user_type_new" v-model="info.user_type"/>
+                        <label for="user_type_new">新用户</label>
+
+                        <p style="color:#FF8400;font-weight:bold">注:新用户为已入驻阿里云短信</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd><button class="btn-common btn-big" @click="ajaxSubmit();">提交</button></dd>
+                </dl>
+            </div>
+        </div>
+
+    </section>
+</article>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname= '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                info:{}
+            },
+            mounted:function () {
+                this.$http.post("{:url('platform/Config/messageConfig')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.info={
+                            app_key:res.data.data.mobile_message.value.appKey,
+                            secret_key:res.data.data.mobile_message.value.secretKey,
+                            free_sign_name:res.data.data.mobile_message.value.freeSignName,
+                            user_type:res.data.data.mobile_message.value.user_type,
+                            is_use:res.data.data.mobile_message.is_use
+                        };
+                    }
+                });
+            },
+            methods: {
+                ajaxSubmit:function () {
+                    this.$http.post("{:url('platform/Config/setMobileMessage')}", this.info,
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            layer.alert(res.data.msg,{icon:6},function () {
+                                location.reload();
+                            });
+                        }else{
+                            layer.alert(res.data.msg,{icon:5});
+                        }
+                    });
+                },
+                checkUse:function () {
+                    if(this.info.is_use==1){
+                        this.info.is_use=0;
+                    }else{
+                        this.info.is_use=1;
+                    }
+                }
+
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

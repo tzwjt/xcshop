@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <meta content="text/html; charset=UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/font-awesome.min.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    {include file="index/auto_login"/}
+
+    <style>
+        body .sub-nav.nav-b5 dd i {
+            margin: 3px auto 5px auto;
+        }
+
+        body .fixed.bottom {
+            bottom: 0;
+        }
+
+        .mask-layer-loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+            top: 0;
+            left: 0;
+            text-align: center;
+            display: none;
+        }
+
+        .mask-layer-loading i, .mask-layer-loading img {
+            text-align: center;
+            color: #000000;
+            font-size: 50px;
+            position: relative;
+            top: 50%;
+        }
+
+        .sub-nav.nav-b5 dd {
+            width: 25%
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/foundation.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/template/wap/css/common-v4.4.css">
+    <meta class="foundation-data-attribute-namespace">
+    <meta class="foundation-mq-xxlarge">
+    <meta class="foundation-mq-xlarge">
+    <meta class="foundation-mq-large">
+    <meta class="foundation-mq-medium">
+    <meta class="foundation-mq-small">
+    <style type="text/css">
+        .button-submit {
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .button-submit button {
+            color: #FFF;
+            background-color: #E03115;
+            font-size: 15px;
+            border: none;
+            line-height: 40px;
+            height: 40px;
+        }
+
+        .personal-center .side-nav {
+            margin-top: 68px;
+        }
+
+        #divInfo > .side-nav > li {
+            margin-left: 5px;
+            margin-right: 7px;
+            padding-left: 5px;
+            padding-right: 0px;
+            height: 35px;
+            line-height: 30px;
+            min-height: 35px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        #divInfo > .side-nav > li:first-child {
+            padding-bottom: 8px;
+            margin-top: 0px;
+            padding-top: 0px;
+            height: 44px;
+        }
+
+        .value.touxiang {
+            float: left;
+        }
+
+        .personal-center .side-nav {
+            margin-top: 45px;
+            padding-top: 7px;
+        }
+
+        .personal-center .text {
+            font-size: 13px;
+        }
+
+        #divInfo > .side-nav > li.border-bottom-none {
+            border-bottom: none;
+        }
+
+        #divInfo > .side-nav > li.border-bottom-none img {
+            margin-right: 0px;
+            border-radius: 0px;
+            width: 32px;
+            height: auto;
+        }
+
+        .body-gray {
+            background: #f5f5f5;
+        }
+
+        .mt-55.mlr-15 input {
+            box-shadow: none;
+            margin: 0;
+            height: 35px;
+            border: none;
+            max-width: 72%;
+            min-width: 60%;
+            display: inline-block;
+        }
+
+        .mt-55.mlr-15 > div {
+            line-height: 50px;
+            padding-left: 15px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .mt-55.mlr-15 > div:first-child {
+            margin-top: 45px;
+        }
+
+        .mt-55.mlr-15 > div > span {
+            width: 28%;
+            font-size: 14px;
+            display: block;
+            float: left;
+        }
+
+        .mt-55.mlr-15 > div > span.left-img {
+            width: 16%;
+        }
+
+        .mt-55.mlr-15 > div > span > img {
+            width: 26px;
+            height: auto;
+            float: left;
+            margin-top: 16px;
+        }
+
+        .border_right {
+            border-right: 1px solid #ddd;
+            height: 24px;
+            width: 2px;
+            float: left;
+            margin-top: 16px;
+            margin-left: 14px;
+        }
+
+        .mt-55.mlr-15 input:focus {
+            background: #fff;
+        }
+
+        .personal-center .value {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .personal-center .value img {
+            height: 40px;
+            width: 40px;
+            margin-right: 0px;
+            border-radius: 50%;
+            border: 1px solid #f5f5f5;
+        }
+
+        .personal-center .arrow, .personal-center .head-arrow {
+            margin-top: 10px;
+        }
+
+        .personal-center .set_a {
+            color: #29afe4;
+        }
+
+        .mt-55.mlr-15 > div.threeBind {
+            padding-left: 0px;
+            border-bottom: 1px solid #ddd;
+            border-top: 1px solid #ddd;
+            margin-top: 54px;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul {
+            overflow: hidden;
+            margin-left: 0.5rem;
+            margin-bottom: 0px;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li {
+            overflow: hidden;
+            line-height: 35px;
+            margin-bottom: 0px;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li > img:first-child {
+            float: left;
+            margin-top: 9px;
+            max-width: 26px;
+            height: auto;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li > a {
+            display: block;
+            float: left;
+            border-bottom: 1px solid #ddd;
+            width: 91%;
+            color: #333;
+            font-size: 14px;
+            padding-left: 6px;
+            height: 42px;
+            line-height: 42px;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li > a:after {
+            clear: both;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li:last-child > a {
+            border-bottom: 0px;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li > a > div {
+            float: right;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li > a > div > span:first-child {
+            color: #999;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li > a > div > span:first-child.wei_span {
+            color: #00A0E9;
+        }
+
+        .mt-55.mlr-15 > div.threeBind ul li > a > div > span:last-child {
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            transform: rotate(-46deg);
+            -ms-transform: rotate(-46deg);
+            -moz-transform: rotate(-46deg);
+            -webkit-transform: rotate(-46deg);
+            -o-transform: rotate(-46deg);
+            width: 12px;
+            height: 12px;
+            display: block;
+            float: right;
+            margin: 13px 8px 10px 0px;
+        }
+
+        .sendOutCode {
+            border: 1px solid #E03115 !important;
+            color: #E03115;
+            padding: 0;
+            width: 30px;
+            background: #fff;
+            border-radius: 4px;
+            min-width: 25% !important;
+            height: 25px;
+            font-size: 12px;
+            margin-left: 20px;
+        }
+        #vue-main{
+            display: none;
+        }
+        .mask-layer-loading{
+            display: block;
+        }
+        .sendOutCode[disabled]{
+            border-color: #666!important;
+            color:#666;
+            font-size:0.6em!important;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+
+</head>
+<body class="body-gray">
+<div style="height:44px;background-color:#000;position: fixed;top:0;left: 0;width:100%;z-index:1555">
+    <div style="width:100%;height: 100%;line-height: 100%;text-align: center;position: absolute;font-size:22px;color:#fff;padding-top: 10px;" id="title">个人资料</div>
+    <div style="width:24px;height:24px;float: left;margin-top: 10px;margin-left: 10px;position:relative;z-index:5555;">
+        <a onclick="backPage()">
+            <img src="__STATIC__/wap/images/back-5.png" style="width:100%;"/></a>
+    </div>
+    <div style="width:24px;height:24px;float: right;margin-top: 10px;margin-right: 10px;position:relative;z-index:5555;">
+        <a href="{:url('index')}">
+            <img src="__STATIC__/wap/images/home-5.png" style="width:100%;"/></a>
+    </div>
+</div>
+<div id="vue-main" v-cloak>
+<div class="personal-complete">
+    <div class="personal-complete-tip" id="personaltip"></div>
+    <div class="personal-center" id="divInfo">
+        <ul class="side-nav" id="list">
+            <li style="height: auto;">
+                <a href="{:url('modifyface')}">
+                    <div class="cont-value" style="padding:0px;text-align: center;">
+                        <span class="value touxiang" style="display: inline-block;width:100%;text-align: center;"><img
+                                :src="info.member_img==''?'__STATIC__/wap/images/noFace.png':info.member_img" style="width:100px;height: 100px;"/></span>
+                    </div>
+                </a>
+            </li>
+            <li isnew="False">
+                <a href="javascript:void(0)">
+                    <div class="title">
+                        <i></i>
+                        <span class="text">账号</span>
+                    </div>
+                    <div class="cont-value">
+                        <i></i><span class="value">{{info.member_info.login_phone}}&nbsp;</span>
+                    </div>
+                </a>
+            </li>
+
+            <li isnew="False">
+                <a href="javascript:void(0)">
+                    <div class="title">
+                        <i></i>
+                        <span class="text" tage="nickname">昵称</span>
+                    </div>
+                    <div class="cont-value">
+                        <i class="arrow"></i><span class="value" id="nickname">{{info.member_info.user_info.nickname}}</span>
+                    </div>
+                </a>
+            </li>
+            <li isnew="False">
+                <a href="javascript:void(0)">
+                    <div class="title">
+                        <i></i>
+                        <span class="text" tage="password">密码</span>
+                    </div>
+                    <div class="cont-value">
+                        <i class="arrow"></i><span class="value set_a" id="password">修改</span>
+                    </div>
+                </a>
+            </li>
+            <li><a href="javascript:void(0)">
+                <div class="title">
+                    <i></i>
+                    <span class="text" tage="mobilephone">手机</span>
+                </div>
+                <div class="cont-value">
+                    <i class="arrow"></i>
+                    <span class="value set_a" id="mobilephone">更改手机号</span>
+                </div>
+            </a></li>
+        </ul>
+        <div class="button-submit">
+            <a id="logout" href="javascript:void(0)">
+                <button onclick="outLogin()">
+                    退出登录
+                </button>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<!-- 密码修改 -->
+<form class="mt-55 mlr-15" id="editpassword" style="display: none;background-color:#fff;margin:45px 0 0 0">
+    <div><span>当前密码：</span>
+        <input type="password" id="oldpassword" style="margin:0;height:35px;border-bottom:none;" placeholder="原始密码" v-model="ajaxInfo.oldPwd">
+    </div>
+
+    <div><span>新&nbsp;&nbsp;密&nbsp;码：</span>
+        <input type="password" id="newpassword"
+               style="box-shadow:none;margin:0;height:35px;border:none;width:auto;display:inline-block;"
+               placeholder="新密码" v-model="ajaxInfo.newPwd"/>
+        <span>确认新密码：</span><input type="password" id="newpassword2" placeholder="确认新密码" v-model="ajaxInfo.newPwd2">
+    </div>
+    <!--03 end-->
+</form>
+
+<!-- 更改手机号码 -->
+<form class="mt-55 mlr-15" id="edit_mobile"
+      style="display: none;background-color:#fff;margin-top: 10px;margin:0;    margin-top: 8px;">
+    <template v-if="ajaxInfo.phoneWay==1">
+    <div>
+        <span>旧手机号</span>
+        <input type="text" id="mobile" placeholder="请输入旧手机号码" v-model="this.ajaxInfo.oldPhone" disabled="disabled" style="background-color: #fff;"/>
+    </div>
+    <div>
+        <span>动态码</span>
+        <input type="text" id="mobile_code" placeholder="请输入动态码" style="max-width: 32%;min-width: 30%;" v-model="ajaxInfo.oldCode"/>
+        <input type="button" class="sendOutCode" id="send_mobile" v-model="ajaxInfo.oldPhoneCodeInfo" style="height: 30px;margin-left: 20px;" @click="getOldCode()">
+    </div>
+    </template>
+    <template v-else>
+        <div>
+            <span>新手机号</span>
+            <input type="text"  placeholder="请输入新手机号码" id="new-phone" v-model="ajaxInfo.newPhone"  style="background-color: #fff;"/>
+        </div>
+        <div>
+            <span>动态码</span>
+            <input type="text" placeholder="请输入动态码" style="max-width: 32%;min-width: 30%;" v-model="ajaxInfo.newCode"/>
+            <input type="button" class="sendOutCode" v-model="ajaxInfo.newPhoneCodeInfo" style="height: 30px;margin-left: 20px;" @click="getOldCode()">
+        </div>
+
+    </template>
+</form>
+<form class="mt-55 mlr-15" id="edit_nick_name"
+      style="display: none;background-color:#fff;margin-top: 10px;margin:0;margin-top: 8px;">
+    <div><span>昵称</span>
+        <input type="text" id="input_nick_name" placeholder="请输入昵称" v-model="ajaxInfo.nickname"/>
+    </div>
+</form>
+
+<div id="saveBtn" class="button-submit" style="display: none;">
+    <a href="javascript:void(0)" @click="btnsave()">
+        <button>保存</button>
+    </a>
+</div>
+</div>
+<!-- 加载弹出层 -->
+<div class="mask-layer-loading">
+    <img src="__STATIC__/template/wap/images/mask_load.gif"/>
+</div>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var vueMain;
+    var goback=1;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                info:{
+                    member_info:{
+                        login_phone:'',
+                        user_info:{
+                            nickname:''
+                        }
+                    },
+                },
+                type:'',
+                ajaxInfo:{
+                    oldPwd:'',
+                    newPwd:'',
+                    newPwd2:'',
+                    oldPhone:'',
+                    oldPhoneCodeInfo:'获取动态码',
+                    newPhoneCodeInfo:'获取动态码',
+                    oldCode:'',
+                    phoneWay:1,
+                    time:0,
+                    newPhone:'',
+                    newCode:'',
+                    nickname:''
+                }
+            },
+            mounted:function () {
+                this.$http.post("{:url('shop/member/personalData')}",{}, {
+                    headers: {
+                        authKey: $.cookie('authKey'),
+                        sessionId: $.cookie('sessionId')
+                    }
+                }, {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.info=res.data.data;
+                        this.ajaxInfo.oldPhone=this.info.member_info.login_phone.substr(0,3)+"*****"+this.info.member_info.login_phone.substr(-3);
+                        $(".mask-layer-loading").hide();
+                        $("#vue-main").show();
+                    }
+                });
+            },
+            methods:{
+                btnsave:function () {
+                    if(this.type=='password'){
+                        if(this.ajaxInfo.oldPwd==''){
+                            layer.msg("请输入旧密码",{shade:[0.2,'#393D49']});
+                            return;
+                        }
+                        if(this.ajaxInfo.newPwd==''){
+                            layer.msg("请输入新密码",{shade:[0.2,'#393D49']});
+                            return;
+                        }
+                        if (!this.ajaxInfo.newPwd.match(/\d/) || !this.ajaxInfo.newPwd.match(/[a-zA-Z]/)) {
+                            layer.msg("新密码必须包含字母和数字",{shade:[0.2,'#393D49']});
+                            return true;
+                        }
+                        if (this.ajaxInfo.newPwd.length < 6 || this.ajaxInfo.newPwd.length > 20) {
+                            layer.msg("新密码长度不能小于6，且不能大于20",{shade:[0.2,'#393D49']});
+                            return true;
+                        }
+                        if (this.ajaxInfo.newPwd != this.ajaxInfo.newPwd2) {
+                            layer.msg("两次输入的新密码不相同",{shade:[0.2,'#393D49']});
+                            return true;
+                        }
+                        this.$http.post("{:url('shop/member/modifyPassword')}",{
+                            old_password:this.ajaxInfo.oldPwd,
+                            new_password:this.ajaxInfo.newPwd
+                        }, {
+                            headers: {
+                                authKey: $.cookie('authKey'),
+                                sessionId: $.cookie('sessionId')
+                            }
+                        }, {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                $.cookie('password',this.ajaxInfo.newPwd);
+                                layer.msg("修改密码成功",{shade:[0.2,'#393D49']});
+                                setTimeout(function () {
+                                   location.reload();
+                                },2000);
+                            }else{
+                                layer.msg(res.data.msg,{shade:[0.2,'#393D49']});
+                            }
+                        });
+                    }
+                    if(this.type=='nickname'){
+
+                            if(this.ajaxInfo.nickname==''){
+                                layer.msg("请填写新的昵称",{shade:[0.2,'#393D49']});
+                                return true;
+                            }
+                            this.$http.post("{:url('shop/member/modifyNickName')}",{
+                                nickname:this.ajaxInfo.nickname
+                            }, {
+                                headers: {
+                                    authKey: $.cookie('authKey'),
+                                    sessionId: $.cookie('sessionId')
+                                }
+                            }, {emulateJSON: true}).then(function (res) {
+                                if (res.data.code == 0) {
+                                    layer.msg("昵称修改成功",{shade:[0.2,'#393D49']});
+                                    setTimeout(function () {
+                                        location.reload();
+                                    },2000);
+                                }else{
+                                    layer.msg(res.data.msg,{shade:[0.2,'#393D49']});
+                                }
+                            });
+                    }
+                    if(this.type=='mobile'){
+                        if(this.ajaxInfo.phoneWay==1){
+                            if(this.ajaxInfo.oldPhoneCodeInfo=="获取动态码"){
+                                layer.msg("请先获取动态码",{shade:[0.2,'#393D49']});
+                                return;
+                            }else{
+                                if(this.ajaxInfo.oldCode==""){
+                                    layer.msg("请输入你的动态码",{shade:[0.2,'#393D49']});
+                                    return;
+                                }else{
+                                    this.$http.post("{:url('shop/member/checkOldVerifyCode')}",{
+                                        old_verify_code:this.ajaxInfo.oldCode
+                                    }, {
+                                        headers: {
+                                            authKey: $.cookie('authKey'),
+                                            sessionId: $.cookie('sessionId')
+                                        }
+                                    }, {emulateJSON: true}).then(function (res) {
+                                        if (res.data.code == 0) {
+                                            this.ajaxInfo.time=0;
+                                            this.ajaxInfo.phoneWay=2;
+                                        }else{
+                                            layer.msg(res.data.msg,{shade:[0.2,'#393D49']});
+                                        }
+                                    });
+                                }
+                            }
+                        }else{
+                            if(this.ajaxInfo.newPhoneCodeInfo=="获取动态码"){
+                                layer.msg("请先获取动态码",{shade:[0.2,'#393D49']});
+                                return;
+                            }else{
+                                if(this.ajaxInfo.newCode==""){
+                                    layer.msg("请输入你的动态码",{shade:[0.2,'#393D49']});
+                                    return;
+                                }else{
+                                    this.$http.post("{:url('shop/member/modifyLoginPhone')}",{
+                                        login_phone:this.ajaxInfo.newPhone,verify_code:this.ajaxInfo.newCode
+                                    }, {
+                                        headers: {
+                                            authKey: $.cookie('authKey'),
+                                            sessionId: $.cookie('sessionId')
+                                        }
+                                    }, {emulateJSON: true}).then(function (res) {
+                                        if (res.data.code == 0) {
+                                            $.cookie('login_phone',this.ajaxInfo.newPhone);
+                                            layer.msg("手机更改成功，下次登录请使用新的手机号码",{shade:[0.2,'#393D49']});
+                                            setTimeout(function () {
+                                                location.reload();
+                                            },2000);
+                                        }else{
+                                            layer.msg(res.data.msg,{shade:[0.2,'#393D49']});
+                                        }
+                                    });
+                                }
+                            }
+
+                        }
+                    }
+                },
+                getOldCode:function () {
+                    if(this.ajaxInfo.time>0){
+                        return;
+                    }
+                    if(this.ajaxInfo.phoneWay==1){
+                        this.$http.post("{:url('shop/member/getOldLoginPhoneVerifyCode')}",{}, {
+                            headers: {
+                                authKey: $.cookie('authKey'),
+                                sessionId: $.cookie('sessionId')
+                            }
+                        }, {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.msg("动态码发送成功",{shade:[0.2,'#393D49']});
+                                $(".sendOutCode").attr("disabled", 'disabled');
+                                this.ajaxInfo.time=60;
+                                var time=setInterval(function () {
+                                    if(vueMain.ajaxInfo.time<=0){
+                                        vueMain.ajaxInfo.oldPhoneCodeInfo="重新获取动态码";
+                                        $(".sendOutCode").removeAttr("disabled");
+                                        clearInterval(time);
+                                    }
+                                    vueMain.ajaxInfo.oldPhoneCodeInfo=vueMain.ajaxInfo.time+"s后重新获取";
+                                    vueMain.ajaxInfo.time--;
+                                },1000);
+                            }else{
+                                layer.msg(res.data.msg,{shade:[0.2,'#393D49']});
+                            }
+                        });
+                    }else{
+                        this.$http.post("{:url('shop/member/getNewLoginPhoneVerifyCode')}",{
+                            login_phone:this.ajaxInfo.newPhone
+                        }, {
+                            headers: {
+                                authKey: $.cookie('authKey'),
+                                sessionId: $.cookie('sessionId')
+                            }
+                        }, {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                $("#new-phone").attr("disabled","true");
+                                layer.msg("动态码发送成功",{shade:[0.2,'#393D49']});
+                                $(".sendOutCode").attr("disabled", 'disabled');
+
+                                this.ajaxInfo.time=60;
+                                var time=setInterval(function () {
+                                    if(vueMain.ajaxInfo.time==0){
+                                        vueMain.ajaxInfo.newPhoneCodeInfo="重新获取动态码";
+                                        $(".sendOutCode").removeAttr("disabled");
+                                        clearInterval(time);
+                                    }
+                                    vueMain.ajaxInfo.newPhoneCodeInfo=vueMain.ajaxInfo.time+"s后重新获取";
+                                    vueMain.ajaxInfo.time--;
+                                },1000);
+                            }else{
+                                layer.msg(res.data.msg,{shade:[0.2,'#393D49']});
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        $("#list li").click(function () {
+            var titleTag = this.children[0].children[0].children[1];
+            if (titleTag == undefined) {
+                titleTag = this.children[0].children[1].children[1];
+            }
+            title = titleTag.innerHTML;
+            type = $(titleTag).attr("tage");
+            value = this.children[0].children[1].children[1];
+            if (value == undefined) {
+                value = this.children[0].children[2].children[1]
+            }
+            value = value.innerHTML;
+            value = value.replace("&nbsp;", "");
+            $("#value").attr("placeholder", "");
+            $("#personaltip").toggle()
+            if (title == "密码") {
+                vueMain.type="password";
+                goback=2;
+                $("#title").html("修改密码");
+                $("#saveBtn").toggle();
+                $("#divInfo").toggle();
+                $("#editpassword").toggle();
+            }
+            if(title == "手机"){
+                vueMain.type="mobile";
+                goback=2;
+                $("#value").attr("placeholder", "请输入手机号码!");
+                $("#title").html("绑定手机号码");
+                $("#saveBtn").toggle();
+                $("#divInfo").toggle();
+                $("#edit_mobile").toggle();
+            }
+            if(title == "昵称"){
+                vueMain.type="nickname";
+                goback=2;
+                $("#value").attr("placeholder", "请输入昵称");
+                $("#title").html("修改昵称");
+                $("#saveBtn").toggle();
+                $("#divInfo").toggle();
+                $("#edit_nick_name").toggle();
+            }
+        });
+    });
+    //点击返回
+    function backPage(){
+        if(goback==2){
+            location.reload();
+        }else{
+            window.history.back();
+        }
+    }
+    //退出登录
+    function outLogin(){
+        var layMsg=layer.msg("您是否确认要退出?", {
+            btn: ['按错了', '确认'],
+            shade: [0.2, '#393D49'],
+            yes:function(){
+                layer.close(layMsg);
+            },
+            btn2:function(){
+                $.ajax({
+                    url:"{:url('shop/member/logout')}",
+                    data:{},
+                    datatype:"json",
+                    type:"json",
+                    headers:{
+                        authKey: $.cookie('authKey'),
+                        sessionId: $.cookie('sessionId')
+                    },
+                    success:function(res){
+                        if(res.code==0){
+                            var keys=document.cookie.match(/[^ =;]+(?=\=)/g);
+                            if (keys) {
+                                for (var i =  keys.length; i--;)
+                                    document.cookie=keys[i]+'=0;expires=' + new Date( 0).toUTCString()
+                            }
+                            location.href="{:url('index')}";
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

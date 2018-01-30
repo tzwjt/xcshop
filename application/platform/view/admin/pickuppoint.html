@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <style>
+        select {
+            width: 135px;
+        }
+    </style>
+
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+
+            <nav>
+                <ul>
+                    <li class="selected" onclick="location.href='{:url('admin/expresscompany')}';" title="物流配送">物流配送</li>
+                    <li class="" onclick="location.href='{:url('admin/platformShop')}';" title="平台体验店">平台体验店</li>
+                    <li onclick="location.href='{:url('admin/webconfig')}';" title="基础设置">基础设置</li>
+                    <li onclick="location.href='{:url('admin/picconfig')}';" title="图片设置">图片设置</li>
+                    <li onclick="location.href='{:url('admin/agentwithdrawsetting')}';" title="代理商提现设置">代理商提现设置</li>
+                    <li onclick="location.href='{:url('admin/notifyindex')}';" title="通知设置">通知设置</li>
+                    <li onclick="location.href='{:url('admin/customservice')}';" title="客服设置">客服设置</li>
+                    <li onclick="location.href='{:url('admin/paylist')}';" title="支付设置">支付设置</li>
+                    <li onclick="location.href='{:url('admin/originalroadrefundsetting')}';" title="原路退回配置">原路退回配置</li>
+
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        {if condition="$pickup_point_id eq ''"}
+                        添加自提点
+                        {else/}
+                        编辑自提点
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">
+                            {if condition="$pickup_point_id eq ''"}
+                            添加自提点
+                            {else/}
+                            编辑自提点
+                            {/if}
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="ns-main">
+                <div class="set-style">
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;自提点名称:</dt>
+                        <dd>
+                            <p><input id="name" v-model="info.name" type="text" class="input-common"></p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;请选择代理商:</dt>
+                        <dd>
+                            <p>
+                                <select name="province" class="select-common" v-model="info.agent_id">
+                                    <option value="">请选择代理商</option>
+                                    <option :value="item.id" v-for="item in agentList">{{item.agent_name}}</option>
+                                </select>
+                            </p>
+                        </dd>
+                    </dl>
+
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;自提点地址:</dt>
+                        <dd>
+                            <p>
+                                <select name="province" id="seleAreaNext" v-model="info.province_id"
+                                        @change="getCity();" class="select-common">
+                                    <option value="0">请选择省</option>
+                                    <option :value="item.id" v-for="item in province">{{item.province_name}}</option>
+                                </select>
+                                <select name="city" id="seleAreaThird" v-model="info.city_id" @change="getDistrict();"
+                                        class="select-common">
+                                    <option value="0">请选择市</option>
+                                    <option :value="item.id" v-for="item in city">{{item.city_name}}</option>
+
+                                </select>
+                                <select name="district" id="seleAreaFouth" v-model="info.district_id"
+                                        class="select-common">
+                                    <option value="0">请选择区/县</option>
+                                    <option :value="item.id" v-for="item in district">{{item.district_name}}</option>
+                                </select>
+                            </p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;详细地址:</dt>
+                        <dd>
+                            <p><input id="address" type="text" v-model="info.address" class="input-common"></p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;自提点联系人:</dt>
+                        <dd>
+                            <p><input id="contact" v-model="info.contact" type="text" class="input-common"></p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt><span style="color:red;">*</span>&nbsp;&nbsp;自提点电话:</dt>
+                        <dd>
+                            <p><input id="phone" type="text" v-model="info.phone" class="input-common"></p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt></dt>
+                        <dd>
+                            <button class="btn-common btn-big" @click="addReturnAjax();">提交</button>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+    </article>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                info: {
+                    agent_id: '',
+                    name: '',
+                    status: 1,
+                    address: '',
+                    contact: '',
+                    phone: '',
+                    province_id: 0,
+                    city_id: 0,
+                    district_id: 0,
+                    longitude: 0,
+                    latitude: 0
+                },
+                agentList: [],
+                province: [],
+                city: [],
+                district: []
+            },
+            mounted: function () {
+                this.$http.post("{:url('platform/agent/getProvince')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.province = res.data.data;
+                        this.$http.post("{:url('platform/agent/getValidAgentTreeForPickupPoint')}", {},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                this.agentList = res.data.data.platform.agent_list;
+                                var spaceStr='';
+
+
+                                if("{$pickup_point_id}"){
+                                    this.$http.post("{:url('platform/agent/getPickupPoint')}", {pickup_point_id:"{$pickup_point_id}"},
+                                        {emulateJSON: true}).then(function (res) {
+                                        if (res.data.code == 0) {
+                                            this.info=res.data.data.pickup_point_detail;
+                                            this.info.pickup_point_id=this.info.id;
+                                            this.getCity(this.info.city_id);
+                                            this.getDistrict(this.info.district_id);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            },
+            methods: {
+                getAgentTree:function (agent_list,space) {
+                    for(var i=0;i<agent_list.length;i++){
+                        agent_list[i].agent_name=space+agent_list[i].agent_name;
+                        this.agentList.push(agent_list[i]);
+                        this.getAgentTree(agent_list[i].agent_list,space+"  ");
+                    }
+                },
+                getCity: function (city_id) {
+                    if (this.info.province_id == 0) {
+                        this.city = [];
+                        this.info.city_id = 0;
+                        this.district = [];
+                        this.info.district_id = 0;
+                        return;
+                    }
+                    this.$http.post("{:url('platform/agent/getCity')}", {province_id: this.info.province_id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.city = res.data.data;
+                            if(city_id){
+                                this.info.city_id=city_id;
+                            }
+                        }
+                    });
+                },
+                getDistrict: function (district_id) {
+                    if (this.info.city_id == 0) {
+                        this.district = [];
+                        this.info.district_id = 0;
+                        return;
+                    }
+                    this.$http.post("{:url('platform/agent/getDistrict')}", {city_id: this.info.city_id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.district = res.data.data;
+                            if(district_id){
+                                this.info.district_id=district_id;
+                            }
+                        }
+                    });
+                },
+                addReturnAjax: function () {
+                    if (!this.info.name) {
+                        layer.alert("请填写自提点名称", {icon: 5});
+                        return;
+                    }
+                    if (!this.info.agent_id) {
+                        layer.alert("请选择代理商", {icon: 5});
+                        return;
+                    }
+                    if (!this.info.province_id || !this.info.city_id || !this.info.district_id || !this.info.address) {
+                        layer.alert("请输入完整的地址信息", {icon: 5});
+                        return;
+                    }
+                    if (!this.info.contact) {
+                        layer.alert("请填写自提点联系人", {icon: 5});
+                        return;
+                    }
+                    if (!this.info.phone) {
+                        layer.alert("请填写自提点电话", {icon: 5});
+                        return;
+                    }
+                    if("{$pickup_point_id}"!=0){
+                        this.$http.post("{:url('platform/agent/updatePickupPoint')}", this.info,
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6},function () {
+                                    location.href="{:url('pickuppointlist')}";
+                                });
+                            } else {
+                                layer.alert(res.data.msg, {icon: 5});
+
+                            }
+                        });
+                    }else{
+                        this.$http.post("{:url('platform/agent/addPickupPoint')}", this.info,
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg, {icon: 6},function () {
+                                    location.href="{:url('pickuppointlist')}";
+                                });
+                            } else {
+                                layer.alert(res.data.msg, {icon: 5});
+
+                            }
+                        });
+                    }
+
+
+
+                }
+            }
+        });
+
+
+    });
+
+
+</script>
+
+
+</body>
+</html>

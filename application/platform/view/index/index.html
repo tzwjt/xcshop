@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_index.css">
+    <!--<script src="__STATIC__/admin/js/highcharts.js"></script>-->
+    <!--<script src="__STATIC__/admin/js/exporting.js"></script>-->
+    <script src="__STATIC__/admin/js/jquery.timers.js"></script>
+    <script src="__STATIC__/admin/js/echarts.min.js"></script>
+
+
+    <script>
+        var PLATFORM_NAME="{$platformInfo.platform_site_name}";
+        var getSalesStatistics="{:url('platform/IndexInfo/getOrderChartCount')}";
+    </script>
+    <!--<script src="__STATIC__/admin/js/index.js"></script>-->
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+        .select-day{
+            color:#333;
+            margin-left: 0.5em;
+        }
+        .select-day.active{
+            color:#e98403;
+        }
+
+    </style>
+</head>
+<body>
+{include file="index/head"/}
+<article class="ns-base-article" id="vue-main" v-cloak="">
+    <aside class="ns-base-aside">
+        {include file="index/nav_left"/}
+
+        <nav>
+            <ul>
+                <li class="selected" onclick="location.href='{:url('index')}';" title="欢迎页">欢迎页</li>
+            </ul>
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="bottom_copyright">
+            <footer>
+                <img src="" id="copyright_logo"/>
+                <p>
+                    <span id="copyright_meta"></span>
+                    <br/>
+                    <span id="copyright_companyname"></span>
+                    <br/>
+                    <span id="copyright_desc"></span>
+                </p>
+            </footer>
+        </div>
+    </aside>
+    <section class="ns-base-section">
+        <div class="ns-notice">
+            <nav>
+                <ul>
+                    <li>网站名称:<span>{$platformInfo.platform_site_name}</span></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- 操作提示 -->
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <div class="right-side-operation">
+                <ul>
+
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main">
+            <div class="statistical">
+                <ul>
+                    <li class="order-amount-statistics">
+                        <header>
+                            <i class="ns-icon-base i-order-amount"></i>
+                            <span>今天订单总金额(元)</span>
+                        </header>
+                        <p class="js-order-amount">{{salesStatistics.curr_day_money==''?0:salesStatistics.curr_day_money}}</p>
+                    </li>
+                    <li class="focus-number-statistics">
+                        <header>
+                            <i class="ns-icon-base i-focus-number"></i>
+                            <span>有效会员数(个)</span>
+                        </header>
+                        <p class="js-weixin-fans-count">{{validMemberCount==''?0:validMemberCount}}</p>
+                    </li>
+                    <li class="goods-release-statistics">
+                        <header>
+                            <i class="ns-icon-base i-goods-release"></i>
+                            <span>代理商(个)</span>
+                        </header>
+                        <p class="js-goods-release-count" style="font-size:14px;padding: 5px;">有效代理商总数:{{validAgentCount.agent_count}}</p>
+                        <p class="js-goods-release-count" style="font-size:14px;padding: 5px;">直接代理商数:{{validAgentCount.agent_first_count}}&nbsp;&nbsp;加盟店数:{{validAgentCount.agent_second_count}}</p>
+                    </li>
+                    <li class="order-total-statistics">
+                        <header>
+                            <i class="ns-icon-base i-order-total"></i>
+                            <span>订单总数(笔)</span>
+                        </header>
+                        <p class="js-order-total">{{orderCount.all==''?0:orderCount.all}}</p>
+                    </li>
+                    <li class="month-sales-statistics">
+                        <header>
+                            <i class="ns-icon-base i-month-sales"></i>
+                            <span>本月销量(笔)</span>
+                        </header>
+                        <p class="js-month-sales">{{salesStatistics.month_goods==''?0:salesStatistics.month_goods}}</p>
+                    </li>
+                    <li class="completed-transaction-statistics">
+                        <header>
+                            <i class="ns-icon-base i-completed-transaction"></i>
+                            <span>已完成交易(笔)</span>
+                        </header>
+                        <p class="js-order-finish-count">{{orderCount.yiwancheng==''?0:orderCount.yiwancheng}}</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="goods-prompt">
+                <h3>店铺及商品提示<span>您需要关注的店铺信息以及待处理事项</span></h3>
+                <div class="subtitle">
+                    <img src="__STATIC__/images/orange_picture.png"/><label>图片空间使用情况：<span>不限</span></label>
+                    <img src="__STATIC__/images/green_giftbag.png"/><label>店铺商品发布情况：<span
+                        class="goods_all_count">不限</span></label>
+                </div>
+                <div class="goods-state a-line">
+                    <ul>
+                        <li onclick="location.href='{:url('index/goodslist')}'"><h4 class="goods_sale_count">{{goodsCount.all}}</h4>全部</li>
+                        <li onclick="location.href='{:url('index/goodslist')}'"><h4 class="goods_sale_count">{{goodsCount.sale}}</h4>出售中</li>
+                        <li onclick="location.href='{:url('index/goodslist2')}';"><h4 class="goods_audit_count">{{goodsCount.audit}}</h4>仓库中</li>
+                        <li onclick="location.href='{:url('index/goodslist3')}';"><h4 class="goods_audit_count">{{goodsCount.shelf}}</h4>已下架</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="merchants-help">
+                <h3>商家帮助<span>您需要的商家帮助</span></h3>
+                <div class="merchants-use">
+                    <ul>
+                        <li>
+
+                            <a href="{:url('goodslist')}">
+                                <img src="__STATIC__/blue/img/goods_management.png"/>
+                                <span>商品管理</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('coupontypelist')}">
+                                <img src="__STATIC__/blue/img/promotions.png"/>
+                                <span>促销方式</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('orderlist')}">
+                                <img src="__STATIC__/blue/img/order_after.png"/>
+                                <span>订单及售后</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="goods-prompt">
+                <h3>
+                    交易提示<span>您需要立即处理的交易订单</span>
+                </h3>
+                <div class="subtitle">
+                    <img src="__STATIC__/images/green_list.png"/><label>近期售出：<span>交易中的订单</span></label>
+                    <img src="__STATIC__/images/orange_shield.png"/><label>维权投诉：<span>收到维权投诉</span></label>
+                </div>
+                <div class="goods-state a-line order">
+                    <ul onclick="location.href='{:url('orderlist')}'">
+                        <li><h4 class="daifukuan">{{orderCount.all}}</h4>全部</li>
+                        <li><h4 class="daifukuan">{{orderCount.daifukuan}}</h4>待付款</li>
+                        <li><h4 class="daifahuo">{{orderCount.daifahuo}}</h4>待发货</li>
+                        <li><h4 class="yifahuo">{{orderCount.yifahuo}}</h4>已发货</li>
+                        <li><h4 class="yishouhuo">{{orderCount.yishouhuo}}</h4>已收货</li>
+                        <li><h4 class="yiwancheng">{{orderCount.yiwancheng}}</h4>已完成</li>
+                        <li><h4 class="yiguanbi">{{orderCount.yiguanbi}}</h4>已关闭</li>
+                        <li><h4 class="tuikuanzhong">{{orderCount.tuikuanzhong}}</h4>退款中</li>
+                        <li><h4 class="yituikuan">{{orderCount.yituikuan}}</h4>已退款</li>
+                    </ul>
+                </div>
+
+                <h3>
+                    代理商数
+                </h3>
+                <div class="subtitle">
+                    <img src="__STATIC__/images/green_list.png"/><label>代理商数：<span>代理商数统计</span></label>
+                    <!--<img src="__STATIC__/images/orange_shield.png"/><label>维权投诉：<span>收到维权投诉</span></label>-->
+                </div>
+                <div class="goods-state a-line order">
+                    <ul>
+                        <li><h4 class="daifukuan">{{agentCount.all}}</h4>全部</li>
+                        <li><h4 class="daifukuan">{{agentCount.weiwanshan}}</h4>未完善</li>
+                        <li><h4 class="daifahuo">{{agentCount.daishenghe}}</h4>待审核</li>
+                        <li><h4 class="yifahuo">{{agentCount.zhengchang}}</h4>正常</li>
+                        <li><h4 class="yishouhuo">{{agentCount.weitongguo}}</h4>未通过</li>
+                        <li><h4 class="yiwancheng">{{agentCount.zanting}}</h4>暂停</li>
+                        <li><h4 class="yiguanbi">{{agentCount.wuxiao}}</h4>无效</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sales">
+                <h3>
+                    销售情况统计<span>按周期统计商家店铺的订单量和订单金额</span>
+                </h3>
+
+                <table>
+                    <tr>
+                        <td colspan="2" align="left" style="padding: 15px 0 0 20px;">昨日销量</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong class="yesterday_goods">{{salesStatistics.yesterday_goods}}</strong>
+                            <span>订单量(件)</span>
+                        </td>
+                        <td>
+                            <strong class="yesterday_money">{{salesStatistics.yesterday_money}}</strong>
+                            <span>订单金额(元)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left" style="padding: 15px 0 0 20px;">本月销量</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong class="month_goods">{{salesStatistics.month_goods}}</strong>
+                            <span>订单量(件)</span>
+                        </td>
+                        <td>
+                            <strong class="month_money">{{salesStatistics.month_money}}</strong>
+                            <span>订单金额(元)</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="sales-ranking">
+                <h3>
+                    单品销售排名<span>按周期统计商家店铺的订单量和订单金额</span>
+                </h3>
+                <table>
+                    <tr>
+                        <td>排行</td>
+                        <td style="text-align:left;">商品信息</td>
+                        <td>销量</td>
+                    </tr>
+                    <tr v-for="(item,index) in goodsRank">
+                        <td>
+							<span :class="{frist:index==0,second:index==1,third:index==2}">
+							{{index+1}}</span></td>
+                        <td :title="item.title" style="text-align:left;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                            <a href="" target="_blank">{{item.title}}</a>
+                        </td>
+                        <td>
+                            <span :class="{frist:index==0,second:index==1,third:index==2}">{{item.sale_real}}</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="charts" style="height:auto;position: relative;">
+                <h3>
+                    订单总数统计<span><i></i>订单数量</span>
+                </h3>
+                <div id="orderCharts" style="height: 310px;"></div>
+                <div style="position: absolute;top:45px;right: 10px;">
+                    <a class="select-day select-day-1" onclick="getChartInfo(1)">今日</a>
+                    <a class="select-day select-day-2" onclick="getChartInfo(2)">昨日</a>
+                    <a class="select-day select-day-3" onclick="getChartInfo(3)">本周</a>
+                    <a class="select-day select-day-4" onclick="getChartInfo(4)">本月</a>
+                </div>
+            </div>
+
+
+            <!--<div class="charts">-->
+                <!--<h3>-->
+                    <!--关注人数统计<span><i></i>关注人数</span>-->
+                <!--</h3>-->
+                <!--<div id="focusCharts"></div>-->
+            <!--</div>-->
+            <div class="system-config">
+                <h3><i class="fa fa-cog"></i>系统信息</h3>
+                <table>
+                    <colgroup>
+                        <col width="15%">
+                        <col width="40%">
+                        <col width="15%">
+                        <col width="30%">
+                    </colgroup>
+                    <tr>
+                        <td>服务器操作系统</td>
+                        <td>{{systemConfig.os}}</td>
+                        <td>服务器域名/IP</td>
+                        <td>{{systemConfig.dns}}:{{systemConfig.port}}&nbsp;[{{systemConfig.ip}}]</td>
+                    </tr>
+                    <tr>
+                        <td>服务器环境</td>
+                        <td>{{systemConfig.server_software}}</td>
+                        <td>PHP版本</td>
+                        <td>{{systemConfig.php_version}}</td>
+                    </tr>
+                    <tr>
+                        <td>文件上传限制</td>
+                        <td>{{systemConfig.upload_max_filesize}}</td>
+                        <td>GD版本</td>
+                        <td>{{systemConfig.gd_version}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </section>
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain=new Vue({
+            el:"#vue-main",
+            data:{
+                goodsRank:[],
+                goodsCount:{},
+                orderCount:{},
+                validMemberCount:'',
+                salesStatistics:{},
+                systemConfig:{},
+                agentCount:{},
+                validAgentCount:{}
+            },
+            mounted:function () {
+                this.$http.post("{:url('platform/IndexInfo/getGoodsRealSalesRank')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.goodsRank=res.data.data;
+                    }
+                });
+                this.$http.post("{:url('platform/IndexInfo/getGoodsCount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.goodsCount=res.data.data;
+                    }
+                });
+                this.$http.post("{:url('platform/IndexInfo/getOrderCount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.orderCount=res.data.data;
+                    }
+                });
+                this.$http.post("{:url('platform/IndexInfo/getValidMemberCount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.validMemberCount=res.data.data;
+                    }
+                });
+                this.$http.post("{:url('platform/IndexInfo/getSalesStatistics')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.salesStatistics=res.data.data;
+                        for(var key in this.salesStatistics){
+                            if(this.salesStatistics[key]==''||this.salesStatistics[key]==null){
+                                this.salesStatistics[key]=0;
+                            }
+                        }
+                    }
+                });
+                this.$http.post("{:url('platform/IndexInfo/getSystemConfig')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.systemConfig=res.data.data;
+                    }
+                });
+                this.$http.post("{:url('platform/IndexInfo/getAgentCount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.agentCount=res.data.data;
+                    }
+                });
+
+                this.$http.post("{:url('platform/IndexInfo/getValidAgentCount')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.validAgentCount=res.data.data;
+                    }
+                });
+
+            }
+        });
+        getChartInfo(1);
+
+
+    });
+    function getChartInfo(type) {
+        $(".select-day").removeClass("active");
+        $(".select-day-"+type).addClass("active");
+        $.ajax({
+            url:"{:url('platform/IndexInfo/getOrderChartCount')}",
+            type:"post",
+            data:{type:type},
+            datatype:"json",
+            success:function (res) {
+                if(res.code==0){
+                    var categories=new Array();
+                    var myData=new Array();
+                    for(i=0;i<res.data.length;i++){
+                        categories.push(res.data[i][0]);
+                        myData.push(res.data[i][1]);
+                    }
+                    console.log(categories);
+                    console.log(myData);
+                    var myChart = echarts.init(document.getElementById('orderCharts'));
+
+                    // 指定图表的配置项和数据
+                    var title;
+                    if(type==1){
+                        title="当日销售统计"
+                    }
+                    if(type==2){
+                        title="昨日销售统计"
+                    }
+                    if(type==3){
+                        title="本周销售统计"
+                    }
+                    if(type==4){
+                        title="本月销售统计"
+                    }
+                    var option = {
+                        title: {
+                            text: title
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['销量']
+                        },
+                        xAxis: {
+                            data: categories
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: '',
+                            type: 'bar',
+                            data: myData
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                }
+            }
+        });
+
+    }
+</script>
+
+</body>
+</html>

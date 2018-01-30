@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/loaders.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/loading.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/base.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/style.css"/>
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        $(window).load(function () {
+            $(".loading").addClass("loader-chanage")
+            $(".loading").fadeOut(300)
+        })
+    </script>
+    <style>
+        .contaniner .shopcar dl .add span {
+            text-align: center;
+            height: 26px;
+            font-size: 16px;
+        }
+
+        dd.good_name {
+            height: 3em;
+            overflow: hidden;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<!--loading页开始-->
+<div class="loading">
+    <div class="loader">
+        <div class="loader-inner pacman">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+<body>
+{include file="index/nav_bar"/}
+<div id="main" v-cloak>
+    <div class="contaniner fixed-contb" style="margin-bottom: 45px;margin-top: 0px;">
+        <section class="shopcar" style="padding-bottom: 0;" v-for="(item,index) in cartInfo">
+            <div class="shopcar-checkbox">
+                <label for="shopcar" :class="{'shopcar-checkd':item.selected==1}" @click="changeSelect(index)"></label>
+                <input type="checkbox" id="shopcar"/>
+            </div>
+            <figure style="width:25%;"><img :src="item.picture_info.pic_cover_small"/></figure>
+            <dl style="position: relative">
+                <dt>{{item.title}}</dt>
+                <dd class="good_name" style="font-size:14px;color:#333;">{{item.goods_name}}</dd>
+                <dd class="good_sku" style="height:1.5em;overflow: hidden;margin-top: 10px;"><span v-if="item.sku_name!=''">规格：{{item.sku_name}}</span></dd>
+               <div style="position: absolute;top:20px;">
+                <dd class="good_sku-niu" style="height:1.5em;overflow: hidden;" v-for="(item1,index1) in item.comb_goods_list">{{item1.title}}&nbsp;&nbsp;{{item1.num}}{{item1.unit}}</dd>
+               </div>
+                <div class="add" style="float: left;">
+                    <span @click="cutNum(index)">-</span>
+                    <span v-text="item.num" style="width: 45px;"></span>
+                    <span @click="addNum(index)">+</span>
+                </div>
+                <h3 style="float: right;margin-right: 25px;">¥{{item.price}}</h3>
+
+                <small style="position: absolute;bottom:0.5em;right:0;z-index:1010;" @click="delCart(index)"><img src="__STATIC__/wap/images/shopcar-icon01.png" style="position: relative;top:0.3em;"/></small>
+            </dl>
+        </section>
+        <!--去结算-->
+        <!--<div style="margin-bottom: 16%;"></div>-->
+    </div>
+    <footer class="page-footer fixed-footer">
+        <div class="shop-go" style="margin-bottom: 0;">
+            <b style="background-color: #fff;color:#666;">合计：￥{{totalPrice}}</b>
+            <span style="background-color: #e92076;"><a @click="orderList()">去结算</a></span>
+        </div>
+    </footer>
+</div>
+<!--{include file='index/footer'/}-->
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var main;
+    $(function () {
+        $("#foot-shopcart p").css("color", "#e92076");
+        $("#foot-shopcart img").attr("src", "__STATIC__/wap/images/shopcart-3.png");
+        main = new Vue({
+            el: '#main',
+            data: {
+                cartInfo: [],
+//                goodsInfo:[],
+            },
+            mounted: function () {
+                this.$http.post("{:url('shop/goods/cart')}", {},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.cartInfo = res.data.data.cartlist;
+//                        for(i=0;i<cartInfo.length;i++){
+//                            this.$http.post("{:url('shop/goods/getGoodsDetail')}"+"&goods_id="+cartInfo[i].goods_id, {},
+//                                {emulateJSON: true}).then(function (res) {
+//                                if (res.data.code == 0) {
+//                                    this.goodsInfo.push(res.data.data);
+//                                }
+//                            });
+//                        }
+//                        this.cartInfo=cartInfo;
+                    }
+                });
+            },
+            methods: {
+                cutNum: function (index) {
+                    var num = this.cartInfo[index].num;
+                    num--;
+                    if (num < 1) {
+                        layer.msg("商品购买数量不能小于1", {shade: [0.2, '#393D49']});
+                        this.cartInfo[index].num = 1;
+                    } else {
+                        this.cartInfo[index].num = num;
+                    }
+                    this.saveCartNum(index)
+                },
+                addNum: function (index) {
+                    var num = this.cartInfo[index].num;
+                    this.cartInfo[index].num++;
+                    this.saveCartNum(index)
+                },
+                changeSelect: function (index) {
+                    this.cartInfo[index].selected = this.cartInfo[index].selected == 1 ? 0 : 1;
+                },
+                saveCartNum: function (index) {
+                    loadIn();
+                    this.$http.post("{:url('shop/goods/cartAdjustNum')}", {
+                            cart_id: this.cartInfo[index].id,
+                            num: this.cartInfo[index].num
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            loadOut();
+                        } else {
+                            loadOut();
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    });
+                },
+                delCart: function (index) {
+                    loadIn();
+                    this.$http.post("{:url('shop/goods/cartDelete')}", {del_id: this.cartInfo[index].id},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.cartInfo.splice(index, 1);
+                            $("#shopcart-num").html(res.data.data.cartcount);
+                            loadOut();
+                        } else {
+                            loadOut();
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    });
+                },
+                orderList: function () {
+                    var orderId = '';
+                    for (i = 0; i < this.cartInfo.length; i++) {
+                        if (this.cartInfo[i].selected == 1) {
+                            if (orderId == '') {
+                                orderId += this.cartInfo[i].id;
+                            } else {
+                                orderId += "," + this.cartInfo[i].id;
+                            }
+                        }
+                    }
+                    if (orderId == '') {
+                        layer.msg('您至少选择一件商品', {shade: [0.2, '#393D49']});
+                        return;
+                    }
+                    this.$http.post("{:url('shop/goods/cartAdjustSelected')}", {selected_cart_id: orderId},
+                        {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            location.href = "{:url('orderlist')}";
+                        } else {
+                            layer.msg(res.data.msg, {shade: [0.2, '#393D49']});
+                        }
+                    }, function (res) {
+                        layer.msg("很抱歉，提交订单信息失败...", {shade: [0.2, '#393D49']});
+
+                    });
+                }
+            },
+            computed: {
+                price: function () {
+                    var num = 0;
+                    for (var i = 0; i < this.cartInfo.length; i++) {
+                        num += this.cartInfo[i].num * this.cartInfo[i].num;
+                    }
+                    return num;
+                },
+                totalPrice: function () {
+                    var price = 0;
+                    for (var i = 0; i < this.cartInfo.length; i++) {
+                        if (this.cartInfo[i].selected == 1)
+                            price += this.cartInfo[i].num * this.cartInfo[i].price;
+                    }
+                    return price;
+                },
+                number: function () {
+                    var num = 0;
+                    for (var i = 0; i < this.cartInfo.length; i++) {
+                        if (this.cartInfo[i].selected == 1)
+                            num++;
+                    }
+                    return num;
+                }
+            }
+        });
+    });
+
+    function loadOut() {
+        $(".loading").addClass("loader-chanage")
+        $(".loading").fadeOut(300)
+    }
+
+    function loadIn() {
+        $(".loading").removeClass("loader-chanage")
+        $(".loading").fadeIn(300)
+    }
+</script>
+</body>
+</html>

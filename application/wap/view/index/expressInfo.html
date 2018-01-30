@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/loaders.min.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/base.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/style.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        var nexturl = "self";
+    </script>
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+        #vue-main{
+            color: #666;
+        }
+        .express-li{
+            background-image: url("__STATIC__/images/upexpress.png");
+            background-position: 10px 50%;
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+        }
+        .express-li:first-child{
+            background-image: url("__STATIC__/images/right-express.png");
+
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+    {include file="index/auto_login"/}
+    <!--</script>-->
+</head>
+<!--loading页开始-->
+<body style="background: #fff;">
+<div style="height:44px;background-color:#000;position: fixed;top:0;left: 0;width:100%;z-index:1555">
+    <div style="width:100%;height: 100%;line-height: 100%;text-align: center;position: absolute;font-size:22px;color:#fff;padding-top: 10px;">
+        物流信息
+    </div>
+    <div style="width:24px;height:24px;float: left;margin-top: 10px;margin-left: 10px;position:relative;z-index:5555;">
+        <a href="javascript:window.history.back();">
+            <img src="__STATIC__/wap/images/back-5.png" style="width:100%;"/></a>
+    </div>
+    <div style="width:24px;height:24px;float: right;margin-top: 10px;margin-right: 10px;position:relative;z-index:5555;">
+        <a href="{:url('index')}">
+            <img src="__STATIC__/wap/images/home-5.png" style="width:100%;"/></a>
+    </div>
+</div>
+<div id="vue-main" v-cloak style="margin-top: 45px;background: #fff;">
+    <div>
+        <div style="width:60px;height:60px;margin:10px 0 10px 20px;float: left;">
+            <img :src="orderInfo.order_goods[0].picture_info.pic_cover_small" style="width:100%;height:100%;">
+        </div>
+    </div>
+    <p style="font-size:14px;padding: 15px 10px 5px 10px;">订单号:{{orderInfo.order_no}}</p>
+    <p style="font-size:14px;padding: 5px 10px;">{{expressInfo.express_name}}:{{expressInfo.express_code}}</p>
+    <div style="clear: both;"></div>
+    <div style="height: 8px;background: #cfcfcf;"></div>
+    <h1 style="text-align: center;font-size:18px;padding: 10px;" v-if="expressInfo.list.length==0">暂无物流信息</h1>
+    <ul>
+        <li class="express-li" v-for="item in expressInfo.list" style="padding: 5px 10px 5px 35px;">
+            <p style="font-size:10px;">{{item.AcceptTime}}</p>
+            <p style="font-size:12px;">{{item.AcceptStation}}</p>
+        </li>
+    </ul>
+    <p style="text-align: center;"><a href="{:url('self')}" style="color:#fff;font-size:18px;margin-top:15px;padding-top:8px;background:#1b81fb;width:60%;height:35px;border:none;border-radius: 10px;display: inline-block;">返回会员中心</a></p>
+
+</div>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                expressInfo: {
+                    express_name:'',
+                    express_code:'',
+                    list:[]
+                },
+                orderInfo:{}
+            },
+            mounted: function () {
+                this.$http.post("{:url('shop/order/orderDetail')}", {order_id: "{$order_id}"}, {
+                            headers: {
+                                authKey: $.cookie('authKey'),
+                                sessionId: $.cookie('sessionId')
+                            }
+                        },
+                        {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.orderInfo=res.data.data.order_details;
+                        this.expressInfo.express_name=res.data.data.express_name;
+                        this.expressInfo.express_code=res.data.data.express_code;
+                        this.$http.post("{:url('shop/order/getOrderGoodsExpressMessage')}", {express_id: res.data.data.order_details.goods_packet_list[0].express_id}, {
+                                headers: {
+                                    authKey: $.cookie('authKey'),
+                                    sessionId: $.cookie('sessionId')
+                                }
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                this.expressInfo.list = res.data.data.Traces;
+                            }
+                        });
+                    }
+                });
+            },
+            methods: {
+
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

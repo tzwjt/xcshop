@@ -1,0 +1,28 @@
+<script>
+    $(function () {
+        $.ajax({
+            url: "{:url('')}",
+            data: {login_phone: login_phone, password: password},
+            dataType: 'json',
+            async: false,
+            type: 'post',
+            success: function (res) {
+                if (res.code == 0) {
+                    $.cookie('login_phone', login_phone);
+                    $.cookie('password', password);
+                    $.cookie('authKey', res.data.authKey);
+                    $.cookie('sessionId', res.data.sessionId);
+                } else {
+                    if (typeof nexturl == "undefined") {
+                        nexturl = '';
+                    }
+                    if (nexturl != "") {
+                        location.href = "{:url('login')}" + "&nexturl=" + nexturl;
+                    } else {
+                        location.href = "{:url('login')}";
+                    }
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="keywords" content="美肤日制SKINDAY">
+    <meta name="description" content="美肤日制SKINDAY">
+    <title>{$siteInfo.web_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_v0629.css">
+    <link rel="stylesheet" href="__STATIC__/web/css/login.css">
+    <!--<script src="__STATIC__/web/js/hm.js"></script>-->
+    <script src="__STATIC__/web/js/jquery-1.9.1.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+
+    <script charset="UTF-8" id="gt_lib" src="__STATIC__/web/js/geetest.5.10.10.js"></script>
+    <link rel="stylesheet" href="__STATIC__/web/css/style.3.2.0.css">
+    <style>
+        body{
+            background-color: #afafaf;
+        }
+    </style>
+</head>
+<body>
+<div class="m-body" id="main" v-cloak>
+    <template v-if="is_show">
+    <div class="header">
+        <div class="logo">
+            <img src="__STATIC__/web/images/logo-6.png">
+        </div>
+    </div>
+    <form id="loginform" class="loginform" method="POST">
+        <div class="input-wrap">
+            <input type="text" class="zh" autocomplete="off" value="" name="mobile" placeholder="账号" v-model="login_phone">
+            <input type="password" class="zh pass" autocomplete="off" value="" name="password" placeholder="密码" v-model="password">
+        </div>
+        <input type="button" id="loginbtn" class="loginbtn" value="立即登录" @click="loginCheck()">
+    </form>
+    <div class="pass-wrap">
+        <a style="color:#fff;" @click="is_show=false;">忘记密码？</a>
+    </div>
+    <div style="clear: both;margin-bottom: 15px;"></div>
+    <a href="{:url('register',array('nexturl'=>$next))}" class="regist" style="color:#333;">注册SKINDAY美肤日制账号</a>
+    </template>
+    <template v-else>
+        <h1 style="color:#e92076;font-size:35px;padding: 20px 0;margin: 150px 0 20px;text-align: center;">取回密码</h1>
+        <template v-if="is_show_1">
+        <form class="loginform" method="POST">
+            <div class="input-wrap">
+                <input type="text" class="zh" autocomplete="off" value="" name="mobile" placeholder="请输入你的手机号码" v-model="changePwd.login_phone">
+            </div>
+            <input type="button" class="loginbtn" value="下一步" @click="newLogin()">
+        </form>
+        </template>
+        <template v-else>
+            <form>
+                <p style="text-align: center;color:#fff;font-size:18px;padding: 5px 0;">手机号：{{changePwd.login_phone}}&nbsp;<a id="getCode" @click.stop="getCode()" style="font-size:0.8em;background-color: #e92076;border:none;color:#fff;cursor: pointer;border-radius: 5px;padding: 5px;">获取验证码</a></p>
+                <div class="input-wrap">
+                    <!--<input type="text" v-model="changePwd.login_phone" disabled style="margin-bottom: 3px;">-->
+                    <input type="text" placeholder="验证码" v-model="changePwd.code" style="margin-bottom: 3px;">
+                    <input type="password" name="mobile" placeholder="新密码" v-model="changePwd.newPwd">
+                </div>
+                <input type="button" class="loginbtn" value="更改密码" @click="changePassword()">
+            </form>
+        </template>
+    </template>
+</div>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var time=0;
+    var is_get_code=false;
+    var loginVue=new Vue({
+        el:"#main",
+        data:{
+            login_phone:'',
+            password:'',
+            is_show:true,
+            is_show_1:true,
+            changePwd:{
+                login_phone:'',
+                code:'',
+                newPwd:''
+            }
+        },
+        methods:{
+            loginCheck:function(){
+                //检验手机号码
+                if (!(/^1[34578]\d{9}$/.test(this.login_phone))) {
+                    layer.alert("请输入正确的手机号码", {icon: 5, title: '提示'});
+                    return;
+                }
+                //检验密码
+                //检验密码
+                if (this.password == '') {
+                    layer.alert("密码不能为空", {icon: 5, title: '提示'});
+                    return;
+                }
+                if (!this.password.match(/\d/) || !this.password.match(/[a-zA-Z]/) || this.password.length < 6 || this.password.length > 20) {
+                    layer.alert("密码错误", {icon: 5, title: '提示'});
+                    return true;
+                }
+                auto_login("{:url('shop/member/login')}",this.login_phone,this.password);
+            },
+            newLogin:function () {
+                if (!(/^1[34578]\d{9}$/.test(this.changePwd.login_phone))) {
+                    layer.alert("请输入正确的手机号码", {icon: 5, title: '提示'});
+                    return;
+                }else{
+                    this.is_show_1=false;
+                }
+            },
+            getCode:function () {
+                is_get_code=true;
+                if(time>0){
+                    return;
+                }
+                this.$http.post("{:url('shop/Member/loginPhonVerifyCode')}", {login_phone:this.changePwd.login_phone},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        layer.alert(res.data.msg,{icon:6});
+                        time=60;
+                        var timeIntel=setInterval(function () {
+                            if(time<0){
+                                $("#getCode").text("重新获取验证码");
+                                clearInterval(timeIntel);
+                                return;
+                            }
+                            $("#getCode").text(time+"s");
+                            time--;
+                        },1000);
+                    }else{
+                        layer.alert(res.data.msg,{icon:5});
+                    }
+                });
+            },
+            changePassword:function () {
+                if(!is_get_code){
+                    layer.alert("请先获取验证码",{icon:5});
+                    return;
+                }
+                if(this.changePwd.code==''){
+                    layer.alert("请填写验证码",{icon:5});
+                    return;
+                }
+                if(this.changePwd.newPwd==''){
+                    layer.alert("请填写新密码",{icon:5});
+                    return;
+                }
+                if (!this.changePwd.newPwd.match(/\d/) || !this.changePwd.newPwd.match(/[a-zA-Z]/) || this.changePwd.newPwd.length < 6 || this.changePwd.newPwd.length > 20) {
+                    layer.alert("密码必须同时包含数字和字母，长度在6-20之", {icon: 5});
+                    return true;
+                }
+                this.$http.post("{:url('shop/Member/resetPassword')}", {login_phone:this.changePwd.login_phone,verify_code:this.changePwd.code,password:this.changePwd.newPwd},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        layer.alert(res.data.msg,{icon:6},function () {
+                            location.reload();
+                        });
+                    }else{
+                        layer.alert(res.data.msg,{icon:5});
+                    }
+                });
+
+            }
+        }
+    });
+    function auto_login(url,login_phone,password){
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: {login_phone:login_phone,password:password},
+            success: function (data) {
+                var layMsg;
+                if(data.code==0){
+                    $.cookie('login_phone',login_phone);
+                    $.cookie('password',password);
+                    $.cookie('authKey',data.data.authKey);
+                    $.cookie('sessionId',data.data.sessionId);
+                    $.ajax({
+                        url:"{:url('shop/goods/syncUserCart')}",
+                        type:'post',
+                        datatype:'json',
+                        data:{},
+                        success:function(res){
+                            if("{$upUrl}"==''){
+                                location.href = "{:url('index')}";
+
+                            }else{
+                                location.href = "{$upUrl}";
+
+                            }
+
+                            // if("{$upUrl}"!='' && "{$upUrl}"!=NULL){
+                            //     location.href = "{$upUrl}";
+                            // }else{
+                            //     location.href = "{:url('index')}";
+                            // }
+                        },
+                        error:function(res){
+                            location.href = "{:url('index')}";
+                        }
+                    });
+                }else{
+                    layer.msg("登录失败("+data.msg+")",{shade: [0.2, '#393D49']});
+                }
+            },
+            error: function (err) {
+                layer.msg("登录失败",{shade: [0.2, '#393D49']});
+            }
+        })
+    }
+</script>
+</body>
+</html>

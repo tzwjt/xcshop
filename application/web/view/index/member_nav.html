@@ -1,0 +1,65 @@
+
+<div class="member-menu">
+    <div class="user-info">
+        <header>
+            <span class="level-name">普通会员</span>
+            <span class="exit" onclick="getSign()" v-if="selfInfo.isSign==0" style="color:red;">签到</span>
+            <span class="exit" v-if="selfInfo.isSign!=0" style="color:#0D84D4;">已签到</span>
+        </header>
+        <div class="logo" onclick="location.href='{:url('personData')}';" title="查看个人资料">
+            <img id="headImagePath" :src="selfInfo.member_img" style="width:80px;height:80px;">
+        </div>
+        <strong onclick="location.href='{:url('personData')}';" title="查看个人资料">{{selfInfo.member_info.login_phone}}</strong>
+    </div>
+    <article class="list">
+        <div class="item">
+            <h3>
+                <i class="icon i-member-center"></i>
+                <span>会员中心</span>
+            </h3>
+            <ul>
+                <li onclick="location.href='{:url('self')}';">
+                    <span>欢迎页</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+                <li onclick="location.href='{:url('personData')}';">
+                    <span>个人资料</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+                <li onclick="location.href='{:url('agency')}';">
+                    <span>代理商</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+                <li onclick="location.href='{:url('address')}';">
+                    <span>收货地址</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+                <li onclick="location.href='{:url('coupon')}';">
+                    <span>我的优惠券</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+                <li onclick="location.href='{:url('changepwd')}';">
+                    <span>修改密码</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+            </ul>
+        </div>
+        <div class="item">
+            <h3>
+                <i class="icon i-trading-center"></i>
+                <span>交易中心</span>
+            </h3>
+            <ul>
+                <li onclick="location.href='{:url('memberOrderList',array('type'=>'all'))}';" data-href="">
+                    <span>我的订单</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+                <li onclick="location.href='{:url('memberOrderList',array('type'=>'4'))}';" data-href="">
+                    <span>退款/退货</span>
+                    <i class="icon i-arrow"></i>
+                </li>
+
+            </ul>
+        </div>
+    </article>
+</div>

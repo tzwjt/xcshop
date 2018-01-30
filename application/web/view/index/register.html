@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="keywords" content="">
+    <meta name="description" content="美肤日制SKINDAY">
+    <title>{$siteInfo.web_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="__STATIC__/web/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="__STATIC__/web/css/common_v0629.css">
+    <link rel="stylesheet" href="__STATIC__/web/css/register.css">
+    <script src="__STATIC__/web/js/hm.js"></script>
+    <script src="__STATIC__/web/js/jquery-1.9.1.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    <script src="__STATIC__/web/js/fixPlaceholder.js"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9b6de7f8203dbe921766364f57b7e41b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    <style>
+        #embed-captcha {
+            width: 300px;
+            margin: 0 auto;
+            margin-left: 2px;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        #notice {
+            color: red;
+        }
+
+        .address-list {
+            display: inline-block;
+            padding: 5px 8px;
+            margin: 3px;
+            border: 1px solid #c0bfc5;
+            cursor: pointer;
+        }
+
+        li.select {
+            background-color: #00a0e9;
+            color: #fff;
+
+        }
+
+        table tr td {
+            padding-bottom: 8px;
+        }
+
+        td.label {
+            font-size: 1em;
+            font-weight: normal;
+            position: relative;
+            top: 10px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script charset="UTF-8" id="gt_lib" src="__STATIC__/web/js/geetest.5.10.10.js"></script>
+
+    <link rel="stylesheet" href="__STATIC__/web/css/style.3.2.0.css">
+</head>
+<body>
+<div id="main" v-cloak>
+    <!--<div class="header2">-->
+    <!--<img src="__STATIC__/web/images/logo.png">-->
+    <!--</div>-->
+    <div class="m-body">
+        <div class="main">
+            <div class="main-header">
+                <p class="main-title">注册SKINDAY美肤日制账号</p>
+            </div>
+            <div class="main-cont">
+                <div class="main-cont-header">
+                    <div id="error-wrap-msg">
+                    </div>
+                    <form class="regist-frm" id="regist-frm">
+                        <input type="hidden" name="http_referer"
+                               value="3b08oFJXfSxjH%2FI6SWjhoa63a0wknhZkxE1PuU3hVhqazXU4NHBqQMHpeIymIIOy%2B0H3npU5rUIjSId7">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td class="label">你所在地：</td>
+                                <td>
+                                    <input type="text" v-model="addressInfo" style="background-color: #fff;"
+                                           placeholder="无需输入，用鼠标点击此处选择地址" data-toggle="modal"
+                                           data-target="#addressModal" @keyup="showAddress()">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="label">你所属商户：</td>
+                                <td style="padding-top: 0;padding-bottom: 0;">
+                                    <select style="height: 33px;width:60%;margin: 5px;"
+                                            @change="getVertifyCode(agent_name)"
+                                            v-model="agent_name">
+                                        <option v-for="item in agentInfo">{{item.agent_name}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">商户识别码：</td>
+                                <td>
+                                    <input type="text" style="background-color: #fff;" value="" disabled="disabled"
+                                           placeholder="选择商户后自动生成" v-model="registerInfo.identify_code">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">手机号码：</td>
+                                <td>
+                                    <input type="text" id="userPhone" value="" placeholder="输入注册手机号"
+                                           v-model="registerInfo.login_phone">
+                                </td>
+                                <td>
+                                    <div class="rewardChNum" id="rewardChNum" @click="getCode()">{{codeInfo}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">手机验证码：</td>
+                                <td>
+                                    <input type="text" id="chNum" style="width:169px!important;" placeholder="输入短信验证码"
+                                           v-model="registerInfo.verify_code">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">设置密码：</td>
+                                <td>
+                                    <input type="password" class="new" name="password" v-model="registerInfo.password"
+                                           placeholder="密码必须由字母和数字组成，长度在6-20之间" maxlength="20">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">确定密码：</td>
+                                <td>
+                                    <input type="password" v-model="password" class="confirm" name="password2"
+                                           placeholder="密码必须由字母和数字组成，长度在6-20之间" maxlength="20">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">&nbsp;</td>
+                                <td>
+                                    <div class="rewardChNum" id="registbtn" @click="registerCheck()">立即注册</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <div id="popup-captcha">
+                        <div class="gt_input"><input class="geetest_challenge" type="hidden"
+                                                     name="geetest_challenge"><input
+                                class="geetest_validate" type="hidden" name="geetest_validate"><input
+                                class="geetest_seccode" type="hidden" name="geetest_seccode"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--地址模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="addressModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">地址选择器</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="province" style="width:40%;float: left;padding:5px;">
+                        <h1 class="text-center" style="padding: 5px;font-size:1.2em;">省</h1>
+                        <ul>
+                            <li :class="{'address-list':true,'select':provinceIndex==index}"
+                                v-for="(item,index) in address.province" v-text="item.province_name.substr(0,3)"
+                                @click="getCity(index)"></li>
+                        </ul>
+                    </div>
+                    <div class="city" style="width:30%;padding:5px;float: left;">
+                        <h1 class="text-center" style="padding: 5px;font-size:1.2em;">市</h1>
+                        <ul>
+                            <li :class="{'address-list':true,'select':cityIndex==index}"
+                                v-for="(item,index) in address.city" v-text="item.city_name.substr(0,3)"
+                                @click="getdistrict(index)"></li>
+                        </ul>
+                    </div>
+                    <div class="district" style="width:29%;float: left;padding:5px;">
+                        <h1 class="text-center" style="padding: 5px;font-size:1.2em;">区、县</h1>
+                        <ul>
+                            <li :class="{'address-list':true,'select':districtIndex==index}"
+                                v-for="(item,index) in address.district" v-text="item.district_name.substr(0,3)"
+                                @click="selectDistrict(index)"></li>
+                        </ul>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" @click="selectAddress()">选择</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+<!--<script src="__STATIC__/web/js/gt.js"></script>-->
+<!--<script src="__STATIC__/web/js/register.js"></script>-->
+<script src="__STATIC__/web/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script src="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js" type="text/ecmascript"></script>
+<script>
+    var mainVue;
+    $(function () {
+        mainVue = new Vue({
+            el: "#main",
+            data: {
+                address: {
+                    province: '',
+                    city: '',
+                    district: ''
+                },
+                codeInfo: "获取短信验证码",
+                addressInfo: '',
+                time: 0,
+                province: '',
+                city: '',
+                district: '',
+                provinceIndex: -1,
+                cityIndex: -1,
+                districtIndex: -1,
+                password: '',
+                agentInfo: [],
+                agent_name: '',
+                registerInfo: {
+                    login_phone: '',
+                    password: '',
+                    identify_code: '',
+                    province: '',
+                    city: '',
+                    district: '',
+                    verify_code: ''
+                }
+            },
+            created: function () {
+                if(remote_ip_info.ret=='1'){
+                    this.registerInfo.province = remote_ip_info["province"] + "省";
+                    this.registerInfo.city = remote_ip_info["city"] + "市";
+                    this.$http.post("{:url('shop/goods/getDistrictByProvinceAndCity')}", {
+                                province: this.registerInfo.province,
+                                city: this.registerInfo.city
+                            },
+                            {emulateJSON: true}).then(function (district) {
+                        this.registerInfo.district = district.data.data[0].district_name;
+                        this.addressInfo = this.registerInfo.province + "," + this.registerInfo.city + "," + this.registerInfo.district;
+                        this.getAgent();
+                    });
+                }else{
+                    this.registerInfo.province = "江苏省";
+                    this.registerInfo.city = "泰州市";
+                    this.registerInfo.district = "海陵区";
+                    this.addressInfo = this.registerInfo.province + "," + this.registerInfo.city + "," + this.registerInfo.district;
+                    this.getAgent();
+                }
+
+                this.$http.post("{:url('shop/member/getProvince')}", {},
+                        {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.address.province = res.data.data;
+                    }
+                });
+            },
+            methods: {
+                getCity: function (index) {
+                    this.provinceIndex = index;
+                    this.cityIndex = this.districtIndex = -1;
+                    this.province = this.address.province[index].province_name;
+                    this.city = this.district = '';
+                    this.address.city = this.address.district = '';
+                    this.$http.post("{:url('shop/member/getCity')}", {province_id: this.address.province[index].id},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.address.city = res.data.data;
+                        } else {
+                            layer.alert("获取市区信息失败，请刷新后重试...", {icon: 6, title: "提示"});
+                        }
+                    }, function (res) {
+                        layer.alert("获取市区信息失败，请刷新后重试...", {icon: 6, title: "提示"});
+                    });
+                },
+                getdistrict: function (index) {
+                    this.cityIndex = index;
+                    this.districtIndex = -1;
+
+                    this.city = this.address.city[index].city_name;
+                    this.district = '';
+                    this.address.district = '';
+                    this.$http.post("{:url('shop/member/getDistrict')}", {city_id: this.address.city[index].id},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.address.district = res.data.data;
+                        } else {
+                            layer.alert("获取区、县信息失败，请刷新后重试...", {icon: 6, title: "提示"});
+                        }
+                    }, function (res) {
+                        layer.alert("获取区、县信息失败，请刷新后重试...", {icon: 6, title: "提示"});
+                    });
+                },
+                selectDistrict: function (index) {
+                    this.districtIndex = index;
+                    this.district = this.address.district[index].district_name;
+                },
+                selectAddress: function () {
+                    if (this.district == '') {
+                        layer.alert("请选择完整的地址", {icon: 6, title: "提示"});
+                    } else {
+                        this.registerInfo.province = this.province;
+                        this.registerInfo.city = this.city;
+                        this.registerInfo.district = this.district;
+                        this.addressInfo = this.registerInfo.province + "," + this.registerInfo.city + "," + this.registerInfo.district;
+                        this.getAgent();
+                        $('#addressModal').modal('hide')
+                    }
+                },
+                showAddress: function () {
+                    this.addressInfo = '';
+                    this.registerInfo.province = this.registerInfo.city = this.registerDistrict = '';
+                },
+                getVertifyCode: function (agentName) {
+                    this.registerInfo.identify_code = '';
+                    for (i = 0; i < this.agentInfo.length; i++) {
+                        if (this.agentInfo[i].agent_name == agentName) {
+                            this.registerInfo.identify_code = this.agentInfo[i].identify_code;
+                            break;
+                        }
+                    }
+                },
+                getAgent: function () {
+                    layer.msg('正在加载商户信息', {
+                        icon: 16
+                        , shade: [0.2, "#888"]
+                    });
+                    this.agentInfo = [];
+                    this.$http.post("{:url('shop/member/getAgentByAddress')}", {
+                                province: this.registerInfo.province,
+                                city: this.registerInfo.city,
+                                district: this.registerInfo.district
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            for (i = 0; i < res.data.data.length; i++) {
+                                this.agentInfo.push(res.data.data[i]);
+                            }
+                            this.agent_name = this.agentInfo[0].agent_name;
+                            this.registerInfo.identify_code = this.agentInfo[0].identify_code;
+                        }
+                    });
+                },
+                getCode: function () {
+                    if (this.time != 0) {
+                        return;
+                    }
+                    if (this.registerInfo.login_phone == '') {
+                        layer.alert("手机号码不能为空", {icon: 6, title: '提示'});
+                        return;
+                    }
+                    if (!(/^1[34578]\d{9}$/.test(this.registerInfo.login_phone))) {
+                        layer.alert("请输入正确的手机号码", {icon: 6, title: '提示'});
+                        return;
+                    }
+                    this.$http.post("{:url('shop/member/getMobileVerifyCode')}", {login_phone: this.registerInfo.login_phone},
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            $("#userPhone").attr("disabled", "disabled");
+                            this.time = 60;
+                            var timeInt = setInterval(function () {
+                                mainVue.codeInfo = mainVue.time + "s可后重新获取";
+                                mainVue.time--;
+                                if (mainVue.time == 0) {
+                                    mainVue.codeInfo = "重新获取验证码"
+                                    $("#userPhone").removeAttr("disabled");
+                                    clearInterval(timeInt);
+                                }
+                            }, 1000);
+                            layer.alert(res.data.msg, {icon: 6, title: '提示'});
+                        } else {
+                            layer.alert(res.data.msg, {icon: 6, title: '提示'});
+                        }
+                    }, function (res) {
+                        layer.alert("获取验证码失败，请稍后重试", {icon: 6, title: '提示'});
+                    });
+                },
+                registerCheck: function () {
+                    //检验地址
+                    if (this.registerInfo.province == '' || this.registerInfo.city == '' || this.registerInfo.district == '') {
+                        layer.alert("请选择正确的地址", {icon: 6, title: '提示'});
+                        return;
+                    }
+                    //检验手机号码
+                    if (!(/^1[34578]\d{9}$/.test(this.registerInfo.login_phone))) {
+                        layer.alert("请输入正确的手机号码", {icon: 6, title: '提示'});
+                        return;
+                    }
+                    //检验验证码
+                    if (this.registerInfo.verify_code == '') {
+                        layer.alert("验证码不能为空", {icon: 6, title: '提示'});
+                        return;
+                    }
+                    //检验密码
+                    if (this.registerInfo.password == '') {
+                        layer.alert("密码不能为空", {icon: 6, title: '提示'});
+                        return;
+                    }
+                    if (!this.registerInfo.password.match(/\d/) || !this.registerInfo.password.match(/[a-zA-Z]/)) {
+                        layer.alert("密码必须包含字母和数字", {icon: 6, title: '提示'});
+                        return true;
+                    }
+                    if (this.registerInfo.password.length < 6 || this.registerInfo.password.length > 20) {
+                        layer.alert("密码长度不能小于6，且不能大于20", {icon: 6, title: '提示'});
+                        return true;
+                    }
+                    if (this.registerInfo.password != this.password) {
+                        layer.alert("两次输入的密码不相同", {icon: 6, title: '提示'});
+                        return true;
+                    }
+                    //提交数据
+                    var layMsg;
+                    this.$http.post("{:url('shop/member/register')}", this.registerInfo,
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            var layMsg = layer.alert(res.data.msg, {icon: 6, title: '提示'}, function () {
+//                                $.cookie('login_phone', mainVue.registerInfo.login_phone);
+//                                $.cookie('password', mainVue.registerInfo.password);
+//                                $.cookie('authKey', mainVue.registerInfo.authKey);
+//                                $.cookie('sessionId', mainVue.registerInfo.sessionId);
+                                layer.close(layMsg);
+
+                                auto_login("{:url('shop/member/login')}", mainVue.registerInfo.login_phone, mainVue.registerInfo.password);
+
+//                                location.href="{:url('index')}";
+                            });
+                        } else {
+                            layMsg = layer.alert(res.data.msg, {icon: 6, title: '提示'}, function () {
+                                location.reload();
+                                layer.close(layMsg);
+                            });
+                        }
+                    }, function (res) {
+                        layMsg = layer.alert("注册失败，请稍后重试", {icon: 6, title: '提示'}, function () {
+                            location.reload();
+                            layer.close(layMsg);
+                        });
+                    });
+                }
+            }
+        });
+    });
+    function auto_login(url, login_phone, password) {
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: {login_phone: login_phone, password: password},
+            success: function (data) {
+                var layMsg;
+                if (data.code == 0) {
+                    $.cookie('login_phone', login_phone);
+                    $.cookie('password', password);
+                    $.cookie('authKey', data.data.authKey);
+                    $.cookie('sessionId', data.data.sessionId);
+                    $.ajax({
+                        url: "{:url('shop/goods/syncUserCart')}",
+                        type: 'post',
+                        datatype: 'json',
+                        data: {},
+                        success: function (res) {
+                            if("{$upUrl}"==''){
+                                location.href = "{:url('index')}";
+
+                            }else{
+                                location.href = "{$upUrl}";
+
+                            }
+                            // if("{$nexturl}"==''){
+                            //     location.href = "{:url('index')}";
+                            //
+                            // }else{
+                            //     location.href = "{:url($nexturl)}";
+                            //
+                            // }
+                        },
+                        error:function (err) {
+                            location.href = "{:url('index')}";
+
+                        }
+                    });
+                } else {
+                    layMsg = layer.alert("登录失败(" + data.msg + ")", {icon: 6, title: "提示"}, function () {
+                        location.href = "{:url('login')}";
+                    });
+                }
+            },
+            error: function (err) {
+                var layMsg = layer.alert("自动登录失败，点击确认按钮后跳转到登录界面", {icon: 6, title: "提示"}, function () {
+                    location.href = "{:url('login')}";
+                });
+            }
+        })
+    }
+</script>
+</body>
+</html>

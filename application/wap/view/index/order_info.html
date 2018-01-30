@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{$siteInfo.wap_shop_title}{$seoInfo.seo_title}</title>
+    <meta name="keywords" content="{$seoInfo.seo_meta}">
+    <meta name="description" content="{$seoInfo.seo_desc}">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/loaders.min.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/base.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/wap/css/style.css">
+    <script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>
+    <script src="__STATIC__/web/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        var nexturl = "self";
+    </script>
+    <style>
+        #my-pay-list dd {
+            border-bottom: none;
+            padding: 0.4em 5%;
+            font-size: 12px;
+            float: left;
+        }
+
+        #pay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1666;
+            background-color: #fff;
+        }
+
+        .pay-content {
+            font-size: 14px;
+            background-color: #fafafa;
+        }
+        .div-pay{
+            height:60px;
+            padding-left: 80px;
+            background-repeat: no-repeat;
+            background-size: 40px 40px;
+            background-position: 20px 50%;
+            vertical-align: middle;
+            line-height: 60px;
+            font-size:16px;
+            background-color: #fff;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .alipay{
+            background-image: url("__STATIC__/wap/images/alipay.png");
+        }
+        .weixinpay{
+            background-image: url("__STATIC__/wap/images/weixinpay.png");
+        }
+        .select{
+            width:30px;
+            height: 30px;
+            background-image: url("__STATIC__/wap/images/select.png");
+            background-size: 100%;
+            position: absolute;
+            top:15px;
+            right: 20px;
+        }
+        .selected{
+            background-image: url("__STATIC__/wap/images/selected.png");
+
+        }
+        .niu-info{
+            background-color: #51a5ce;
+            color:#fff;
+        }
+        .niu-address{
+            font-size: 12px !important;
+            color:#666;
+            background-image: url('__STATIC__/wap/images/address.png');
+            background-repeat: no-repeat;
+            background-size: 2.5em 2.5em;
+            background-position:1em 50%;
+            padding-left: 4em!important;
+            border-bottom: 1px solid #ccc!important;
+        }
+        .niu-message{
+            background-image: url('__STATIC__/wap/images/message.png');
+        }
+        [v-cloak]{
+            display: none;
+        }
+        #total-money .float_r{
+            font-size:12px;
+            text-align: right;
+            width: 50%;
+            float: left;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+    {include file="index/auto_login"/}
+    <!--</script>-->
+</head>
+<!--loading页开始-->
+<body>
+<div style="height:44px;background-color:#000;position: fixed;top:0;left: 0;width:100%;z-index:1555">
+    <div style="width:100%;height: 100%;line-height: 100%;text-align: center;position: absolute;font-size:22px;color:#fff;padding-top: 10px;">
+        订单详情
+    </div>
+    <div style="width:24px;height:24px;float: left;margin-top: 10px;margin-left: 10px;position:relative;z-index:5555;">
+        <a href="javascript:window.history.back();">
+            <img src="__STATIC__/wap/images/back-5.png" style="width:100%;"/></a>
+    </div>
+    <div style="width:24px;height:24px;float: right;margin-top: 10px;margin-right: 10px;position:relative;z-index:5555;">
+        <a href="{:url('index')}">
+            <img src="__STATIC__/wap/images/home-5.png" style="width:100%;"/></a>
+    </div>
+</div>
+
+<div id="main" v-cloak class="contaniner fixed-conta" v-cloak style="margin-top: 30px;">
+    <section class="order" style="margin-bottom: 65px;">
+        <dl id="my-pay-list">
+            <dd class="niu-info" style="font-size: 15px;">
+                {{orderInfo.status_name}}
+            </dd>
+            <dd class="niu-info">
+                订单号：{{orderInfo.order_no}}
+            </dd>
+            <dd class="niu-info">
+                订单状态：{{orderInfo.status_name}}
+            </dd>
+            <dd class="niu-info">
+                下单时间：{{orderInfo.create_time}}
+            </dd>
+            <dd class="niu-info">
+                支付方式：{{orderInfo.payment_type_name}}
+            </dd>
+            <dd class="niu-info">
+                付款状态：{{orderInfo.pay_status_name}}
+            </dd>
+            <dd class="niu-info" v-if="expressCompay!=''">
+                快递公司：{{expressCompay}}
+            </dd>
+            <dd class="niu-info" v-if="expressCode!=''">
+                快递单号：{{expressCode}}<a :href="'{:url('expressInfo')}&order_id='+'{$order_id}'" v-if="expressCode!=''" style="color:darkorchid;margin-left: 1em;font-size:1.2em;">查看物流>></a>
+            </dd>
+            <template v-if="orderInfo.shipping_type==2">
+            <dd class="niu-address">
+                <p>提货点:{{orderInfo.order_pickup.name}}&nbsp;&nbsp;{{orderInfo.order_pickup.phone}}</p>
+                <p>{{orderInfo.order_pickup.province_name}}{{orderInfo.order_pickup.city_name}}{{orderInfo.order_pickup.district_name}}{{orderInfo.order_pickup.address}}</p>
+            </dd>
+            <dd class="niu-address">
+                <p>提货人:{{orderInfo.order_pickup.buyer_name}}&nbsp;&nbsp;{{orderInfo.order_pickup.buyer_mobile}}</p>
+                <p>备注：{{orderInfo.order_pickup.remark==''?'暂无':orderInfo.order_pickup.remark}}</p>
+            </dd>
+            </template>
+            <dd class="niu-address">
+                <p>收货地址</p>
+                <p v-html="orderInfo.address"></p>
+            </dd>
+            <dd class="niu-address niu-message">
+                <p>买家留言</p>
+                <p v-html="orderInfo.buyer_message==''?'空':orderInfo.buyer_message"></p>
+            </dd>
+            <dd style="padding: 0.45em 0;width: 100%;">
+                <ul v-for="(item1,index1) in orderInfo.order_goods" style="padding: 2%;width: 96%;">
+                    <a>
+                        <figure style="width: 25%;"><img :src="item1.picture_info.pic_cover_small"></figure>
+                        <li style="width: 70%;">
+                            <p style="font-size:1.2em;">{{item1.goods_name}}</p>
+                            <small v-if="item1.sku_name!=''">规格：{{item1.sku_name}}&nbsp;&nbsp;</small>
+                            <small v-if="item1.refund_status!=0" style="color:red;text-align: right;display:inline-block;font-size:1em;width:100%;line-height: 1.2em;">{{item1.status_name}}(退款金额：{{item1.refund_real_money}})&nbsp;&nbsp;</small>
+                            <strong>价格:￥{{item1.price}}&nbsp;&nbsp;数量:{{item1.num}}&nbsp;&nbsp;调价:¥{{item1.adjust_money}}</strong>
+                        </li>
+                    </a>
+                </ul>
+            </dd>
+            <dd style="padding: 2%;font-size:1.2em;color:#666;width:96%;" id="total-money">
+                <div class="float_r" style="margin-top:10px;">商品总额:<span
+                        class="totalPrice">¥{{orderInfo.goods_money}}</span></div>
+
+                <div class="float_r" style="margin-top:10px;">运费:<span
+                        class="totalPrice">+¥{{orderInfo.shipping_money}}</span></div>
+                <div class="float_r" style="margin-top:10px;">优惠减:<span
+                        class="totalPrice">-¥{{orderInfo.promotion_money}}</span></div>
+
+                <div class="float_r" style="margin-top:10px;">积分抵:<span
+                        class="totalPrice">-¥{{orderInfo.point_money}}</span></div>
+
+
+                <div class="float_r" style="margin-top:10px;">抵用券抵:<span
+                        class="totalPrice">-¥{{orderInfo.coupon_money}}</span></div>
+
+
+
+
+                <div class="float_r" style="margin-top:10px;">余额支付:<span class="totalPrice">-¥{{orderInfo.user_platform_money}}</span>
+                </div>
+
+                <div class="float_r" style="margin-top:10px;font-size:14px;width: 100%;">实际需要支付金额:<span id="goods_total_price"
+                                                                                             class="totalPrice"
+                                                                                             style="font-size:1.5em;">¥{{orderInfo.pay_money}}</span>
+                </div>
+                <div style="clear:both;"></div>
+
+                <!--<p>商品总价格:<span style="float: right;">¥{{orderInfo.pay_money}}</span></p>-->
+                <!--<p>运费:<span style="float: right;">¥{{orderInfo.shipping_money}}</span></p>-->
+                <!--<p>实际需支付:<span style="float: right;">¥{{totalPrice}}</span></p>-->
+            </dd>
+        </dl>
+    </section>
+</div>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var mainVue;
+    $(function () {
+        mainVue = new Vue({
+            el: "#main",
+            data: {
+                orderInfo: '',
+                payWay:1,
+                expressCompay:'',
+                expressCode:''
+            },
+            mounted: function () {
+                this.$http.post("{:url('shop/order/orderDetail')}", {order_id: "{$order_id}"}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    },
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        this.orderInfo = res.data.data.order_details;
+                        this.expressCompay=res.data.data.express_name;
+                        this.expressCode=res.data.data.express_code;
+                    }
+                });
+
+                this.$http.post("{:url('shop/order/getOrderGoodsExpressMessage')}", {express_id: 4}, {
+                        headers: {
+                            authKey: $.cookie('authKey'),
+                            sessionId: $.cookie('sessionId')
+                        }
+                    },
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+//                        this.orderInfo = res.data.data.order_details;
+                    }
+                });
+
+
+
+            },
+            methods: {
+//                gotoPay: function (orderId) {
+//                    location.href = "{:url('order_detail')}" + "&order_id=" + orderId;
+//                },
+//                payAlert:function(){
+//                    layer.msg("相关支付未申请", {shade: [0.2, '#393D49']});
+//                }
+            },
+            computed:{
+                totalPrice:function () {
+                    return (parseFloat(this.orderInfo.pay_money)+parseFloat(this.orderInfo.shipping_money)).toFixed(2);
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

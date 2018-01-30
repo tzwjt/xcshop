@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+
+    <style>
+        .Switch_FlatRadius.On span.switch-open {
+            background-color: #0072D2;
+            border-color: #0072D2;
+        }
+    </style>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+</head>
+<body>
+{include file="index/head"/}
+<div id="vue-main" v-cloak>
+    <article class="ns-base-article">
+        <aside class="ns-base-aside">
+            {include file="index/nav_left"/}
+            <nav>
+                <ul>
+
+                    {foreach item="vo" name="module_second"}
+
+                    <li {if condition="$vo['selected'] eq true"}
+                        class='selected'
+                        {/if}><a href="{:url($vo['url'])}">{$vo['module_name']}</a></li>
+                    {/foreach}
+                    <!--<li onclick="location.href='{:url('member')}'">会员列表</li>-->
+                    <!--<li onclick="location.href='{:url('point_detail')}'">积分列表</li>-->
+                    <!--<li onclick="location.href='{:url('balance_detail')}'">余额管理</li>-->
+                    <!--<li class="selected" onclick="location.href='{:url('member_level_list')}'">会员等级</li>-->
+                </ul>
+            </nav>
+            <div style="height:50px;"></div>
+            <div id="bottom_copyright">
+                <footer>
+                    <img src="" id="copyright_logo"/>
+                    <p>
+                        <span id="copyright_meta"></span>
+                        <br/>
+                        <span id="copyright_companyname"></span>
+                        <br/>
+                        <span id="copyright_desc"></span>
+                    </p>
+                </footer>
+            </div>
+        </aside>
+        <section class="ns-base-section">
+            <!-- 操作提示 -->
+            <div class="ns-warm-prompt" >
+                <div class="alert alert-info">
+                    <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                    <h4>
+                        <i class="fa fa-bell"></i>
+                        <span>操作提示</span>
+                    </h4>
+                    <div style="font-size:12px;text-indent:18px;">
+                        会员等级
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative;margin:10px 0;">
+                <!-- 三级导航菜单 -->
+                <nav class="ns-third-menu">
+                    <ul>
+                        <li class="selected">会员等级</li>
+                    </ul>
+                </nav>
+                <div class="right-side-operation">
+                    <ul>
+
+                        <li><a href="{:url('add_member_level')}" style="color:#0072D2;"><i
+                                class="fa fa-plus-circle" style="color:#0072D2;"></i>&nbsp;添加等级</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ns-main">
+
+                <table class="table-class">
+                    <thead>
+                    <tr align="center">
+                        <!--<th><input type="checkbox" @click="checkAll()" v-model="is_all"></th>-->
+                        <th>等级名称</th>
+                        <th>升级条件</th>
+                        <th>折扣率（%）</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr align="center" v-for="item in infoList">
+                        <!--<td><input name="sub" type="checkbox" @click="check_is_all()" v-model="item.check"></td>-->
+                        <td>{{item.level_name}}</td>
+                        <td v-html="item.upgrade_name"></td>
+                        <td>{{item.goods_discount*100}}</td>
+                        <td>
+                            <a style="color:#0072D2;" :href="'{:url('edit_member_level')}'+'&level_id='+item.id">修改</a>
+                            <a style="color:#0072D2;display: inline-block;margin-left: 2em;" v-if="item.is_default!=1" @click="del_info(item.id)">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: center;background-color: #fff;" id="pagelist"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </article>
+</div>
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script>
+    var vueMain;
+    $(function () {
+        vueMain = new Vue({
+            el: "#vue-main",
+            data: {
+                infoList: [],
+                page_index: 1,
+                page_size: 10,
+                is_all:false
+            },
+            mounted: function () {
+                this.getInfo();
+            },
+            methods: {
+                getInfo: function () {
+                    this.$http.post("{:url('platform/member/memberLevelList')}", {
+                                page_index: this.page_index,
+                                page_size: this.page_size,
+                            },
+                            {emulateJSON: true}).then(function (res) {
+                        if (res.data.code == 0) {
+                            this.infoList = res.data.data.data;
+                            for(i=0;i<this.infoList.length;i++){
+                                if(this.infoList[i].upgrade==0){
+                                    this.infoList[i].upgrade_name="无条件"
+                                }else if(this.infoList[i].upgrade==1){
+                                    this.infoList[i].upgrade_name="积分满"+this.infoList[i].min_integral+"分";
+
+                                }else if(this.infoList[i].upgrade==2){
+                                    this.infoList[i].upgrade_name="消费额满"+this.infoList[i].min_integral+"元";
+                                }else{
+                                    this.infoList[i].upgrade_name="积分满"+this.infoList[i].min_integral+"分&nbsp;"+(this.infoList[i].relation==1?"或":"且")+"&nbsp;消费额满"+this.infoList[i].min_integral+"元";
+                                }
+                            }
+                            layui.use(['laypage', 'layer'], function () {
+                                var laypage = layui.laypage, layer = layui.layer;
+                                laypage.render({
+                                    elem: 'pagelist',
+                                    count: res.data.data.total_count,
+                                    limit: vueMain.page_size,
+                                    layout: ['count', 'prev', 'page', 'next', 'skip'],
+                                    curr: vueMain.page_index,
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            vueMain.page_index = obj.curr;
+                                            vueMain.getAgencyInfo();
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                },
+                checkAll:function(){
+                    for(i=0;i<this.infoList.length;i++){
+                        this.infoList[i].check=this.is_all;
+                    }
+                },
+                check_is_all:function(){
+                    for(i=0;i<this.infoList.length;i++){
+                        if(!this.infoList[i].check){
+                            this.is_all=false;
+                            return;
+                        }
+                    }
+                    this.is_all=true;
+                },
+                del_info:function(id){
+                    layer.confirm('你确定要删除数据吗？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        vueMain.$http.post("{:url('platform/member/deleteMemberLevel')}", {level_id: id},
+                                {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert(res.data.msg,{icon:6});
+                                vueMain.getInfo();
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    });
+                }
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

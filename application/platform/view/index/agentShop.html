@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1"/>
+    <title>{$platformName}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_blue_common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/simple-switch/css/simple.switch.three.css"/>
+    <script src="__STATIC__/js/jquery-1.8.1.min.js"></script>
+    <script src="__STATIC__/blue/bootstrap/js/bootstrap.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrapSwitch.js"></script>
+    <script src="__STATIC__/simple-switch/js/simple.switch.js"></script>
+    <script src="__STATIC__/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__STATIC__/js/seller.js"></script>
+
+    <script src="__STATIC__/admin/js/jquery-ui.min.js"></script>
+    <script src="__STATIC__/admin/js/ns_tool.js"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/blue/css/ns_table_style.css">
+    <script>
+        var PLATFORM_NAME = "{$platformInfo.platform_site_name}";
+                var ADMINIMG = "index.php";//后台图片请求路径
+                var ADMINMAIN = "index.php";//后台请求路径
+                var PAGESIZE = "20";//分页显示页数
+        var _STATIC = "__STATIC__";
+        //上传文件路径
+        var UPLOADGOODS = 'UPLOAD_GOODS';//存放商品图片
+        var UPLOADGOODSCATEGORY = 'UPLOAD_GOODS_CATEGORY';////存放商品分类图片
+        var IMAGEBOX = '{:url("platform/album/dialogAlbumList")}';
+        var UPLOADAGENTSHOP="UPLOAD_AGENT_SHOP";
+    </script>
+    <!-- 编辑商品时，用到的JS、CSS资源 -->
+    <!-- 编辑商品，公共CSS、JS文件引用 -->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/product.css">
+    <!-- 选择商品图，弹出框的样式 -->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/defau.css">
+    <link href="__STATIC__/sku/jquery.ui.css" type="text/css" rel="stylesheet">
+    <link href="__STATIC__/sku/goods_create.css" type="text/css" rel="stylesheet">
+    <link href="__STATIC__/sku/base.css" type="text/css" rel="stylesheet">
+    <link href='__STATIC__/admin/css/drag_haul/jquery.gridly.css' rel='stylesheet' type='text/css'>
+    <link href='__STATIC__/admin/css/drag_haul/sample.css' rel='stylesheet' type='text/css'>
+    <link href='__STATIC__/admin/css/select_category_next.css' rel='stylesheet' type='text/css'>
+    <link href="__STATIC__/admin/css/goods/editgoods.css" rel="stylesheet" type="text/css">
+    <!-- 简约版 -->
+    <link href="__STATIC__/blue/css/goods/add_goods.css" rel="stylesheet" type="text/css">
+    <link href="__STATIC__/mycss/addgoods.css" rel="stylesheet" type="text/css">
+    <!--<script type="text/javascript" charset="utf-8" src="__STATIC__/admin/js/ueditor/ueditor.config.js"></script>-->
+    <!--<script type="text/javascript" charset="utf-8" src="__STATIC__/admin/js/ueditor/ueditor.all.js"></script>-->
+    <!--&lt;!&ndash;建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败&ndash;&gt;-->
+    <!--&lt;!&ndash;这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文&ndash;&gt;-->
+    <!--<script type="text/javascript" charset="utf-8" src="__STATIC__/admin/js/ueditor/zh-cn.js"></script>-->
+    <!--<script src="__STATIC__/admin/js/ajax_file_upload.js" type="text/javascript"></script>-->
+    <script src="__STATIC__/admin/js/image_common.js" type="text/javascript"></script>
+    <script src="__STATIC__/admin/js/kindeditor-min.js" type="text/javascript"></script>
+    <!--  用  验证商品输入信息-->
+    <script src="__STATIC__/admin/js/jscommon.js" type="text/javascript"></script>
+    <!-- 用 ，加载数据-->
+    <script src="__STATIC__/admin/js/art_dialog.source.js"></script>
+    <script src="__STATIC__/admin/js/iframe_tools.source.js"></script>
+    <!-- 我的图片 -->
+    <script src="__STATIC__/admin/js/material_managedialog.js"></script>
+    <script src="__STATIC__/js/ajax_file_upload.js" type="text/javascript"></script>
+    <script src="__STATIC__/js/file_upload.js" type="text/javascript"></script>
+    <!--<script src='__STATIC__/admin/js/goods/init_address.js'></script>-->
+    <script type="text/javascript" src="__STATIC__/admin/js/goods/goods_sku_create.js"></script>
+    <script src="__STATIC__/admin/js/goods/release_good_second.js"></script>
+    <script type="text/javascript" src="__STATIC__/admin/js/plugin/jquery.toTop.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type='text/javascript' src='__STATIC__/admin/js/drag_haul/sample.js'></script>
+
+    <style>
+        .upload-thumb {
+            display: block !important;
+            float: left;
+            width: 147px !important;
+            height: 147px !important;
+            position: relative;
+        }
+
+        .upload-thumb img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .img-box, .sku-img-box {
+            overflow: hidden;
+        }
+
+        .off-box, .sku-off-box {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            right: 0;
+            top: 0;
+            line-height: 18px;
+            background-color: #FFF;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .black-bg {
+            position: absolute;
+            right: 0;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .img-error {
+            color: red;
+            height: 25px;
+            line-height: 25px;
+            display: none;
+        }
+
+        .radio input[type="checkbox"] {
+            position: relative;
+            bottom: 3px;
+            right: 3px;
+        }
+
+        .category-list {
+            background-color: #E6E6E6;
+            float: left;
+            padding-left: 10px;
+            line-height: 40px;
+            font-size: 1.2em;
+            margin-right: 30px;
+            border: none;
+        }
+
+        .category-list span {
+            color: #333;
+            width: 40px;
+            height: 100%;
+            border-left: 1px solid #fff;
+            display: inline-block;
+            margin-left: 10px;;
+            text-align: center;
+            font-weight: bolder;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .my-btn {
+            background-color: #fff;
+            color: #000;
+            display: inline-block;
+            padding: 3px 5px;
+            border: 1px solid #aaa;
+        }
+
+        .my-btn:hover {
+            background-color: #fff;
+        }
+
+        em.hover:hover {
+            cursor: pointer;
+        }
+
+        .my-table th, .my-table td {
+            width: 80px;
+            text-align: center;
+        }
+
+        .my-table td input {
+            width: 80%;
+        }
+
+        .my-table, .my-table tr th, .my-table tr td {
+            border: 1px solid #0094ff;
+        }
+
+        .my-table {
+            border-collapse: collapse
+        }
+        .ns-base-header {
+            z-index: 0;
+        }
+
+        #niu-stock {
+            margin-top: 1em;
+        }
+
+        #niu-stock tr {
+            border-bottom: 1px solid #ccc;
+        }
+        #niu-stock, #niu-stock tr th, #niu-stock tr td {
+            border: none;
+        }
+
+        #niu-stock tr th, #niu-stock tr td {
+            min-width: 150px;
+            max-width: 300px;
+        }
+        .table tbody>tr:last-of-type{
+            border-bottom-color: #ccc;
+        }
+        .ncsc-form-goods dl dd{
+            line-height: normal;
+        }
+        .upload-thumb{
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+{include file="index/head"/}
+<article class="ns-base-article" id="main" v-cloak>
+    <aside class="ns-base-aside">
+        {include file='index/nav_left'/}
+        <nav>
+            {include file="index/agency_nav"/}
+        </nav>
+    </aside>
+    <section class="ns-base-section">
+        <!-- 操作提示 -->
+        <div class="ns-warm-prompt" >
+            <div class="alert alert-info">
+                <button type="button" class="close" onclick="$('.ns-warm-prompt').hide();">&times;</button>
+                <h4>
+                    <i class="fa fa-bell"></i>
+                    <span>操作提示</span>
+                </h4>
+                <div style="font-size:12px;text-indent:18px;">
+                    体验店详情
+                </div>
+            </div>
+        </div>
+        <div style="position:relative;margin:10px 0;">
+            <!-- 三级导航菜单 -->
+            <nav class="ns-third-menu">
+                <ul>
+                    <li class="selected">
+                        体验店详情
+                    </li>
+                </ul>
+            </nav>
+            <div class="right-side-operation">
+                <ul>
+                    <li style="display:none;"><a class="js-open-warmp-prompt"><i class="fa fa-bell"></i>提示</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ns-main" style="padding-bottom: 100px;">
+            <div class="ncsc-form-goods" id="goods-info">
+                <h3 class="js-goods-info">基本信息</h3>
+                <dl>
+                    <dt>标题：</dt>
+                    <dd>
+                        <input class="productname" type="text" placeholder="请输入标题，不能超过50个字" v-model="info.title"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>关键字：</dt>
+                    <dd>
+                        <input class="productname" type="text" v-model="info.keyword" placeholder="商品关键字,能准确搜到,比如 : 泰州|店名 之类的"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>店名：</dt>
+                    <dd>
+                        <input class="productname" type="text" v-model="info.shop_name" placeholder="请输入店名，不能超过50个字"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>联系人：</dt>
+                    <dd>
+                        <input class="productname" type="text" v-model="info.contacts" placeholder="请输入联系人"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>联系电话：</dt>
+                    <dd>
+                        <input class="productname" type="text" v-model="info.shop_phone" placeholder="请输入联系电话，不能超过50个字"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>营业时间：</dt>
+                    <dd>
+                        <input class="productname" type="text" id="business-begin" onclick="WdatePicker({dateFmt:'HH:mm'})" placeholder="开始时间" style="width:150px;"/>
+                        -
+                        <input class="productname" type="text" id="business-end" onclick="WdatePicker({dateFmt:'HH:mm'})" placeholder="结束时间" style="width:150px;"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>地址：</dt>
+                    <dd>
+                        <input class="productname" type="text" v-model="info.shop_address" placeholder="请输入正确的地址"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>经纬度：</dt>
+                    <dd>
+                        <input class="productname" type="number" v-model="info.shop_lng" placeholder="经度" style="width:100px;"/>
+                        <input class="productname" type="number" v-model="info.shop_lat" placeholder="纬度" style="width:100px;margin-left: 15px;"/>
+                    </dd>
+                </dl>
+                <dl id="status-dl" style="display: none;">
+                    <dt>状态：</dt>
+                    <dd>
+                        <input class="productname" type="text" id="agent-status" placeholder="" disabled/>
+                    </dd>
+                </dl>
+                <dl>
+                <dl>
+                    <dt>体验店简介：</dt>
+                    <dd>
+                        <textarea v-model="info.shop_introduce" rows="3" style="width:507px;"></textarea>
+                    </dd>
+                </dl>
+                <h3 class="js-goods-img">轮播图</h3>
+                <dl>
+                    <dt><i class="required">*</i>轮播图：</dt>
+                    <dd>
+                        <div id="goods_picture_box" class="controls"
+                             style="background-color:#FFF;border: 1px solid #E9E9E9;">
+                            <div class="ncsc-goods-default-pic">
+                                <div class="goodspic-uplaod" style="padding: 15px;">
+                                    <div class='img-box' style="min-height:160px;">
+                                        <div class="upload-thumb" v-if="thumb.length==0"><img
+                                                src="__STATIC__/admin/images/album/default_goods_image_240.gif"></div>
+                                        <div class="upload-thumb draggable-element" v-for="(item,index) in thumb"><img
+                                                nstype="goods_image" :src="item"><input type="hidden"
+                                                                                            class="upload_img_id"
+                                                                                            nstype="goods_image"
+                                                                                            value="128">
+                                            <div class="black-bg hide" style="display: none;">
+                                                <div class="off-box" @click="delImg(index)">×</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <p class="hint">上传轮播图片，支持同时上传多张图片；<font color="red">上传的图片长宽比例最好为5:3，否则可能会显示变形</font>。</p>
+                                    <div class="handle">
+                                        <div class="ncsc-upload-btn">
+                                            <a href="javascript:void(0);">
+									<span>
+
+                                        <input class="input-file" name="file_upload" id="uploadImg" type="file"
+                                               onchange="imgUpload(this)">
+									</span>
+                                                <p>图片上传</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </dd>
+                </dl>
+                <h3 class="js-goods_detail">描述</h3>
+                <dl>
+                    <dt><i class="required">*</i>描述：</dt>
+                    <dd>
+                        <div class="controls" id="discripContainer">
+                            <!--<textarea id="tareaProductDiscrip" name="discripArea"-->
+                                      <!--style="height: 500px; width: 800px; display: none;"></textarea>-->
+                            <!--<script id="editor" type="text/plain" style="width: 800px; height: 500px;"></script>-->
+                            <div id="container" type="text/plain" style="width: 800px; height: 500px;"></div>
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+            <div style="text-align: center;padding-top: 1em;">
+            <button class="btn-common" id="btnSave" type="button" style="background-color: #0072D2;" @click="btnSave()"></button>
+            <button class="btn-common" id="delSave" type="button" style="background-color: red;display: none;" @click="delSave()">清空体验店</button>
+            </div>
+        </div>
+    </section>
+</article>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/jquery-ui-private.css">
+<script src="__STATIC__/admin/js/drag-arrange.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/admin/js/ajax_file_upload.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.ui.widget.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.fileupload.js" charset="utf-8"></script>
+<script>
+    var platform_shopname = '{$platformInfo.platform_site_name}';
+</script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery-ui-private.js" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.timers.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue.js"></script>
+<script type="text/javascript" src="__STATIC__/vue/vue-resource.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.all.js"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+    var ue = UE.getEditor('container',{
+        toolbars:[
+            ['undo', 'redo', 'bold', 'indent', 'italic','underline', 'strikethrough', 'subscript', 'superscript', 'formatmatch',
+            'selectall', 'preview', 'horizontal', 'removeformat', 'unlink', 'cleardoc', 'fontfamily','fontsize',
+            'paragraph'],
+            ['simpleupload', 'link', 'spechars', 'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify',
+            'forecolor', 'backcolor']
+        ],
+        serverUrl: "__STATIC__/ueditor/php/controller.php?imgUrl=__ROOT__/UPLOAD_AGENT_SHOP"
+    });
+    var vueMain;
+    $(function () {
+        $('.ncsc-form-goods').hide();
+        $('.ncsc-form-goods:eq(0)').show();
+        vueMain = new Vue({
+            el: "#main",
+            data: {
+                info:{
+                    shop_banner:[]
+                },
+                thumb:[]
+            },
+            mounted: function () {
+                this.$http.post("{:url('platform/Agent/agentShopDetails')}", {agent_id:"{$agent_id}",agent_shop_id:"{$agent_shop_id}"},
+                    {emulateJSON: true}).then(function (res) {
+                    if (res.data.code == 0) {
+                        if(res.data.data!='' && res.data.data!=null){
+                            $("#btnSave").text("更新");
+                            $("#status-dl").show();
+                            $("#delSave").show();
+                            this.info=res.data.data;
+                            $("#business-begin").val(this.info.business_begin);
+                            $("#business-end").val(this.info.business_end);
+
+                            if(this.info.status==0){
+                                $("#agent-status").val("待审核");
+                            }
+                            if(this.info.status==1){
+                                $("#agent-status").val("正常");
+                            }
+                            if(this.info.status==2){
+                                $("#agent-status").val("未通过");
+                            }
+                            if(this.info.status==3){
+                                $("#agent-status").val("关闭");
+                            }
+                            this.info.agent_shop_id=this.info.id;
+                            this.thumb=this.info.shop_banner.split(";");
+                            ue.setContent(this.info.shop_content);
+                        }else{
+                            $("#btnSave").text("新增");
+                            this.info={
+                                agent_id:"{$agent_id}",
+                                title:'', keyword:'', shop_name:'', shop_banner:'', shop_address:'',
+                                shop_lng:'', shop_lat:'',shop_phone:'', contacts:'', business_begin:'',
+                                business_end:'', shop_introduce:'', shop_content:'',agent_shop_id:''
+                            };
+                        }
+                    }
+                });
+            },
+            methods: {
+                delImg: function (index) {
+                    this.info.shop_banner.splice(index, 1);
+                },
+                btnSave:function () {
+                    if(this.info.title.length>50){
+                        layer.msg("标题不能超过50个字符",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.info.keyword.length>50){
+                        layer.msg("关键字不能超过50个字符",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.info.shop_name==''){
+                        layer.msg("请填写店名",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.info.shop_name.length>50){
+                        layer.msg("店名不能超过50个字符",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.thumb.length==0){
+                        layer.msg("轮播图不能少于一张",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    this.info.shop_banner='';
+                    for(i=0;i<this.thumb.length;i++){
+                        if(this.info.shop_banner==''){
+                            this.info.shop_banner=this.thumb[i];
+                        }else{
+                            this.info.shop_banner+=";"+this.thumb[i];
+                        }
+                    }
+
+                    if(this.info.shop_address==''){
+                        layer.msg("请填写地址",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.info.shop_address.length>50){
+                        layer.msg("地址不能超过50个字符",{shade:[0.2,"#333"]});
+                        return;
+                    }
+
+                    if(this.info.shop_phone==''){
+                        layer.msg("请填写联系电话",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.info.shop_phone.length>20){
+                        layer.msg("联系电话不能超过20个字符",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.info.contacts==''){
+                        layer.msg("请填写联系人",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    if(this.info.contacts.length>20){
+                        layer.msg("联系人不能超过20个字符",{shade:[0.2,"#333"]});
+                        return;
+                    }
+                    this.info.business_begin=$("#business-begin").val();
+                    this.info.business_end=$("#business-end").val();
+                    this.info.shop_content = ue.getContent();
+                    if(this.info.agent_shop_id==''){
+                        this.$http.post("{:url('platform/Agent/addAgentShop')}", this.info,
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert("体验店信息添加成功",{icon:6},function () {
+                                    location.href="{:url('agentShopList')}";
+
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    }else{
+                        this.$http.post("{:url('platform/Agent/updateAgentShop')}", this.info,
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert("体验店信息更新成功",{icon:6},function () {
+                                    location.reload();
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5});
+                            }
+                        });
+                    }
+                },
+                delSave:function () {
+                    layer.confirm('你确定要清空体验店信息吗？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(){
+                        vueMain.$http.post("{:url('platform/Agent/delAgentShop')}", {agent_id:"{$agent_id}",agent_shop_id:"{$agent_shop_id}"},
+                            {emulateJSON: true}).then(function (res) {
+                            if (res.data.code == 0) {
+                                layer.alert("体验店信息已清空",{icon:6},function () {
+                                    location.href="{:url('agentShopList')}";
+                                });
+                            }else{
+                                layer.alert(res.data.msg,{icon:5},function () {
+                                    location.reload();
+                                });
+                            }
+                        });
+                    });
+                }
+            },
+        });
+    });
+    function imgUpload(event) {
+        var fileid = $(event).attr("id");
+        var data = { 'file_path' : UPLOADAGENTSHOP };
+        uploadFile(fileid,data,function(res){
+            if (res.state == 1) {
+                vueMain.thumb.push(res.file.smallPath.path);
+            } else {
+                layer.alert("图片上传失败", {icon: 6, title: '提示'});
+            }
+        },"{:url('util/img_upload/photoAlbumUploadComm')}");
+    }
+    //图片幕布出现
+    $(".draggable-element").live('mouseenter', function () {
+        $(this).children(".black-bg").show();
+    });
+    //图片幕布消失
+    $(".draggable-element").live('mouseleave', function () {
+        $(this).children(".black-bg").hide();
+    });
+</script>
+
+</body>
+</html>

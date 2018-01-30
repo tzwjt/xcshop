@@ -1,0 +1,44 @@
+<script>
+    var login_phone=$.cookie("login_phone");
+    var password=$.cookie("password");
+
+    if(login_phone==null || password==null){
+        if(nexturl!=undefined && nexturl!=""){
+            location.href="{:url('login')}"+"&nexturl="+nexturl;
+        }else{
+            location.href="{:url('login')}";
+        }
+
+    }else{
+        $.ajax({
+            url:"{:url('shop/member/login')}",
+            data:{login_phone:login_phone,password:password},
+            dataType:'json',
+            async:false,
+            type:'post',
+            success:function(res){
+                if(res.code==0){
+                    $.cookie('login_phone',login_phone);
+                    $.cookie('password',password);
+                    $.cookie('authKey',res.data.authKey);
+                    $.cookie('sessionId',res.data.sessionId);
+                }else{
+                    if(nexturl!=undefined && nexturl!=""){
+                        location.href="{:url('login')}"+"&nexturl="+nexturl;
+                    }else{
+                        location.href="{:url('login')}";
+                    }
+                }
+            },
+            error:function(res){
+                alert("登录信息已失效,请重新登录...");
+                if(nexturl!=undefined && nexturl!=""){
+                    location.href="{:url('login')}"+"&nexturl="+nexturl;
+                }else{
+                    location.href="{:url('login')}";
+                }
+
+            }
+        });
+    }
+</script>

@@ -1,0 +1,132 @@
+<style>
+    body{
+        padding-top: 44px;
+    }
+    #niu-header{
+        background-image: url("__STATIC__/web/images/logo-5.png");
+        background-repeat: no-repeat;
+        background-size:55%;
+        background-position: 50%;
+    }
+    .niu-menu-list{
+        position: fixed;
+        width:100%;
+        height:100%;
+        background-color: #000;
+        z-index:5050;
+        display: none;
+    }
+    .niu-menu-list{
+        padding-top: 1em;
+        margin-top: 44px;
+    }
+    .niu-menu-list li{
+        text-align: center;
+        height:60px;
+        line-height: 60px;
+        vertical-align: middle;
+        border-bottom: solid 1px #1a1a1a;
+    }
+    .niu-menu-list li a{
+        color:#ccc;
+        font-size:18px;
+    }
+    .niu-menu{
+        background-size: 80% 80%;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        background-image: url("__STATIC__/wap/images/menu-ico-open.png");
+    }
+    .show-menu .niu-menu{
+        background-image: url("__STATIC__/wap/images/menu-ico-close.png");
+    }
+    .show-menu .niu-menu-list{
+        display: block;
+    }
+    .niu-menu.niu-menu-3{
+        background-image: url("__STATIC__/wap/images/home-font.png");
+    }
+    /*.niu-menu.niu-menu-1{*/
+        /*background-image: url("__STATIC__/wap/images/personal.png");*/
+    /*}*/
+    .niu-menu.niu-menu-1{
+        background-image: url("__STATIC__/wap/images/goback.png");
+    }
+    .register,.self{
+        display: none;
+    }
+    #niu-head-nav a{
+        text-decoration: none;
+    }
+</style>
+<div id="niu-header" style="height:44px;background-color:#000;position: fixed;top:0;left: 0;width:100%;z-index:1555">
+    {if condition="$actionName eq 'index'"}
+    <div class="niu-menu niu-menu-2" style="width:50px;height:44px;float: right;position:relative;z-index:5555;"></div>
+    {else/}
+    <div class="niu-menu niu-menu-3" onclick="location.href='{:url('index')}';" style="width:44px;height:44px;float: right;position:relative;z-index:5555;"></div>
+    {/if}
+    <!--<div class="niu-menu niu-menu-1" style="width:44px;height:44px;float: right;position:relative;z-index:5555;)" onclick="location.href='{:url("self")}'"></div>-->
+    {if condition="$show_back==1"}
+<div class="niu-menu niu-menu-1" style="width:44px;height:44px;float: left;position:relative;z-index:5555;)" onclick="window.history.back();"></div>
+{/if}
+
+<div class="niu-menu-list">
+        <ul id="niu-head-nav">
+            <!--<li><a href="{:url('index')}">首页</a></li>-->
+            <!--<li><a href="{:url('detail',array('list'=>'73'))}">产品方案</a></li>-->
+            <!--<li><a href="{:url('app')}">App下载</a></li>-->
+            <!--<li><a href="{:url('tyd')}">设备共享</a></li>-->
+            <!--<li><a href="{:url('index')}">防伪查询</a></li>-->
+            <!--<li><a href="{:url('appInfo')}">关于我们</a></li>-->
+            <li class="register"><a href="{:url('login',array('nexturl'=>'index'))}">登录/</a><a href="{:url('register')}">注册</a></li>
+            <li class="self"><a href="{:url('self')}">个人中心</a></li>
+        </ul>
+    </div>
+</div>
+
+<!--<div id="niu-loader" style="z-index:6666;position: fixed;top:0;left: 0;width:100%;height:100%;background-color: #2aabd2;text-align: center;">-->
+    <!--<img src="__STATIC__/load/images/bars.svg" style="width: 100px;vertical-align: middle;text-align: center;margin-top: 50%;" alt="">-->
+<!--</div>-->
+
+<!--<script src="__STATIC__/web/js/jquery-1.10.2.min.js"></script>-->
+<script>
+    $(function(){
+        $.ajax({
+            url:"{:url('shop/AutoTask/loadAutoTask')}",
+            type:"post",
+            data:{},
+            datatype:"json",
+            success:function(res){
+            }
+        });
+        //获取菜单
+        $.ajax({
+            url:"{:url('shop/System/wapShopMenu')}",
+            type:"post",
+            data:{},
+            datatype:"json",
+            success:function(res){
+                if(res.code==0){
+                    var str='';
+                    for(i=0;i<res.data.data.length;i++){
+                        str+=" <li><a href='__ROOT__/index.php?s="+res.data.data[i].menu_url+"'>"+res.data.data[i].menu_name+"</a></li>";
+                    }
+                    $("#niu-head-nav").prepend(str);
+                }
+
+            }
+        });
+        $(".niu-menu-2").click(function(){
+            $("#niu-header").toggleClass("show-menu");
+        });
+        var login_phone=$.cookie("login_phone");
+        var password=$.cookie("password");
+        if(login_phone!=null && password!=null){
+            $(".self").show();
+        }else{
+            $(".register").show();
+        }
+    });
+</script>
+
+
