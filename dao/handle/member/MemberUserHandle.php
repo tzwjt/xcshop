@@ -9,6 +9,7 @@
 namespace dao\handle\member;
 
 use dao\handle\BaseHandle;
+use dao\handle\promotion\PromoteRewardRuleHandle;
 use dao\model\MemberUser as MemberUserModel;
 use dao\model\MemberAccount as MemberAccountModel;
 use dao\model\MemberLevel as MemberLevelModel;
@@ -201,6 +202,172 @@ class MemberUserHandle extends BaseHandle
       //  $retval = $this->member_user->save($data, ['id' => $user_id]);
         return $retval;
     }
+
+
+
+
+
+    /**
+     * ok-2ok
+     * 会员用户注册
+     * @param $user_name
+     * @param $login_phone
+     * @param $password
+     * @param $agent_id
+     * @param $user_type
+     * @param $province_id
+     * @param $city_id
+     * @param $district_id
+     * @param $wx_openid
+     * @param $wx_unionid
+     * @param $wx_info
+     * @return bool|mixed
+     */
+    public function registerMember($user_name, $login_phone, $password, $user_type, $province_id, $city_id,  $district_id, $wx_openid, $wx_unionid,$wx_info,$agent_id=1 ) {
+        if (empty($login_phone)) {
+            $this->error = "手机号不能为空";
+            return false;
+        }
+        $count = $this->member_user->where([
+            'login_phone' => $login_phone
+        ])->count();
+        if ($count > 0) {
+            $this->error = "此手机号已被注册，不可重复注册";
+            return false; //USER_REPEAT;
+        }
+        $nick_name ='';
+        $user_head_img = '';
+        if (! empty($wx_openid) || !empty($wx_unionid)) {
+            $wx_info_array = json_decode($wx_info);
+            $nick_name = $this->filterStr($wx_info_array->nickname);
+            $user_head_img = $wx_info_array->headimgurl;
+            $wx_info = $this->filterStr($wx_info);
+        } else {
+            $user_head_img = '';
+        }
+        $local_path = '';
+        if(!empty($user_head_img))
+        {
+            if(!file_exists('upload/user')){
+                $mode = intval('0777',8);
+                mkdir('upload/user',$mode,true);
+                if(!file_exists('upload/user'))
+                {
+                    die('upload/user不可写，请检验读写权限!');
+                }
+            }
+            $local_path = 'upload/user/'.time().rand(111,999).'.png';
+            save_weixin_img($local_path, $user_head_img);
+
+        }
+
+        // 获取默认会员等级id
+        $member_level = new MemberLevelModel();
+        $level_info = $member_level->getInfo([
+            'is_default' => 1
+        ], 'id');
+        $member_level = $level_info['id'];
+        try {
+
+            $this->startTrans();
+            $data = array(
+                'user_name' =>$user_name,
+                'login_phone' => $login_phone,
+                'password' => md5($password),
+                //    'level' => 1,
+                'agent_id' => $agent_id,
+                'user_type' => $user_type,
+                'member_level' => $member_level,
+
+                'wx_openid' => $wx_openid,
+                'wx_unionid'  => $wx_unionid,
+                'wx_is_sub' => 0,
+                'wx_sub_time' => 0,
+                'wx_notsub_time' => 0,
+                'wx_info' => $wx_info,
+                'login_count' => 0,
+                'last_login_time' => 0,
+                'status' => 1,
+                'create_time'=>time(),
+                'update_time'=>time()
+            );
+            $member_user = new MemberUserModel();
+            $member_user->save($data);
+            $uid = $member_user->id;
+            if ($uid < 1) {
+                $this->rollback();
+                $this->error ="保存会员用户出错, 操作失败!";
+                return false;
+            }
+            //用户添加成功后
+            //添加用户帐户
+            $data_account = array (
+                'user_id' => $uid,
+                'point' => 0,
+                'balance' => 0,
+                'coin'=> 0,
+                'member_cunsum'=> 0,
+                'member_sum_point'=> 0,
+                'member_sum_order'=> 0,
+                'create_time'=>time(),
+                'update_time'=>time());
+            $member_account = new MemberAccountModel();
+            $member_account->save($data_account);
+            $account_id = $member_account->id;
+            if ($account_id < 1) {
+                $this->rollback();
+                $this->error ="新增会员帐号出错, 操作失败!";
+                return false;
+            }
+
+            //添加用户资料
+            if (empty($province_id)) {
+                $province_id = 0;
+            }
+            if (empty($city_id)) {
+                $city_id = 0;
+            }
+            if (empty($district_id)) {
+                $district_id = 0;
+            }
+            $data_info = array (
+                'user_id' => $uid,
+                'province_id' => $province_id,
+                'city_id' => $city_id,
+                'district_id'=> $district_id,
+                'nickname' => $nick_name,
+                'head_img' => $local_path,
+                'create_time'=>time(),
+                'update_time'=>time()
+            );
+            $member_info = new MemberInfoModel();
+            $member_info->save($data_info);
+            $info_id = $member_info->id;
+            if ($info_id < 1) {
+                $this->rollback();
+                $this->error ="新增会员资料出错, 操作失败!";
+                return false;
+            }
+
+            // 注册会员送积分
+            $promote_reward_rule = new PromoteRewardRuleHandle();
+            // 添加关注
+            // 平台赠送积分
+            $promote_reward_rule->RegisterMemberSendPoint(0, $uid);
+           // RegisterMemberSendPoint($shop_id=0, $user_id)
+            $this->commit();
+
+          //  hook('memberRegisterSuccess', $data);
+            return $uid;
+        } catch (\Exception $e) {
+            $this->rollback();
+            $this->error ="操作时出现异常:".$e->getMessage();
+            return false;
+        }
+
+    }
+
+
 
     /**
      * 系统用户基础添加方式

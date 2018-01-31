@@ -25,6 +25,62 @@ use think\Session;
 class Member extends BaseController
 {
 
+    /********* 微信相关*******/
+    /**
+     * 获取需要绑定的信息放到session中
+     */
+    public function getWchatBindMemberInfo()
+    {
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+            $config = new ConfigHandle();
+            $wchat_config = $config->getInstanceWchatConfig(0);
+          //  $register_and_visit = $config->getRegisterAndVisit(0);
+           // $register_config = json_decode($register_and_visit['value'], true);
+            // 当前openid 没有在数据库中存在 并且 后台没有开启 强制绑定会员
+            $token = "";
+            $is_bind = 1;
+            $info = "";
+            $wx_unionid = "";
+            $domain_name = \think\Request::instance()->domain();
+            if (! empty($wchat_config['value']['appid']) && $register_config["is_requiretel"] == 1) {
+                $wchat_oauth = new WchatOauth();
+                $member_access_token = Session::get($domain_name . "member_access_token");
+                if (! empty($member_access_token)) {
+                    $token = json_decode($member_access_token, true);
+                } else {
+                    $token = $wchat_oauth->get_member_access_token();
+                    if (! empty($token['access_token'])) {
+                        Session::set($domain_name . "member_access_token", json_encode($token));
+                    }
+                }
+                if (! empty($token['openid'])) {
+                    $user_count = $this->user->getUserCountByOpenid($token['openid']);
+                    if ($user_count == 0) {
+                        // 更新会员的微信信息
+                        $info = $wchat_oauth->get_oauth_member_info($token);
+                        if (! empty($token['unionid'])) {
+                            $wx_unionid = $token['unionid'];
+                        }
+                    } else {
+                        $is_bind = 0;
+                    }
+                }
+            }
+            $bind_message = array(
+                "token" => $token,
+                "is_bind" => $is_bind,
+                "info" => $info,
+                "wx_unionid" => $wx_unionid
+            );
+            Session::set("bind_message_info", json_encode($bind_message));
+        }
+    }
+
+
+
+
+    /************************/
+
     public function register() {
         //登录手机号
         $login_phone = isset($this->param['login_phone']) ? $this->param['login_phone'] : '';

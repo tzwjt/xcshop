@@ -100,7 +100,9 @@ class Wchat extends BaseController
      */
     public function templateMessage()
     {
-        $media_id = request()->get('media_id');
+        $media_id = $this->param['media_id'];
+
+         //   request()->get('media_id');
         $weixin = new WeixinHandle();
         $info = $weixin->getWeixinMediaDetailByMediaId($media_id);
 

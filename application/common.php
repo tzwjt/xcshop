@@ -1016,6 +1016,33 @@ function addons_url($url, $param = [])
     return $return_url;
 }
 
+/**
+ * 把微信生成的图片存入本地
+ *
+ * @param [type] $username
+ *            [用户名]
+ * @param [string] $LocalPath
+ *            [要存入的本地图片地址]
+ * @param [type] $weixinPath
+ *            [微信图片地址]
+ *
+ * @return [string] [$LocalPath]失败时返回 FALSE
+ */
+function save_weixin_img($local_path, $weixin_path)
+{
+    $weixin_path_a = str_replace("https://", "http://", $weixin_path);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $weixin_path_a);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $r = curl_exec($ch);
+    curl_close($ch);
+    if (! empty($local_path) && ! empty($weixin_path_a)) {
+        $msg = file_put_contents($local_path, $r);
+    }
+    return $local_path;
+}
+
 
 
 
